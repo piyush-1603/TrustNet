@@ -53,8 +53,9 @@ python -m trustnet simulate --projects 30 --seed 42
 
 **Say:**
 > "This seeds a network of 30 projects with trust edges, honest accounts,
-> 15 newcomers, and four planted attacks: a spam campaign, a legitimate
-> dependency bump, a denounce brigade, and a sybil clique.
+> 15 newcomers, and planted cases: a spam campaign, a legitimate
+> dependency bump, a denounce brigade, a sybil clique, and a bad actor
+> a trusted project denounced.
 > Same seed always gives identical output — fully reproducible."
 
 🔴 **Fallback:** `ls examples/network/` — point to the pre-generated folder.

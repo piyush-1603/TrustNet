@@ -1,8 +1,7 @@
 # Mentor Notes
 
 Questions submitted to the hackathon mentor during Hacktoberfest 2026 Hack Day, Sonipat.
-**Answers must be shared with Shaurya immediately** — they affect `loaders.py`, `HACKATHON.md`,
-and the campaign scoring code.
+Status at submission: the data question is answered; the two model questions were not.
 
 ---
 
@@ -19,11 +18,8 @@ and the campaign scoring code.
 > Will the organizers' evaluation network use this same layout and field names,
 > or will it use a different format? If different, can you share a sample file or schema?
 
-**Answer:** *(fill in when received from mentor)*
-
-```
-[PENDING]
-```
+**Answer:** Confirmed with the organizers: no network data is provided to teams. Each team shows its own demo, so
+the loader only has to read the format documented in `docs/PLAN.md`.
 
 **Impact on code:**
 - If format matches → no change needed; our `loaders.load_network()` reads it directly.
@@ -39,11 +35,9 @@ and the campaign scoring code.
 > which models will be available on it? We fall back to TF-IDF if Ollama is unreachable,
 > so the tool works either way.
 
-**Answer:** *(fill in when received from mentor)*
-
-```
-[PENDING]
-```
+**Answer:** Not answered by the time of submission. We declare only `nomic-embed-text`, which the code calls
+through a local Ollama server. If the model or server is unavailable, the tool falls back to TF-IDF and reports
+`embedding_used: false`; it never claims a model result it did not get.
 
 **Impact on code:**
 - If `nomic-embed-text` is available → no change; real Ollama path runs during demo.
@@ -60,11 +54,8 @@ and the campaign scoring code.
 > All trust decisions are made by deterministic rules; the model only supplies a
 > similarity score. Is this an accepted model for Problem 7?
 
-**Answer:** *(fill in when received from mentor)*
-
-```
-[PENDING]
-```
+**Answer:** Not answered by the time of submission. The model is open-weight and runs locally; the decision
+logic does not depend on it (see `python -m trustnet ablation` for what it adds).
 
 **Impact on code:**
 - If accepted → no change needed.
@@ -72,11 +63,3 @@ and the campaign scoring code.
   TF-IDF becomes the primary path. Tell Shaurya and Anubhav immediately.
 
 ---
-
-## Action checklist once answers arrive
-
-- [ ] Fill in the three answer blocks above
-- [ ] Tell Shaurya (`p1`) the format answer → he updates `loaders.py` if needed
-- [ ] Tell Anubhav (`p2`) the model answer → he updates `similarity.py` if needed
-- [ ] If `nomic-embed-text` rejected: update `HACKATHON.md` (Piyush owns the repo settings)
-- [ ] Commit this file with the filled-in answers before the 5:00 AM feature freeze
