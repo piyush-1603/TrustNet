@@ -111,15 +111,19 @@ def render(net, decisions, campaigns, lab_results, out_path):
     repo_panels = ''.join(_repo_panel(project, project_prs.get(pid, []), decision_by_pr, net, campaign_prs) for pid, project in sorted(net.projects.items()))
     campaign_cards = []
     for campaign in campaigns:
+        method = ('Behavior only · text model not used' if getattr(campaign, 'kind', 'text') == 'behavior'
+                  else 'nomic-embed-text + TF-IDF · embedding model ran' if campaign.embedding_used
+                  else 'TF-IDF only · embedding model not used')
         members = [pr for pr in net.prs if pr.id in campaign.pr_ids]
         people = ''.join(f'<li><strong>{_e(author)}</strong> · account linked to this campaign</li>' for author in campaign.authors)
         member_rows = ''.join(f'<li>{_e(pr.id)} · {_e(pr.project)} · {_e(pr.author)} · {_badge(decision_by_pr[pr.id].decision) if pr.id in decision_by_pr else ""}</li>' for pr in members)
         campaign_cards.append(f'''<article class="campaign-card"><div class="card-head"><h3>{_e(campaign.id)}</h3><span class="badge {'hold' if campaign.flagged else 'provisional'}">{'FLAGGED' if campaign.flagged else 'NOT FLAGGED'}</span></div>
         <p>{len(campaign.pr_ids)} PRs · {len(campaign.projects)} repositories · {len(campaign.authors)} accounts · score {campaign.score:.2f}</p>
-        <p class="muted">{'nomic-embed-text + TF-IDF' if campaign.embedding_used else 'TF-IDF only'} · {'embedding model ran' if campaign.embedding_used else 'embedding model not used'}</p><ul>{''.join(f'<li>{_e(item)}</li>' for item in campaign.evidence)}</ul>
+        <p class="muted">{method}</p><ul>{''.join(f'<li>{_e(item)}</li>' for item in campaign.evidence)}</ul>
         <details><summary>Inspect linked PRs and accounts</summary><div class="repo-columns"><ul class="compact">{member_rows}</ul><ul class="compact">{people}</ul></div></details></article>''')
     counts = {label: sum(d.decision == label for d in decisions) for label in ('ACCEPT', 'PROVISIONAL', 'HOLD')}
-    model_status = ('nomic-embed-text + TF-IDF' if any(c.embedding_used for c in campaigns) else 'TF-IDF only') if campaigns else 'no qualifying group; method not retained'
+    text_campaigns = [c for c in campaigns if getattr(c, 'kind', 'text') == 'text']
+    model_status = ('nomic-embed-text + TF-IDF' if any(c.embedding_used for c in text_campaigns) else 'TF-IDF only') if text_campaigns else 'no text group; scan method not retained'
     pipeline = f'''<ol class="pipeline">
     <li><b>1 · Load snapshot</b><span>{len(net.projects)} repos · {len(net.accounts)} accounts · {len(net.prs)} PRs</span></li>
     <li><b>2 · Find coordination</b><span>{len(campaigns)} campaign groups · {len(campaign_prs)} linked PRs · {_e(model_status)}</span></li>

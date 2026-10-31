@@ -49,3 +49,17 @@ def test_report_escapes_input_and_includes_paths(tmp_path):
     assert '<script>alert(1)</script>' not in html
     assert '&lt;script&gt;alert(1)&lt;/script&gt;' in html
     assert 'Contributing trust paths' in html
+
+
+def test_behavior_flags_do_not_claim_text_detection(tmp_path):
+    from trustnet.fanout_demo import build_network
+
+    net = build_network()
+    campaigns = detect(net, use_embeddings=False)
+    assert campaigns and all(c.kind == 'behavior' for c in campaigns)
+    decisions = [evaluate_pr(net, 'proj-01', pr, campaigns) for pr in net.prs]
+    out = tmp_path / 'report.html'
+    render(net, decisions, campaigns, {}, out)
+    html = out.read_text()
+    assert 'Behavior only · text model not used' in html
+    assert 'TF-IDF only · embedding model not used' not in html
