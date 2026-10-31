@@ -77,9 +77,9 @@ Tick a box only when the PR is merged and CI is green. Shaurya keeps this table 
 |---|---|---|---|---|
 | 1 | Collaborator invites, branch protection on `main` | Piyush | Everyone can open PRs; direct pushes blocked | [ ] |
 | 2 | PR 1: LICENSE, CI, PR template, README stub, requirements, empty package, smoke test, these docs | Shaurya (with Claude Code) | CI green on the PR, then merged | [x] |
-| 3 | PR 2: `models.py`, `loaders.py`, `policy.json` | Shaurya | Others can import the contract (until it merges, code against the signatures above) | [ ] |
+| 3 | PR 2: `models.py`, `loaders.py`, `policy.json` | Shaurya | Others can import the contract (until it merges, code against the signatures above) | [x] |
 | 4 | PR 3: tiny hand-made test networks in `tests/fixtures/` | Arnav | newcomer, brigade, bulk_bump, campaign fixtures load | [ ] |
-| 5 | `trust.py` with tests | Shaurya | transitive 0.486, cycles end, brigade ignored, newcomer PROVISIONAL | [ ] |
+| 5 | `trust.py` with tests | Shaurya | transitive 0.486, cycles end, brigade ignored, newcomer PROVISIONAL | [x] |
 | 6 | `similarity.py`, real Ollama call plus TF-IDF fallback | Anubhav | fallback test passes without Ollama; real call verified by hand | [ ] |
 | 7 | `simulate.py` with planted attacks | Piyush | same seed gives identical files; loader reads them | [ ] |
 | 8 | `campaigns.py` | Anubhav | planted campaign found, bulk bump not flagged | [ ] |
