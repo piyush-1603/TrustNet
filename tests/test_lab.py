@@ -1,74 +1,87 @@
-"""Lab orchestration tests use a small fake engine, never benchmark evidence."""
-import sys
-from types import ModuleType, SimpleNamespace as Record
+"""Decision benchmark regression checks against production models and engine."""
+from copy import deepcopy
 
 import pytest
 
-from test_campaigns import contract
 from trustnet import lab
+from trustnet.models import Denounce
+from trustnet.trust import evaluate_pr
 
 
-@pytest.fixture
-def engine(contract, monkeypatch):
-    module = ModuleType('trustnet.trust')
-    module.naive_score = lambda net, handle: sum(
-        sum(v.handle == handle for v in project.vouches)
-        - sum(d.handle == handle for d in project.denounces)
-        for project in net.projects.values())
-
-    def evaluate(net, viewer, handle, campaign_handles=frozenset(), now=None):
-        return Record(belief=0., disbelief=0.,
-            decision='HOLD' if handle in campaign_handles else 'PROVISIONAL')
-    module.evaluate_author = evaluate
-    monkeypatch.setitem(sys.modules, 'trustnet.trust', module)
-    return module
+@pytest.mark.parametrize('score,expected', [(2, 'ACCEPT'), (-1, 'HOLD'), (0, 'PROVISIONAL')])
+def test_naive_decision(score, expected):
+    assert lab.naive_decision(score) == expected
 
 
-def test_all_four_attacks_metrics_and_markdown(engine):
-    results = lab.run(42)
-    assert list(results['scenarios']) == [
-        'brigade-denounce', 'sybil-clique', 'trust-laundering', 'collusive-cluster']
-    for row in results['scenarios'].values():
-        assert row['naive_inflation'] > 0
-        assert row['defended_inflation'] == 0
-        assert row['relative_reduction'] == 1
-        assert row['newcomer_false_positive_rate'] == 0
-        assert row['honest_newcomers'] == 15
-    cluster = results['scenarios']['collusive-cluster']
+def test_production_benchmark():
+    result = lab.run(use_embeddings=False)
+    assert result == lab.run(use_embeddings=False)
+    rows = result['scenarios']
+    brigade = rows['brigade-denounce']
+    assert (brigade['naive_before'], brigade['naive_after']) == ('ACCEPT', 'HOLD')
+    assert (brigade['defended_before'], brigade['defended_after']) == ('ACCEPT', 'ACCEPT')
+    for name, row in rows.items():
+        assert row['naive_attack_success']
+        assert row['defended_attack_success'] == (name == 'trusted-source-compromise')
+        assert row['defense_goal_met'] == (name != 'trusted-source-compromise')
+        assert row['campaign_false_positive_rate'] == row['newcomer_hold_rate'] == 0
+        assert row['embedding_used'] is False
+        assert 'relative_reduction' not in row
+    cluster = rows['collusive-cluster']
+    assert cluster['defended_after'] == 'HOLD' and cluster['in_campaign']
+    assert cluster['target_pr_id'] in cluster['flagged_pr_ids']
     assert len(cluster['flagged_pr_ids']) == 20
-    assert cluster['decision'] == 'HOLD'
-    assert cluster['embedding_used'] is False
-    assert 'Relative reduction' in results['markdown']
-    assert 'brigade-denounce' in results['markdown']
-    assert results == lab.run(42)
+    assert 'BEFORE → AFTER' in result['markdown']
 
 
-def test_lab_reports_failed_defense_without_fabricating_a_win(engine):
-    engine.evaluate_author = lambda net, viewer, handle, **kwargs: Record(
-        belief=float(any(p.vouches for p in net.projects.values())),
-        disbelief=float(any(p.denounces for p in net.projects.values())),
-        decision='HOLD')
-    results = lab.run()
-    row = results['scenarios']['trust-laundering']
-    assert row['defended_inflation'] == 1
-    assert row['relative_reduction'] == 0
-    assert row['newcomer_false_positive_rate'] == 1
+def test_attack_success_requires_transition():
+    assert not lab.attack_success('sybil-clique', 'ACCEPT', 'ACCEPT')
+    assert not lab.attack_success('brigade-denounce', 'PROVISIONAL', 'HOLD')
+    assert lab.attack_success('brigade-denounce', 'ACCEPT', 'HOLD')
 
 
-def test_zero_baseline_inflation_is_not_divided_by_zero(engine):
-    engine.naive_score = lambda net, handle: 0.
-    result = lab.run()
-    assert all(row['relative_reduction'] is None for row in result['scenarios'].values())
-    assert 'n/a' in result['markdown']
-
-
-def test_seeded_networks_and_attack_isolation(contract):
+def test_seeded_network_and_attack_isolation():
     clean, now = lab._network(1)
     same, _ = lab._network(1)
     other, _ = lab._network(2)
     assert clean == same and clean != other
-    attacked = lab._attack(clean, now, 'trust-laundering')
-    assert not any(p.trusts or p.vouches or p.denounces for p in clean.projects.values())
-    assert len(attacked.projects['viewer'].trusts) == 1
-    assert len(attacked.projects['fake-3'].vouches) == 1
-    assert not attacked.projects['fake-0'].vouches
+    original = deepcopy(clean)
+    lab._attack(clean, now, 'trust-laundering')
+    assert clean == original
+
+
+def test_campaign_hold_is_pr_specific():
+    from trustnet.campaigns import detect
+    clean, now = lab._network(42)
+    attacked = lab._attack(clean, now, 'collusive-cluster')
+    campaigns = detect(attacked, False)
+    affected = attacked.prs[-1]
+    unrelated = deepcopy(affected)
+    unrelated.id = 'unrelated'
+    assert evaluate_pr(attacked, 'viewer', affected, campaigns).in_campaign
+    result = evaluate_pr(attacked, 'viewer', unrelated, campaigns)
+    assert result.decision == 'PROVISIONAL' and not result.in_campaign
+
+
+def test_generic_hold_is_not_campaign_false_positive(monkeypatch):
+    original = lab._attack
+
+    def attack(*args):
+        net = original(*args)
+        for handle in net.accounts:
+            if handle.startswith('newcomer-'):
+                net.projects['viewer'].denounces.append(Denounce(handle, 'spam', 'https://example.test'))
+        return net
+    monkeypatch.setattr(lab, '_attack', attack)
+    for row in lab.run(use_embeddings=False)['scenarios'].values():
+        assert row['newcomer_hold_rate'] == 1
+        assert row['campaign_false_positive_rate'] == 0
+
+
+def test_ollama_unreachable_matches_explicit_offline(monkeypatch):
+    import requests
+
+    def unavailable(*args, **kwargs):
+        raise requests.ConnectionError('offline fixture')
+    monkeypatch.setattr('trustnet.similarity.requests.post', unavailable)
+    assert lab.run(use_embeddings=True) == lab.run(use_embeddings=False)

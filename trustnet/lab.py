@@ -66,59 +66,91 @@ def _attack(clean, now, scenario):
     return net
 
 
+def naive_decision(score):
+    """Map the raw-count baseline to the same decision categories as TrustNet."""
+    return "ACCEPT" if score > 0 else "HOLD" if score < 0 else "PROVISIONAL"
+
+
+def attack_success(scenario, before, after):
+    """Brigades must flip acceptance; promotion attacks must gain acceptance."""
+    if scenario == "brigade-denounce":
+        return before == "ACCEPT" and after == "HOLD"
+    return before != "ACCEPT" and after == "ACCEPT"
+
+
 def markdown_table(results):
-    lines = ["| Attack | Naive inflation | Defended inflation | Relative reduction | Newcomer false positives |",
-             "|---|---:|---:|---:|---:|"]
+    lines = ["| Attack | Naive BEFORE → AFTER | Defended BEFORE → AFTER | Naive attack success | Defended attack success | Defense goal met | Campaign false positives | Newcomer HOLD rate |",
+             "|---|---|---|---|---|---|---|---|"]
     for name, row in results["scenarios"].items():
-        reduction = row["relative_reduction"]
-        reduction_text = "n/a" if reduction is None else f"{reduction:.1%}"
-        lines.append(f"| {name} | {row['naive_inflation']:.3f} | {row['defended_inflation']:.3f} | "
-                     f"{reduction_text} | {row['newcomer_false_positive_rate']:.1%} |")
+        lines.append(f"| {name} | {row['naive_before']} → {row['naive_after']} | "
+                     f"{row['defended_before']} → {row['defended_after']} | "
+                     f"{row['naive_attack_success']} | {row['defended_attack_success']} | "
+                     f"{row['defense_goal_met']} | {row['campaign_false_positive_rate']:.1%} | "
+                     f"{row['newcomer_hold_rate']:.1%} |")
     return "\n".join(lines) + "\n\n" + results['metric_note']
 
 
-def run(seed=42):
-    """Measure attack-induced score changes; do not assert that defenses win.
+def run(seed=42, use_embeddings=True):
+    """Compare categorical transitions on identical before/after networks.
 
-    Brigade inflation means gained disbelief; other attacks mean gained belief.
-    Naive changes use naive_score's native units; defended changes use [0,1]
-    belief/disbelief. Relative reduction requires matching score scales to be
-    interpreted as a calibrated benchmark, not a general robustness guarantee.
+    These seeded synthetic cases are regression evidence, not population attack
+    success rates. Promotion success requires a new ACCEPT. Campaign defense
+    additionally requires a flagged affected PR and PR-specific HOLD.
     """
-    from .trust import evaluate_author, naive_score
+    from .models import PR, Trust, Vouch
+    from .trust import evaluate_author, evaluate_pr, naive_score
 
     clean, now = _network(seed)
     _, policy_hash = campaign_policy()
     results = {"seed": seed, "policy_hash": policy_hash, "scenarios": {},
-               "metric_note": "Attack-induced native score changes; verify baseline scale before comparing magnitudes."}
-    for name in ("brigade-denounce", "sybil-clique", "trust-laundering", "collusive-cluster"):
+               "metric_note": "Categorical outcomes on synthetic fixtures, not calibrated robustness rates. "
+               "Campaign false positives count honest newcomer PRs flagged; HOLD rate counts all newcomer "
+               "PR HOLD decisions. Trusted-source compromise is an intentional defense-failure control."}
+    for name in ("brigade-denounce", "sybil-clique", "trust-laundering", "collusive-cluster",
+                 "trusted-source-compromise"):
         before = deepcopy(clean)
         if name == "brigade-denounce":
-            from .models import Vouch
             before.projects['viewer'].vouches.append(Vouch(handle='target', date=now.isoformat(),
                 evidence_url='https://example.test/honest-contribution'))
-        baseline_naive = naive_score(before, "target")
-        baseline_defended = evaluate_author(before, "viewer", "target", now=now)
+        # Keep a target PR in both snapshots so collusion compares the same PR.
+        target_pr = PR(id="attack-00", project="fake-0", author="target",
+                       created_at=now.isoformat(), title="Improve project documentation",
+                       body="Please accept this contribution to improve docs.", diff_text="+ documentation update")
+        if name == "collusive-cluster":
+            before.prs.append(target_pr)
+        baseline_campaigns = detect(before, use_embeddings)
+        baseline_defended = (evaluate_pr(before, "viewer", target_pr, baseline_campaigns, now=now)
+                             if name == "collusive-cluster" else
+                             evaluate_author(before, "viewer", "target", now=now))
         attacked = _attack(before, now, name)
-        campaigns = detect(attacked)
-        handles = frozenset(author for campaign in campaigns if campaign.flagged for author in campaign.authors)
-        decision = evaluate_author(attacked, "viewer", "target", campaign_handles=handles, now=now)
-        naive = naive_score(attacked, "target")
-        is_brigade = name == "brigade-denounce"
-        naive_inflation = max(0.0, (baseline_naive - naive) if is_brigade else (naive - baseline_naive))
-        field = "disbelief" if is_brigade else "belief"
-        defended_inflation = max(0.0, getattr(decision, field) - getattr(baseline_defended, field))
-        newcomers = [handle for handle in clean.accounts if handle.startswith("newcomer-")]
-        false_positives = sum(evaluate_author(attacked, "viewer", handle,
-            campaign_handles=handles, now=now).decision == "HOLD" for handle in newcomers)
+        if name == "collusive-cluster":
+            # _attack generates attack-00 too; retain just one instance.
+            attacked.prs = [pr for pr in attacked.prs if pr.id != target_pr.id] + [target_pr]
+        if name == "trusted-source-compromise":
+            attacked.projects["viewer"].trusts.append(Trust(project="fake-0", weight=1.0))
+        campaigns = detect(attacked, use_embeddings)
+        decision = (evaluate_pr(attacked, "viewer", target_pr, campaigns, now=now)
+                    if name == "collusive-cluster" else
+                    evaluate_author(attacked, "viewer", "target", now=now))
+        naive_before = naive_decision(naive_score(before, "target"))
+        naive_after = naive_decision(naive_score(attacked, "target"))
+        newcomers = [pr for pr in attacked.prs if pr.author.startswith("newcomer-")]
+        newcomer_decisions = [evaluate_pr(attacked, "viewer", pr, campaigns, now=now) for pr in newcomers]
+        flagged_ids = sorted({pr_id for campaign in campaigns if campaign.flagged for pr_id in campaign.pr_ids})
+        defended_success = attack_success(name, baseline_defended.decision, decision.decision)
+        goal = (decision.decision == "ACCEPT" if name == "brigade-denounce" else
+                decision.in_campaign and decision.decision == "HOLD" if name == "collusive-cluster" else
+                decision.decision != "ACCEPT")
         results["scenarios"][name] = dict(
-            naive_before=baseline_naive, naive_after=naive,
-            defended_before=getattr(baseline_defended, field), defended_after=getattr(decision, field),
-            naive_inflation=naive_inflation, defended_inflation=defended_inflation,
-            relative_reduction=(1 - defended_inflation / naive_inflation) if naive_inflation else None,
-            newcomer_false_positive_rate=false_positives / len(newcomers),
+            naive_before=naive_before, naive_after=naive_after,
+            defended_before=baseline_defended.decision, defended_after=decision.decision,
+            naive_attack_success=attack_success(name, naive_before, naive_after),
+            defended_attack_success=defended_success, defense_goal_met=goal,
+            campaign_false_positive_rate=sum(pr.id in flagged_ids for pr in newcomers) / len(newcomers),
+            newcomer_hold_rate=sum(d.decision == "HOLD" for d in newcomer_decisions) / len(newcomers),
             honest_newcomers=len(newcomers), decision=decision.decision,
-            flagged_pr_ids=[pr_id for campaign in campaigns if campaign.flagged for pr_id in campaign.pr_ids],
+            target_pr_id=target_pr.id if name == "collusive-cluster" else None,
+            in_campaign=decision.in_campaign, flagged_pr_ids=flagged_ids,
             embedding_used=any(campaign.embedding_used for campaign in campaigns),
         )
     results["markdown"] = markdown_table(results)
