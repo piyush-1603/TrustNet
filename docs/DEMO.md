@@ -227,11 +227,29 @@ open report.html        # macOS; use xdg-open on Linux
 
 **Then say:**
 > "The model we use is nomic-embed-text — open-weight, runs locally
-> through Ollama. It converts PR text into embeddings so we can detect
-> reworded spam that keyword filters miss. All trust decisions are
-> deterministic rules. The model only supplies a similarity score.
+> through Ollama. It reads each PR's title, description and a short view of
+> the change, and gives a similarity score. All trust decisions are
+> deterministic rules; the model never decides alone.
 > If Ollama is down, we fall back to TF-IDF and say so in the output —
 > you can see 'embedding_used: false' in that case."
+
+```bash
+python -m trustnet ablation
+```
+
+> "Here is what the model adds. One spam message, reworded twelve ways, from twelve
+> new accounts to twelve projects. With the model off, keyword matching links
+> nothing — not flagged. With the model on, all twelve are found, and none of the
+> thirty ordinary PRs are flagged. The score line was chosen on a small set of
+> examples we wrote ourselves, so we don't claim more than that."
+
+**Point to:**
+```
+Model OFF (keyword matching only): not flagged  (0 PRs linked)
+Model ON  (nomic-embed-text)     : FLAGGED  (12 of 12 spam PRs found, 0 ordinary PRs wrongly flagged)
+```
+
+🔴 **Fallback:** `cat examples/ablation.json`. If Ollama is down the ON line says "unavailable" — say so; do not claim a model result.
 
 > "Tests cover every decision rule, the TF-IDF fallback, the campaign
 > detector, and the full lab. CI runs on GitHub Actions with Python 3.11.

@@ -1,0 +1,43 @@
+{
+  "spam_prs": 12,
+  "honest_prs": 30,
+  "model_available": true,
+  "model_off": {
+    "flagged": false,
+    "pr_ids": [],
+    "embedding_used": false
+  },
+  "model_on": {
+    "flagged": true,
+    "pr_ids": [
+      "spam-00",
+      "spam-01",
+      "spam-02",
+      "spam-03",
+      "spam-04",
+      "spam-05",
+      "spam-06",
+      "spam-07",
+      "spam-08",
+      "spam-09",
+      "spam-10",
+      "spam-11"
+    ],
+    "embedding_used": true
+  },
+  "spam_ids_found_with_model": [
+    "spam-00",
+    "spam-01",
+    "spam-02",
+    "spam-03",
+    "spam-04",
+    "spam-05",
+    "spam-06",
+    "spam-07",
+    "spam-08",
+    "spam-09",
+    "spam-10",
+    "spam-11"
+  ],
+  "honest_flagged_with_model": []
+}

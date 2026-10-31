@@ -24,7 +24,8 @@ as distrusted.
    issuer. A fake project cannot get anyone held.
 5. **Vouching for spam costs you.** If a project vouched for an account that is later flagged in a
    campaign, its other vouches count half. Projects that merely received the spam are not penalised.
-6. **A real open model, kept in its place.** `nomic-embed-text` (via Ollama) catches reworded spam;
+6. **A real open model, kept in its place.** `nomic-embed-text` (via Ollama) catches heavily reworded spam
+   that keyword matching misses entirely (`python -m trustnet ablation` runs both side by side);
    deterministic rules in `policy.json` make every decision, and every decision shows its trust path.
 7. **An honest benchmark.** The attack lab compares naive counting with TrustNet on five synthetic
    attacks, and includes one where the defense fails by design (a compromised trusted source).
@@ -104,6 +105,7 @@ python -m trustnet report
 | `evaluate ... --no-local-detection` | Skips the local detector, to show what an imported advisory alone does |
 | `campaigns` | Clusters near-duplicate PRs and flags coordinated campaigns |
 | `advisory --as PROJ --out FILE` | Publishes the flagged campaigns as a shareable advisory file |
+| `ablation` | Same reworded campaign with the model off and on: shows what the model adds |
 | `lab` | Runs five synthetic attack scenarios (four defended, one failing control); prints naive vs defended decisions |
 | `report` | Renders a self-contained HTML report with all results |
 
@@ -171,12 +173,17 @@ not on any global score.
 
 ### 6. Why is AI text detection alone not enough?
 
-A spam campaign can reword its PRs slightly, defeating keyword filters and even some
-classifiers. TrustNet uses `nomic-embed-text` embeddings (or TF-IDF as a fallback) to
-measure **semantic similarity** across PRs. Two reworded variants of the same spam body
-will have a high cosine similarity in embedding space even when they share few exact
-words. The campaign detector then clusters these PRs, checks account ages, project spread,
-and timing — a combination that is much harder to evade than text matching alone.
+A spam campaign can reword its PRs, defeating keyword filters. TrustNet compares each PR's
+title, description and a short view of its change (at most 1,500 characters) using
+`nomic-embed-text` embeddings, with TF-IDF as the offline fallback. Reworded variants of one
+message share almost no words (keyword score about 0.1) but score about 0.8 to 0.9 with the model.
+`python -m trustnet ablation` shows it: the same 12 reworded PRs are missed with the model off and
+found with it on, with no ordinary PR flagged. The campaign detector then checks account ages,
+project spread and timing, which is much harder to evade than text matching alone.
+
+Honest limits: the model's score threshold (0.80) was chosen on 42 hand-written descriptions, not a
+population; generic look-alike PRs (such as typo fixes) can score high, so similar text alone never
+flags anything.
 
 Crucially, the model only supplies a similarity score. All trust and campaign decisions
 are made by **deterministic rules** in `policy.json`. This keeps the system auditable and
