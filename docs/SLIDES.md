@@ -110,22 +110,25 @@
 
 ---
 
-## Slide 7: Adversarial Lab & Benchmark Results
+## Slide 7: Adversarial Lab & Synthetic Regression Results
 
 ### Visual / Layout:
-- Benchmark comparison table:
+- Categorical Decision Matrix (Synthetic Regressions):
 
-| Scenario | Attack Type | Naive Inflation | Defended Gain | Reduction | Newcomer FP |
-|---|---|---|---|---|---|
-| **Brigade Denounce** | 5 fake projects denounce honest author | High (Blocked) | Zero (Ignored) | **95%** | **0%** |
-| **Sybil Clique** | Fake projects mutually vouch for spammer | High (Accepted) | Low ($T < 0.25$) | **88%** | **0%** |
-| **Trust Laundering** | Long vouch chain through puppet repos | Moderate | Pruned ($> 3$ hops) | **76%** | **0%** |
-| **Collusive Cluster** | Coordinated bot rings | High | Bounded ($\text{top-}k=3$) | **90%** | **0%** |
+| Attack Fixture | Threat Model | Naive Baseline | Defended Outcome | Result |
+|---|---|---|---|---|
+| **Brigade Denounce** | 5 untrusted fake projects denounce honest author | HOLD (Blocked) | **ACCEPT → ACCEPT** | Defended (untrusted denounces ignored) |
+| **Sybil Clique** | Fake projects mutually vouch for spammer | ACCEPT | **PROVISIONAL → PROVISIONAL** | Defended (isolated ring has $T < 0.25$) |
+| **Trust Laundering** | Long vouch chain through puppet projects | ACCEPT | **PROVISIONAL → PROVISIONAL** | Defended (pruned beyond 3 hops) |
+| **Collusive PR Swarm** | Coordinated multi-project near-duplicate PRs | PROVISIONAL | **PROVISIONAL → HOLD** | Defended (flagged by campaign detector) |
+| **Compromised Source** | Directly trusted project account compromised | ACCEPT | **PROVISIONAL → ACCEPT** | ⚠️ **Defense Fails (Explicit Limitation)** |
 
 ### Talking Points (4:30 – 5:30):
-- "In our adversarial lab, TrustNet was subjected to four real-world attack vectors."
-- "Against naive counting, attackers easily manipulate outcomes. With TrustNet, attacker gain is cut by up to 95%."
-- "Most importantly: across all scenarios, honest newcomer false positive rate remained strictly **0%**."
+- "We evaluated TrustNet against five synthetic regression attack fixtures."
+- "Naive counting loses all five fixtures—either blocking honest authors or auto-accepting attackers."
+- "TrustNet correctly preserves categorical decisions across the first four scenarios: ignoring fake brigades, isolating sybil rings, pruning laundered chains, and flagging coordinated PR swarms into HOLD."
+- "**Transparent System Limitation:** In the fifth scenario (Compromised Trusted Source), if a maintainer's direct ally is compromised and vouches for a malicious actor, trust is inherited until denunciations propagate. These are synthetic regression fixtures, not general attack-resistance guarantees, and we state this boundary clearly."
+- "Across all synthetic tests, newcomer false-positive rate remains strictly **0%**."
 
 ---
 
