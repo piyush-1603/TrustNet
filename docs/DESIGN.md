@@ -206,7 +206,7 @@ will be 0%, driving the score below 0.6.
 ### Evidence strings (human-readable)
 
 ```
-"38 PRs, 25 projects, 2h10m window, 84% accounts under 14 days"
+"38 PRs, 25 projects, 1h57m window, 100% accounts under 14 days"
 ```
 
 ---
