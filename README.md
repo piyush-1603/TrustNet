@@ -111,7 +111,7 @@ python -m trustnet report
 | `fanout` | Three people, ten different PRs each: shows the text-independent behavior flag and the vouch override |
 | `ablation` | Same reworded campaign with the model off and on: shows what the model adds |
 | `lab` | Runs five synthetic attack scenarios (four defended, one failing control); prints naive vs defended decisions |
-| `report` | Renders a self-contained HTML report with all results |
+| `report` | Writes one offline HTML file: a searchable explorer of projects, PR decisions with trust paths, campaigns and the lab fixtures |
 
 ---
 
@@ -243,8 +243,9 @@ defeats the defense: a project the viewer trusts directly that turns malicious.
 
 - **Vouch-file adapter:** A Ghostty-style `+handle` / `-handle` flat-file format is
   sketched in the design but not implemented in the loader.
-- **SVG trust graph in the terminal:** The HTML report includes an SVG graph; the CLI
-  does not render one.
+- **A drawn trust graph and dark mode:** The HTML report is a searchable explorer (projects, PRs,
+  decisions with trust paths, campaigns, lab fixtures). It does not draw a node-link graph and has one
+  light theme.
 - **Real open-source data:** All networks are simulated or hand-crafted. The loader is
   designed to read real data once the organizers share their format.
 - **Collusion cap:** The design notes a stretch goal to cap how much two mutually-trusting

@@ -166,11 +166,11 @@
 ### Visual / Layout:
 - Side-by-side terminal & HTML report screenshot.
 - Transparent "Scope Boundaries" callout:
-  - ✅ **Built:** Seeded simulation, viewpoint-relative evaluator, campaign detector, adversarial lab, static HTML report with SVG graph.
+  - ✅ **Built:** Seeded simulation, viewpoint-relative evaluator, campaign detector, adversarial lab, static HTML report (searchable project explorer, per-PR decisions with trust paths).
   - ❌ **Not Built:** Web backend/SaaS, live GitHub webhook integration, Ghostty flat-file vouch adapter.
 
 ### Talking Points (6:15 – 7:15):
-- "Maintainers don't need another heavy SaaS dashboard. TrustNet runs as a clean CLI and outputs a self-contained HTML report with dark mode and SVG trust graphs."
+- "Maintainers don't need another heavy SaaS dashboard. TrustNet runs as a clean CLI and outputs a self-contained HTML report you can open offline and search by project."
 - "We stayed strictly within hackathon scope and documented every trade-off honestly."
 
 ---
