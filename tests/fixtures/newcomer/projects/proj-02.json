@@ -1,0 +1,18 @@
+{
+  "id": "proj-02",
+  "name": "BetaFramework",
+  "trusts": [
+    {
+      "project": "proj-03",
+      "weight": 0.8
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "alice",
+      "date": "2026-08-15",
+      "evidence_url": null
+    }
+  ],
+  "denounces": []
+}
