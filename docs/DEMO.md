@@ -246,10 +246,11 @@ open report.html        # macOS; use xdg-open on Linux
 ```
 
 **Say:**
-> "The report shows decision cards, the campaign card with evidence,
-> the lab table, and a trust graph where ignored denounces are dashed
-> and labelled 'ignored: source not trusted'.
-> Works in light and dark mode, readable on a phone."
+> "The report is one file that works offline. Search any project and see its
+> vouch, denounce and trust lists. Click any PR to see the decision, the trust
+> path behind it and the reasons, including 'ignored: source not trusted' for
+> fake denouncers. The campaign findings show the evidence, and the last
+> section shows the five attack fixtures, including the one we lose."
 
 **Then say:**
 > "The model we use is nomic-embed-text — open-weight, runs locally
