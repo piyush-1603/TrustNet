@@ -164,6 +164,18 @@ model, decide whether it is a campaign.
 at their first PR). An old maintainer whose PR happens to resemble the spam is not held for it, and neither
 are accounts of unknown age.
 
+### Step 1b — Behavior flag (text-independent)
+
+For each author, take the 6-hour window (`campaigns.window_hours`) that touches the most distinct projects.
+If it reaches `campaigns.fanout_min_projects` (5) and the account was under `campaigns.young_days` (14) old at the
+window's first PR, the author gets a `kind="behavior"` campaign (id `fanout-<handle>`) with the PRs in that
+window. An unknown account age is never flagged. No text, no model.
+
+How the engine uses it: an unvouched flagged account is HOLD. If trusted projects already vouch for the author
+strongly enough to ACCEPT (belief ≥ 0.5), the flag is overridden and the output says so. Behavior flags do not
+trigger the endorser discount (section 9): they are weaker evidence than a text campaign. Limits: an old account,
+a slow spammer, or many accounts that each send one different PR are not caught.
+
 ### Step 2 — Cluster filters
 
 A cluster is a **campaign candidate** only if ALL four conditions hold:
@@ -270,6 +282,7 @@ an honest project that vouched for one bot loses half the weight of its other vo
 | `campaigns.embedding_threshold` | 0.80 | Minimum `nomic-embed-text` similarity to link two PRs |
 | `campaigns.min_prs` | 8 | Minimum PRs in a campaign cluster |
 | `campaigns.min_projects` | 5 | Minimum distinct projects |
+| `campaigns.fanout_min_projects` | 5 | Projects one new account must hit inside the window to get a behavior flag |
 | `campaigns.window_hours` | 6 | Maximum time window in hours |
 | `campaigns.min_young_share` | 0.70 | Minimum fraction of young accounts |
 | `campaigns.flag_threshold` | 0.6 | Minimum score to flag a campaign |

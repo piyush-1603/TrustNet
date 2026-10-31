@@ -94,7 +94,9 @@ def test_window_boundary_and_distinct_authors(contract):
             pr.author = 'user-0'
         else:
             net.accounts[pr.author].created_at -= timedelta(days=100)
-    assert campaigns.detect(net, False) == []
+    found = campaigns.detect(net, False)
+    assert [c for c in found if getattr(c, 'kind', 'text') == 'text'] == []   # no text campaign
+    assert [c.id for c in found] == ['fanout-user-0']                          # but one new account hit 10 projects
 
 
 def test_shared_policy_controls_detector(contract, monkeypatch):

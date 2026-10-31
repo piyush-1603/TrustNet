@@ -59,6 +59,9 @@ if [ "$ABL_OK" != "True" ]; then
     exit 1
 fi
 
+echo "==> 2e. Behavior flag demo (three people, ten different PRs each)..."
+$PY -m trustnet fanout --json > "$DIR/fanout.json"
+
 echo "==> 3. Evaluating sample PR pr-001 as proj-01..."
 $PY -m trustnet evaluate --as proj-01 --pr pr-001 --network "$DIR/network" --json > "$DIR/evaluate.json"
 

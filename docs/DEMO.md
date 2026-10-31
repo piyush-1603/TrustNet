@@ -173,7 +173,32 @@ proj-03 with advisory : PROVISIONAL   ignored: advisory from proj-01 (source not
 
 ---
 
-## Segment 4 — Lab & synthetic regressions (5:15 – 6:00)
+### 3g. A spammer who never repeats a word (5:15 – 5:50)
+
+```bash
+python -m trustnet fanout
+```
+
+**Say:**
+> "What if the spammer uses AI to write a completely different PR every time? Text matching sees
+> nothing. So there is a second alarm that ignores the words and watches behavior: one new account,
+> five or more projects, a few hours. Three people each sent ten different PRs to ten projects.
+> The unvouched new account is held. The old, vouched maintainer is untouched. The new account that
+> a trusted project vouches for is flagged but not held, because the vouch overrides it. We protect
+> honest newcomers."
+
+**Point to:**
+```
+fresh-ai-user      3 days old, nobody vouches          behavior: FLAGGED     -> HOLD
+busy-maintainer  600 days old, vouched by the viewer   behavior: not flagged -> ACCEPT
+eager-newcomer     4 days old, vouched by the viewer   behavior: FLAGGED     -> ACCEPT  (flag overridden by trusted vouches)
+```
+
+🔴 **Fallback:** `cat examples/fanout.json`. Needs no Ollama.
+
+---
+
+## Segment 4 — Lab & synthetic regressions (5:50 – 6:30)
 
 ```bash
 python -m trustnet lab
@@ -210,7 +235,7 @@ python -m trustnet lab
 
 ---
 
-## Segment 5 — Model and close (6:00 – 7:15)
+## Segment 5 — Model and close (6:30 – 7:30)
 
 ### Open the HTML report
 
@@ -258,7 +283,7 @@ Model ON  (nomic-embed-text)     : FLAGGED  (12 of 12 spam PRs found, 0 ordinary
 
 ---
 
-## Segment 6 — Buffer / Q&A prep (7:15 – 8:00)
+## Segment 6 — Buffer / Q&A prep (7:30 – 8:00)
 
 Use this time to switch to the browser report if judges want to see it,
 or to run any command a judge asks for. See Q&A cards below.

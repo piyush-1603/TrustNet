@@ -19,7 +19,7 @@ _RULES = {
               "flagged_endorser_factor": (0, 1, False)},
     "decision": {"hold_threshold": (0, 1, False), "accept_threshold": (0, 1, False)},
     "campaigns": {"similarity_threshold": (0, 1, False), "embedding_threshold": (0, 1, False), "min_prs": (1, 10**6, True),
-                  "min_projects": (1, 10**6, True), "window_hours": (0, 10**4, False),
+                  "min_projects": (1, 10**6, True), "fanout_min_projects": (1, 10**6, True), "window_hours": (0, 10**4, False),
                   "min_young_share": (0, 1, False), "young_days": (0, 10**4, False),
                   "flag_threshold": (0, 1, False), "size_scale": (1, 10**6, False),
                   "projects_scale": (1, 10**6, False), "size_weight": (0, 1, False),
