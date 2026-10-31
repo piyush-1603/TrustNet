@@ -146,27 +146,37 @@ FLAGGED  score=0.78  38 PRs · 25 projects · 2h03m · 84% young accounts
 
 ---
 
-## Segment 4 — Lab results (4:30 – 5:30)
+## Segment 4 — Lab & synthetic regressions (4:30 – 5:30)
 
 ```bash
 python -m trustnet lab
 ```
 
 **Say:**
-> "The lab runs four attack scenarios — brigade denounce, sybil clique,
-> trust laundering, collusive cluster — and compares the naive baseline
-> against our defended system. In every scenario, the attacker gains less
-> with TrustNet than with naive counting. False positives on honest
-> newcomers stay at zero."
+> "The lab evaluates synthetic regression scenarios comparing a naive
+> baseline against our defended system. Naive counting fails across all five
+> fixtures. TrustNet evaluates categorical decisions:
+>
+> 1. Brigade: ACCEPT stays ACCEPT — untrusted denounces are ignored.
+> 2. Sybil clique: PROVISIONAL stays PROVISIONAL — mutual vouches outside our trust graph gain nothing.
+> 3. Trust laundering: PROVISIONAL stays PROVISIONAL — hops beyond 3 are pruned.
+> 4. Collusive PR swarm: PROVISIONAL moves to HOLD — campaign detector flags the coordinated ring.
+>
+> And we are completely transparent about our boundary:
+> 5. Compromised trusted source: If a directly trusted partner is compromised,
+> the author moves from PROVISIONAL to ACCEPT. The defense fails here until
+> evidence or denounces emerge. These are synthetic regression fixtures,
+> not general attack-resistance guarantees, and knowing the system's boundary is essential."
 
-**Point to the Markdown table printed to stdout:**
+**Point to the decision table printed to stdout:**
 
 ```
-Scenario          | Naive score | Defended | Reduction | FP rate
-brigade-denounce  |        0.82 |     0.04 |      95%  |    0%
-sybil-clique      |        0.91 |     0.11 |      88%  |    0%
-trust-laundering  |        0.74 |     0.18 |      76%  |    0%
-collusive-cluster |        0.88 |     0.09 |      90%  |    0%
+Scenario                    | Naive Baseline | Defended Outcome          | Status
+brigade-denounce            | HOLD           | ACCEPT → ACCEPT           | Defended
+sybil-clique                | ACCEPT         | PROVISIONAL → PROVISIONAL | Defended
+trust-laundering            | ACCEPT         | PROVISIONAL → PROVISIONAL | Defended
+collusive-cluster           | PROVISIONAL    | PROVISIONAL → HOLD        | Defended
+compromised-trusted-source  | ACCEPT         | PROVISIONAL → ACCEPT      | Defense fails (explicit limitation)
 ```
 
 🔴 **Fallback:** Show the lab table in the HTML report (open in browser, scroll to Lab section).
@@ -220,7 +230,7 @@ or to run any command a judge asks for. See Q&A cards below.
 | Why not just detect AI-written text? | Reworded spam beats keyword and many classifier approaches. Embeddings catch semantic similarity even when wording changes. But the model only scores similarity — rules decide | `docs/DESIGN.md §4` |
 | Where is the decentralization? | Same PR, two projects, two decisions. No central authority. Each project picks who it trusts | 3c output in terminal |
 | Which model and why? | `nomic-embed-text` via Ollama — open-weight, local, no API key, falls back to TF-IDF if down | `HACKATHON.md` |
-| What about false positives? | Lab shows 0% FP on honest newcomers across all four scenarios. Bulk-bump fixture proves old-account legitimate updates are not flagged | Lab table |
+| What about false positives & attacks? | Synthetic regressions show 0% FP on honest newcomers. Across 5 attack fixtures, naive counting loses all 5. TrustNet defends 4, and we openly document the 5th (compromised trusted ally) as an explicit limitation | Lab table, `docs/SLIDES.md` Slide 7 |
 | What if projects collude? | Collusive-cluster scenario in the lab. Mutual vouching is bounded by top-k=3 and the 0.6 hop decay | Lab table, `docs/DESIGN.md §2` |
 
 ---

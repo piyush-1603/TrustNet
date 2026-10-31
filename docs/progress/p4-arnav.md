@@ -16,5 +16,7 @@ Format: `date time | PR title | what changed | what is next | gotchas`
 
 2026-10-31 22:42 | fixtures: add newcomer, brigade, bulk_bump, campaign test networks | Created tests/fixtures/ with 4 hand-made JSON networks matching the data contract; added tests/test_fixtures.py with 20 structural + scenario tests; all 22 tests pass. Added docs/MENTOR_NOTES.md with 3 mentor questions drafted (answers pending). | Next: README.md full version, docs/DESIGN.md, docs/DEMO.md | Fixtures use stdlib-only tests so they pass before models.py / loaders.py merge.
 2026-10-31 23:01 | docs: complete documentation suite (README, DESIGN, DEMO, SLIDES) | Authored comprehensive README.md with 6 design Q&As, docs/DESIGN.md with trust formulas and thresholds, docs/DEMO.md with 8-minute pitch script + Q&A cards, and docs/SLIDES.md 10-slide presentation deck. All 22 tests pass. | Next: Open GitHub PR for p4/fixtures to merge into main | None
+2026-10-31 23:33 | docs: update DEMO and SLIDES with categorical regression outcomes | Removed old percentage figures (95/88/76/90%) from DEMO.md and SLIDES.md. Updated with categorical decision outcomes from PR #2 across the 5 synthetic regression fixtures (brigade: ACCEPT->ACCEPT, sybil: PROVISIONAL->PROVISIONAL, trust laundering: PROVISIONAL->PROVISIONAL, collusive: PROVISIONAL->HOLD, compromised source: PROVISIONAL->ACCEPT - explicit defense limitation). Framed as synthetic regression results. | Next: Merge PR #6 and final hour checks | None
+
 
 
