@@ -207,15 +207,30 @@ def cmd_lab(args: argparse.Namespace) -> None:
 # ---------------------------------------------------------------------------
 
 def cmd_report(args: argparse.Namespace) -> None:
-    """Generate a self-contained HTML report."""
+    """Run the analysis pipeline and generate its inspectable HTML report."""
+    print("\n  [1/4] Loading network snapshot...")
     net = _load_network(args.network)
+    print(f"        {len(net.projects)} repositories, {len(net.accounts)} accounts, {len(net.prs)} PRs loaded.")
+
+    print("  [2/4] Scanning PR text and campaign behavior...")
     campaign_list = _campaigns_mod.detect(net, use_embeddings=args.embeddings)
+    flagged = [c for c in campaign_list if c.flagged]
+    print(f"        {len(campaign_list)} campaign groups; {sum(len(c.pr_ids) for c in flagged)} PRs in flagged groups.")
+
+    print(f"  [3/4] Evaluating PRs from {args.viewer}'s point of view...")
     decisions = [
         _trust_mod.evaluate_pr(net, args.viewer, pr, campaign_list)
         for pr in net.prs
     ]
-    lab_results = _lab_mod.run()
+    print("        " + " · ".join(f"{label}: {sum(d.decision == label for d in decisions)}"
+                                  for label in ("ACCEPT", "PROVISIONAL", "HOLD")))
 
+    print("  [4/4] Running adversarial regression fixtures...")
+    lab_results = _lab_mod.run(use_embeddings=args.embeddings)
+    scenarios = lab_results.get("scenarios", {})
+    print(f"        {len(scenarios)} scenarios completed, including the trusted-source failure control.")
+
+    print("  Writing repository and evidence explorer...")
     _render_report(net, decisions, campaign_list, lab_results, args.out)
     print(f"\n  Report written to: {args.out}\n")
 
