@@ -1,6 +1,7 @@
 [
   {
     "id": "campaign-a12518d09843",
+    "kind": "text",
     "pr_count": 38,
     "projects": [
       "proj-01",
@@ -55,8 +56,8 @@
     "flagged": true,
     "evidence": [
       "38 PRs, 25 projects, 1h57m window, 100% accounts under 14 days",
-      "Connected text similarity >= 0.85; embedding_used=true",
-      "policy_hash=d4a3f19cf397"
+      "Connected by keyword similarity >= 0.85 or model similarity >= 0.8; embedding_used=true",
+      "policy_hash=4a6d377bcefb"
     ],
     "embedding_used": true
   }

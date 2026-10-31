@@ -51,6 +51,17 @@ $PY -m trustnet evaluate --as proj-02 --pr pr-151 --network "$DIR/network" --no-
 echo "==> 2c. Evaluating a newcomer's PR (pr-203) as proj-01..."
 $PY -m trustnet evaluate --as proj-01 --pr pr-203 --network "$DIR/network" --json > "$DIR/evaluate_newcomer.json"
 
+echo "==> 2d. Ablation: the same reworded campaign with the model off and on..."
+$PY -m trustnet ablation --json > "$DIR/ablation.json"
+ABL_OK=$($PY -c "import json; d=json.load(open('$DIR/ablation.json')); print(d['model_available'] and d['model_on']['flagged'] and not d['model_off']['flagged'] and not d['honest_flagged_with_model'])")
+if [ "$ABL_OK" != "True" ]; then
+    echo "ERROR: ablation did not show the model finding what keyword matching misses." >&2
+    exit 1
+fi
+
+echo "==> 2e. Behavior flag demo (three people, ten different PRs each)..."
+$PY -m trustnet fanout --json > "$DIR/fanout.json"
+
 echo "==> 3. Evaluating sample PR pr-001 as proj-01..."
 $PY -m trustnet evaluate --as proj-01 --pr pr-001 --network "$DIR/network" --json > "$DIR/evaluate.json"
 

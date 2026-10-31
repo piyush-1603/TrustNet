@@ -18,7 +18,7 @@ def build_advisory(issuer, campaigns, policy_hash, now=None):
     now = now or datetime.now(timezone.utc)
     return {
         "format": FORMAT, "issuer": issuer, "issued_at": now.isoformat(), "policy_hash": policy_hash,
-        "campaigns": [{"id": c.id, "authors": sorted(c.authors), "pr_ids": list(c.pr_ids),
+        "campaigns": [{"id": c.id, "kind": getattr(c, "kind", "text"), "authors": sorted(c.authors), "pr_ids": list(c.pr_ids),
                        "projects": list(c.projects), "score": round(c.score, 4),
                        "evidence": list(c.evidence), "embedding_used": c.embedding_used}
                       for c in campaigns if c.flagged],

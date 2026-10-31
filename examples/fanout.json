@@ -1,0 +1,37 @@
+{
+  "viewer": "proj-01",
+  "prs_per_person": 10,
+  "projects": 10,
+  "text_campaigns": [],
+  "people": [
+    {
+      "handle": "fresh-ai-user",
+      "account_age_days": 3,
+      "vouched_by_viewer": false,
+      "behavior_flag": true,
+      "decision": "HOLD",
+      "evidence": "fresh-ai-user: 10 PRs in 10 projects within 1h39m, account 3 days old (text-independent behavior flag)",
+      "ignored": []
+    },
+    {
+      "handle": "busy-maintainer",
+      "account_age_days": 600,
+      "vouched_by_viewer": true,
+      "behavior_flag": false,
+      "decision": "ACCEPT",
+      "evidence": null,
+      "ignored": []
+    },
+    {
+      "handle": "eager-newcomer",
+      "account_age_days": 4,
+      "vouched_by_viewer": true,
+      "behavior_flag": true,
+      "decision": "ACCEPT",
+      "evidence": "eager-newcomer: 10 PRs in 10 projects within 1h39m, account 4 days old (text-independent behavior flag)",
+      "ignored": [
+        "behavior flag overridden: vouched by trusted projects (belief 0.80)"
+      ]
+    }
+  ]
+}

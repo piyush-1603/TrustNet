@@ -10,6 +10,8 @@ Usage:
     python -m trustnet campaigns  [--network DIR] [--json] [--no-embeddings]
     python -m trustnet advisory   --as PROJ [--network DIR] [--out FILE] [--no-embeddings]
     python -m trustnet lab        [--seed S] [--json]
+    python -m trustnet ablation   [--json]
+    python -m trustnet fanout     [--json]
     python -m trustnet report     [--network DIR] [--out FILE] [--viewer PROJ] [--no-embeddings]
 """
 from __future__ import annotations
@@ -19,6 +21,8 @@ import json
 import sys
 from pathlib import Path
 
+from trustnet import ablation as _ablation_mod
+from trustnet import fanout_demo as _fanout_mod
 from trustnet.advisory import build_advisory, load_advisory
 from trustnet.loaders import load_network, load_policy
 from trustnet import trust as _trust_mod
@@ -150,6 +154,7 @@ def cmd_campaigns(args: argparse.Namespace) -> None:
     if args.json:
         print(json.dumps([{
             "id": c.id,
+            "kind": getattr(c, "kind", "text"),
             "pr_count": len(c.pr_ids),
             "projects": c.projects,
             "authors": c.authors,
@@ -200,6 +205,50 @@ def cmd_lab(args: argparse.Namespace) -> None:
         print(json.dumps(results, indent=2))
     else:
         print(results.get("markdown", ""))
+
+
+# ---------------------------------------------------------------------------
+# Command: ablation
+# ---------------------------------------------------------------------------
+
+def cmd_ablation(args: argparse.Namespace) -> None:
+    """Show what the model adds: the same reworded campaign with the model off and on."""
+    result = _ablation_mod.run()
+    if args.json:
+        print(json.dumps(result, indent=2))
+        return
+    off, on = result["model_off"], result["model_on"]
+    print(f"\n  One spam message in {result['spam_prs']} different wordings, {result['spam_prs']} new accounts, "
+          f"{result['spam_prs']} projects, 2 hours, hidden among {result['honest_prs']} ordinary PRs.\n")
+    print(f"    Model OFF (keyword matching only): {'FLAGGED' if off['flagged'] else 'not flagged'}"
+          f"  ({len(off['pr_ids'])} PRs linked)")
+    if on is None:
+        print("    Model ON  (nomic-embed-text)     : unavailable. Start Ollama (ollama serve) and pull nomic-embed-text.")
+    else:
+        print(f"    Model ON  (nomic-embed-text)     : {'FLAGGED' if on['flagged'] else 'not flagged'}"
+              f"  ({len(result['spam_ids_found_with_model'])} of {result['spam_prs']} spam PRs found, "
+              f"{len(result['honest_flagged_with_model'])} ordinary PRs wrongly flagged)")
+    print()
+
+
+# ---------------------------------------------------------------------------
+# Command: fanout
+# ---------------------------------------------------------------------------
+
+def cmd_fanout(args: argparse.Namespace) -> None:
+    """Show the text-independent behavior flag on three people who each send ten different PRs."""
+    result = _fanout_mod.run()
+    if args.json:
+        print(json.dumps(result, indent=2))
+        return
+    print(f"\n  Each person sends {result['prs_per_person']} completely different PRs to {result['projects']} projects "
+          f"in about two hours. Text campaigns found: {len(result['text_campaigns'])}. Viewer: {result['viewer']}.\n")
+    for row in result["people"]:
+        vouch = "vouched by the viewer" if row["vouched_by_viewer"] else "nobody vouches"
+        flag = "FLAGGED" if row["behavior_flag"] else "not flagged"
+        note = "  (flag overridden by trusted vouches)" if any("overridden" in i for i in row["ignored"]) else ""
+        print(f"    {row['handle']:<16} {row['account_age_days']:>3} days old, {vouch:<22} behavior: {flag:<11} -> {row['decision']}{note}")
+    print()
 
 
 # ---------------------------------------------------------------------------
@@ -295,6 +344,14 @@ def _build_parser() -> argparse.ArgumentParser:
     p_adv.add_argument("--no-embeddings", dest="embeddings", action="store_false",
                        help="Disable embeddings and use TF-IDF fallback")
 
+    # ---- fanout ----
+    p_fan = sub.add_parser("fanout", help="Show the text-independent behavior flag on three people")
+    p_fan.add_argument("--json", action="store_true")
+
+    # ---- ablation ----
+    p_abl = sub.add_parser("ablation", help="Show what the model adds: same campaign, model off vs on")
+    p_abl.add_argument("--json", action="store_true")
+
     # ---- lab ----
     p_lab = sub.add_parser("lab", help="Run adversarial lab (naive vs defended)")
     p_lab.add_argument("--seed", type=int, default=42)
@@ -325,6 +382,8 @@ def main(argv: list | None = None) -> None:
         "evaluate":  cmd_evaluate,
         "campaigns": cmd_campaigns,
         "advisory":  cmd_advisory,
+        "ablation":  cmd_ablation,
+        "fanout":    cmd_fanout,
         "lab":       cmd_lab,
         "report":    cmd_report,
     }

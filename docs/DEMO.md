@@ -173,7 +173,32 @@ proj-03 with advisory : PROVISIONAL   ignored: advisory from proj-01 (source not
 
 ---
 
-## Segment 4 — Lab & synthetic regressions (5:15 – 6:00)
+### 3g. A spammer who never repeats a word (5:15 – 5:50)
+
+```bash
+python -m trustnet fanout
+```
+
+**Say:**
+> "What if the spammer uses AI to write a completely different PR every time? Text matching sees
+> nothing. So there is a second alarm that ignores the words and watches behavior: one new account,
+> five or more projects, a few hours. Three people each sent ten different PRs to ten projects.
+> The unvouched new account is held. The old, vouched maintainer is untouched. The new account that
+> a trusted project vouches for is flagged but not held, because the vouch overrides it. We protect
+> honest newcomers."
+
+**Point to:**
+```
+fresh-ai-user      3 days old, nobody vouches          behavior: FLAGGED     -> HOLD
+busy-maintainer  600 days old, vouched by the viewer   behavior: not flagged -> ACCEPT
+eager-newcomer     4 days old, vouched by the viewer   behavior: FLAGGED     -> ACCEPT  (flag overridden by trusted vouches)
+```
+
+🔴 **Fallback:** `cat examples/fanout.json`. Needs no Ollama.
+
+---
+
+## Segment 4 — Lab & synthetic regressions (5:50 – 6:30)
 
 ```bash
 python -m trustnet lab
@@ -210,7 +235,7 @@ python -m trustnet lab
 
 ---
 
-## Segment 5 — Model and close (6:00 – 7:15)
+## Segment 5 — Model and close (6:30 – 7:30)
 
 ### Open the HTML report
 
@@ -227,11 +252,29 @@ open report.html        # macOS; use xdg-open on Linux
 
 **Then say:**
 > "The model we use is nomic-embed-text — open-weight, runs locally
-> through Ollama. It converts PR text into embeddings so we can detect
-> reworded spam that keyword filters miss. All trust decisions are
-> deterministic rules. The model only supplies a similarity score.
+> through Ollama. It reads each PR's title, description and a short view of
+> the change, and gives a similarity score. All trust decisions are
+> deterministic rules; the model never decides alone.
 > If Ollama is down, we fall back to TF-IDF and say so in the output —
 > you can see 'embedding_used: false' in that case."
+
+```bash
+python -m trustnet ablation
+```
+
+> "Here is what the model adds. One spam message, reworded twelve ways, from twelve
+> new accounts to twelve projects. With the model off, keyword matching links
+> nothing — not flagged. With the model on, all twelve are found, and none of the
+> thirty ordinary PRs are flagged. The score line was chosen on a small set of
+> examples we wrote ourselves, so we don't claim more than that."
+
+**Point to:**
+```
+Model OFF (keyword matching only): not flagged  (0 PRs linked)
+Model ON  (nomic-embed-text)     : FLAGGED  (12 of 12 spam PRs found, 0 ordinary PRs wrongly flagged)
+```
+
+🔴 **Fallback:** `cat examples/ablation.json`. If Ollama is down the ON line says "unavailable" — say so; do not claim a model result.
 
 > "Tests cover every decision rule, the TF-IDF fallback, the campaign
 > detector, and the full lab. CI runs on GitHub Actions with Python 3.11.
@@ -240,7 +283,7 @@ open report.html        # macOS; use xdg-open on Linux
 
 ---
 
-## Segment 6 — Buffer / Q&A prep (7:15 – 8:00)
+## Segment 6 — Buffer / Q&A prep (7:30 – 8:00)
 
 Use this time to switch to the browser report if judges want to see it,
 or to run any command a judge asks for. See Q&A cards below.

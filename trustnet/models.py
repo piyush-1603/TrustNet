@@ -105,3 +105,4 @@ class Campaign:
     flagged: bool
     evidence: list
     embedding_used: bool
+    kind: str = "text"  # "text": near-identical PRs; "behavior": one new account across many projects
