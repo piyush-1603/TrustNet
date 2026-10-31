@@ -18,9 +18,9 @@ T(V, P) = max over all paths { ∏ weight(eᵢ) × 0.6^(hops − 1) }
 Where:
 - Each **edge** `eᵢ` is a directed trust declaration `{"project": P, "weight": w}`
 - **hops** = number of edges in the path (1 hop = direct trust)
-- **0.6** = per-hop decay factor (`policy.json: hop_decay`)
-- Maximum path length = **3 hops** (`policy.json: max_hops`)
-- Paths with value < **0.25** are ignored (`policy.json: min_trust`)
+- **0.6** = per-hop decay factor (`policy.json: trust.decay`)
+- Maximum path length = **3 hops** (`policy.json: trust.max_hops`)
+- Paths with value < **0.25** are ignored (`policy.json: trust.min_trust`)
 - Viewer always trusts itself: `T(V, V) = 1.0`
 - Take the **maximum** over all valid paths, never the sum
 
@@ -64,13 +64,13 @@ Given viewer **V** evaluating author **A**:
 ### Vouching projects
 
 Collect all projects **Pᵢ** that vouch for **A** where `T(V, Pᵢ) ≥ 0.25`.
-Take the top **3** by trust value (`policy.json: top_k`).
+Take the top **3** by trust value (`policy.json: trust.top_k`).
 
 ```
 b = 1 − ∏ᵢ (1 − vouch_weight × T(Pᵢ))
 ```
 
-`vouch_weight = 0.8` (`policy.json`)
+`trust.vouch_weight = 0.8` (`policy.json`)
 
 ### Denouncing projects
 
@@ -78,7 +78,7 @@ Collect all projects **Pⱼ** that denounce **A** where `T(V, Pⱼ) ≥ 0.25`.
 Take the top **3** by trust value.
 
 Apply modifiers before inserting into formula:
-- Denounce has no `evidence_url` → multiply by **0.5** (`policy.json: no_evidence_factor`); record `"halved: no evidence link"`
+- Denounce has no `evidence_url` → multiply by **0.5** (`policy.json: trust.no_evidence_factor`); record `"halved: no evidence link"`
 - Denounce is expired (`expires` date is in the past) → **skip entirely**; record `"ignored: expired"`
 - Source project has `T < 0.25` → **skip entirely**; record `"ignored: source not trusted"`
 
@@ -92,7 +92,7 @@ d = 1 − ∏ⱼ (1 − vouch_weight × T(Pⱼ) × modifier)
 u = max(0, 1 − b − d)
 ```
 
-If `b + d > 1`: scale both down proportionally so they sum to 1, then `u = 0`.
+If `b + d > 1`, `u = 0`. `b` and `d` are reported and used as computed; they are never rescaled.
 
 ---
 
@@ -105,7 +105,7 @@ elif b ≥ 0.5:               → ACCEPT
 else:                        → PROVISIONAL
 ```
 
-Thresholds in `policy.json`: `hold_threshold = 0.5`, `accept_threshold = 0.5`.
+Thresholds in `policy.json`: `decision.hold_threshold = 0.5`, `decision.accept_threshold = 0.5`.
 
 A contributor with **no vouches and no denounces** yields `b = 0`, `d = 0`, `u = 1.0`
 → **PROVISIONAL**. They are never auto-rejected for lack of history.
@@ -136,7 +136,7 @@ Combine: `S(i,j) = max(TF-IDF(i,j), Ollama(i,j))`
 If Ollama is unreachable → use TF-IDF only, set `embedding_used = False`.
 
 Cluster PRs using union-find (connected components) where `S(i,j) ≥ 0.85`
-(`policy.json: similarity_threshold`).
+(`policy.json: campaigns.similarity_threshold`).
 
 ### Step 2 — Cluster filters
 
@@ -144,10 +144,10 @@ A cluster is a **campaign candidate** only if ALL four conditions hold:
 
 | Condition | Threshold | `policy.json` key |
 |---|---|---|
-| Number of PRs | ≥ 8 | `campaign_min_prs` |
-| Distinct projects | ≥ 5 | `campaign_min_projects` |
-| Time window | ≤ 6 hours | `campaign_max_hours` |
-| Young authors (account < 14 days at PR time) | ≥ 70% | `campaign_young_share` |
+| Number of PRs | ≥ 8 | `campaigns.min_prs` |
+| Distinct projects | ≥ 5 | `campaigns.min_projects` |
+| Time window | ≤ 6 hours | `campaigns.window_hours` |
+| Young authors (account < 14 days at PR time) | ≥ 70% | `campaigns.min_young_share` |
 
 ### Step 3 — Campaign score
 
@@ -157,7 +157,7 @@ score = 0.4 × min(1, size / 20)
       + 0.3 × young_share
 ```
 
-`flagged = True` if `score ≥ 0.6` (`policy.json: campaign_flag_threshold`).
+`flagged = True` if `score ≥ 0.6` (`policy.json: campaigns.flag_threshold`).
 
 ### Hard negative — legitimate bulk update
 
@@ -188,8 +188,8 @@ approach reduces false positives and resists manipulation.
 
 ## 6. Policy hash
 
-`load_policy(path)` returns `(dict, sha256_hex[:8])` — a short hash of the JSON
-content. Every output includes this hash so runs are reproducible and judges can
+`load_policy(path=None)` returns `(dict, 12 hex characters)` — the first 12 characters of the
+SHA-256 of the policy's canonical JSON. Every output includes this hash so runs are reproducible and judges can
 confirm which thresholds were active.
 
 ---
@@ -198,17 +198,17 @@ confirm which thresholds were active.
 
 | Key | Value | Meaning |
 |---|---|---|
-| `hop_decay` | 0.6 | Multiplied per hop after the first |
-| `max_hops` | 3 | Maximum path length |
-| `min_trust` | 0.25 | Paths below this are pruned |
-| `vouch_weight` | 0.8 | Scales each vouch/denounce contribution |
-| `top_k` | 3 | Max vouching/denouncing projects used |
-| `no_evidence_factor` | 0.5 | Denounce weight when no evidence_url |
-| `hold_threshold` | 0.5 | d must reach this to trigger HOLD |
-| `accept_threshold` | 0.5 | b must reach this to trigger ACCEPT |
-| `similarity_threshold` | 0.85 | Minimum cosine similarity to cluster |
-| `campaign_min_prs` | 8 | Minimum PRs in a campaign cluster |
-| `campaign_min_projects` | 5 | Minimum distinct projects |
-| `campaign_max_hours` | 6 | Maximum time window in hours |
-| `campaign_young_share` | 0.70 | Minimum fraction of young accounts |
-| `campaign_flag_threshold` | 0.6 | Minimum score to flag a campaign |
+| `trust.decay` | 0.6 | Multiplied per hop after the first |
+| `trust.max_hops` | 3 | Maximum path length |
+| `trust.min_trust` | 0.25 | Paths below this are pruned |
+| `trust.vouch_weight` | 0.8 | Scales each vouch/denounce contribution |
+| `trust.top_k` | 3 | Max vouching/denouncing projects used |
+| `trust.no_evidence_factor` | 0.5 | Denounce weight when no evidence_url |
+| `decision.hold_threshold` | 0.5 | d must reach this to trigger HOLD |
+| `decision.accept_threshold` | 0.5 | b must reach this to trigger ACCEPT |
+| `campaigns.similarity_threshold` | 0.85 | Minimum cosine similarity to cluster |
+| `campaigns.min_prs` | 8 | Minimum PRs in a campaign cluster |
+| `campaigns.min_projects` | 5 | Minimum distinct projects |
+| `campaigns.window_hours` | 6 | Maximum time window in hours |
+| `campaigns.min_young_share` | 0.70 | Minimum fraction of young accounts |
+| `campaigns.flag_threshold` | 0.6 | Minimum score to flag a campaign |

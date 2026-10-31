@@ -103,7 +103,7 @@ belief `b` and disbelief `d` from vouching and denouncing projects:
 ```
 b = 1 − ∏(1 − 0.8 · Tᵢ)   over up to 3 projects with Tᵢ ≥ 0.25 that vouch
 d = same formula             over projects that denounce
-u = max(0, 1 − b − d)       uncertainty; if b + d > 1, both are scaled down
+u = max(0, 1 − b − d)       uncertainty; b and d are used as computed, never rescaled
 ```
 
 Decision rule:
