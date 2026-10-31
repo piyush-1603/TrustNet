@@ -1,0 +1,12 @@
+{
+  "id": "proj-04",
+  "name": "DeltaUtils",
+  "trusts": [
+    {
+      "project": "proj-01",
+      "weight": 0.7
+    }
+  ],
+  "vouches": [],
+  "denounces": []
+}

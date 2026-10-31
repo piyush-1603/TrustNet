@@ -1,0 +1,12 @@
+{
+  "id": "proj-viewer",
+  "name": "ViewerProject",
+  "trusts": [
+    {
+      "project": "proj-hub",
+      "weight": 0.9
+    }
+  ],
+  "vouches": [],
+  "denounces": []
+}

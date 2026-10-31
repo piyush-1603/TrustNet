@@ -1,0 +1,13 @@
+{
+  "id": "proj-02",
+  "name": "AlliedProject",
+  "trusts": [],
+  "vouches": [
+    {
+      "handle": "honest_alice",
+      "date": "2026-06-01",
+      "evidence_url": "https://example.com/alice-contrib"
+    }
+  ],
+  "denounces": []
+}

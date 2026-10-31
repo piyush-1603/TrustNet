@@ -1,0 +1,92 @@
+[
+  {
+    "id": "pr-bump-01",
+    "project": "proj-01",
+    "author": "dep_maintainer",
+    "created_at": "2026-10-31T09:07:00Z",
+    "title": "chore: bump requests from 2.28.0 to 2.31.0",
+    "body": "Bumps requests from 2.28.0 to 2.31.0 to address CVE-2023-32681. No API changes; only the version pin is updated.",
+    "diff_text": "-requests==2.28.0\n+requests==2.31.0"
+  },
+  {
+    "id": "pr-bump-02",
+    "project": "proj-02",
+    "author": "dep_maintainer",
+    "created_at": "2026-10-31T09:14:00Z",
+    "title": "chore: bump requests from 2.28.0 to 2.31.0",
+    "body": "Bumps requests from 2.28.0 to 2.31.0 to address CVE-2023-32681. No API changes; only the version pin is updated.",
+    "diff_text": "-requests==2.28.0\n+requests==2.31.0"
+  },
+  {
+    "id": "pr-bump-03",
+    "project": "proj-03",
+    "author": "dep_maintainer",
+    "created_at": "2026-10-31T09:21:00Z",
+    "title": "chore: bump requests from 2.28.0 to 2.31.0",
+    "body": "Bumps requests from 2.28.0 to 2.31.0 to address CVE-2023-32681. No API changes; only the version pin is updated.",
+    "diff_text": "-requests==2.28.0\n+requests==2.31.0"
+  },
+  {
+    "id": "pr-bump-04",
+    "project": "proj-04",
+    "author": "dep_maintainer",
+    "created_at": "2026-10-31T09:28:00Z",
+    "title": "chore: bump requests from 2.28.0 to 2.31.0",
+    "body": "Bumps requests from 2.28.0 to 2.31.0 to address CVE-2023-32681. No API changes; only the version pin is updated.",
+    "diff_text": "-requests==2.28.0\n+requests==2.31.0"
+  },
+  {
+    "id": "pr-bump-05",
+    "project": "proj-05",
+    "author": "dep_maintainer",
+    "created_at": "2026-10-31T09:35:00Z",
+    "title": "chore: bump requests from 2.28.0 to 2.31.0",
+    "body": "Bumps requests from 2.28.0 to 2.31.0 to address CVE-2023-32681. No API changes; only the version pin is updated.",
+    "diff_text": "-requests==2.28.0\n+requests==2.31.0"
+  },
+  {
+    "id": "pr-bump-06",
+    "project": "proj-06",
+    "author": "dep_maintainer",
+    "created_at": "2026-10-31T09:42:00Z",
+    "title": "chore: bump requests from 2.28.0 to 2.31.0",
+    "body": "Bumps requests from 2.28.0 to 2.31.0 to address CVE-2023-32681. No API changes; only the version pin is updated.",
+    "diff_text": "-requests==2.28.0\n+requests==2.31.0"
+  },
+  {
+    "id": "pr-bump-07",
+    "project": "proj-07",
+    "author": "dep_maintainer",
+    "created_at": "2026-10-31T09:49:00Z",
+    "title": "chore: bump requests from 2.28.0 to 2.31.0",
+    "body": "Bumps requests from 2.28.0 to 2.31.0 to address CVE-2023-32681. No API changes; only the version pin is updated.",
+    "diff_text": "-requests==2.28.0\n+requests==2.31.0"
+  },
+  {
+    "id": "pr-bump-08",
+    "project": "proj-08",
+    "author": "dep_maintainer",
+    "created_at": "2026-10-31T09:56:00Z",
+    "title": "chore: bump requests from 2.28.0 to 2.31.0",
+    "body": "Bumps requests from 2.28.0 to 2.31.0 to address CVE-2023-32681. No API changes; only the version pin is updated.",
+    "diff_text": "-requests==2.28.0\n+requests==2.31.0"
+  },
+  {
+    "id": "pr-bump-09",
+    "project": "proj-09",
+    "author": "dep_maintainer",
+    "created_at": "2026-10-31T10:03:00Z",
+    "title": "chore: bump requests from 2.28.0 to 2.31.0",
+    "body": "Bumps requests from 2.28.0 to 2.31.0 to address CVE-2023-32681. No API changes; only the version pin is updated.",
+    "diff_text": "-requests==2.28.0\n+requests==2.31.0"
+  },
+  {
+    "id": "pr-bump-10",
+    "project": "proj-10",
+    "author": "dep_maintainer",
+    "created_at": "2026-10-31T10:10:00Z",
+    "title": "chore: bump requests from 2.28.0 to 2.31.0",
+    "body": "Bumps requests from 2.28.0 to 2.31.0 to address CVE-2023-32681. No API changes; only the version pin is updated.",
+    "diff_text": "-requests==2.28.0\n+requests==2.31.0"
+  }
+]

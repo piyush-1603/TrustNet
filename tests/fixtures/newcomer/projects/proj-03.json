@@ -1,0 +1,13 @@
+{
+  "id": "proj-03",
+  "name": "GammaTools",
+  "trusts": [],
+  "vouches": [
+    {
+      "handle": "alice",
+      "date": "2026-07-01",
+      "evidence_url": "https://example.com/ev1"
+    }
+  ],
+  "denounces": []
+}

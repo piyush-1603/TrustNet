@@ -1,0 +1,15 @@
+{
+  "id": "fake-05",
+  "name": "FakeProject05",
+  "trusts": [],
+  "vouches": [],
+  "denounces": [
+    {
+      "handle": "honest_alice",
+      "reason_code": "spam",
+      "evidence_url": null,
+      "date": "2026-10-30",
+      "expires": null
+    }
+  ]
+}

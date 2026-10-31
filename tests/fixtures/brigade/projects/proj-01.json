@@ -1,0 +1,12 @@
+{
+  "id": "proj-01",
+  "name": "TrustedViewer",
+  "trusts": [
+    {
+      "project": "proj-02",
+      "weight": 0.9
+    }
+  ],
+  "vouches": [],
+  "denounces": []
+}
