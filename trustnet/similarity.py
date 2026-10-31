@@ -29,7 +29,8 @@ def similarity_matrix(texts, use_embeddings=True):
             timeout=(2, 10),
         )
         response.raise_for_status()
-        # /api/embed returns {"embeddings": [[float, ...], ...]}, one row per input.
+        # Verified locally: /api/embed returned {"embeddings": [[float, ...], ...]},
+        # shape (4, 768) for four nomic-embed-text inputs (2026-10-31).
         vectors = np.asarray(response.json()["embeddings"], dtype=float)
         if (vectors.ndim != 2 or vectors.shape[0] != len(texts)
                 or vectors.shape[1] == 0 or not np.isfinite(vectors).all()

@@ -102,6 +102,7 @@ def test_shared_policy_controls_detector(contract, monkeypatch):
     loader.load_policy = lambda: ({'campaigns': {'min_prs': 21}}, 'unused-hash')
     monkeypatch.setitem(sys.modules, 'trustnet.loaders', loader)
     assert campaigns.detect(network(), False) == []
+    assert campaigns.campaign_policy()[1] == 'unused-hash'
 
 
 def test_connected_components_and_score_threshold(contract, monkeypatch):

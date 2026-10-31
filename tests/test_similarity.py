@@ -49,6 +49,14 @@ def test_http_error_and_timeout_fall_back(monkeypatch):
         assert similarity_matrix(['text'])[1] is False
 
 
+def test_non_success_http_status_is_not_used(monkeypatch):
+    response = Mock()
+    response.raise_for_status.side_effect = requests.HTTPError('model not found')
+    monkeypatch.setattr('trustnet.similarity.requests.post', Mock(return_value=response))
+    assert similarity_matrix(['text'])[1] is False
+    response.json.assert_not_called()
+
+
 def test_empty_and_punctuation_only_inputs():
     assert similarity_matrix([])[0].shape == (0, 0)
     matrix, used = similarity_matrix(['', '!!!'], False)
