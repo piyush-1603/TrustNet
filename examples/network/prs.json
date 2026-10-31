@@ -1816,5 +1816,140 @@
     "title": "Security patch and dependency update",
     "body": "Applying routine security update to dependencies.",
     "diff_text": "+ # security fix\n- vulnerable_code()"
+  },
+  {
+    "id": "pr-203",
+    "project": "proj-25",
+    "author": "newcomer-00",
+    "created_at": "2026-10-19T06:00:00Z",
+    "title": "improve: README in proj-25",
+    "body": "First contribution: this PR improves README for proj-25 and includes a unit test.",
+    "diff_text": "--- a/src/README.py\n+++ b/src/README.py\n+    # improve README\n"
+  },
+  {
+    "id": "pr-204",
+    "project": "proj-21",
+    "author": "newcomer-01",
+    "created_at": "2026-10-13T14:00:00Z",
+    "title": "improve: CI in proj-21",
+    "body": "First contribution: this PR improves CI for proj-21 and includes a unit test.",
+    "diff_text": "--- a/src/CI.py\n+++ b/src/CI.py\n+    # improve CI\n"
+  },
+  {
+    "id": "pr-205",
+    "project": "proj-24",
+    "author": "newcomer-02",
+    "created_at": "2026-10-22T09:00:00Z",
+    "title": "update: logging in proj-24",
+    "body": "First contribution: this PR updates logging for proj-24 and includes a unit test.",
+    "diff_text": "--- a/src/logging.py\n+++ b/src/logging.py\n+    # update logging\n"
+  },
+  {
+    "id": "pr-206",
+    "project": "proj-18",
+    "author": "newcomer-03",
+    "created_at": "2026-10-22T19:00:00Z",
+    "title": "fix: api in proj-18",
+    "body": "First contribution: this PR fixs api for proj-18 and includes a unit test.",
+    "diff_text": "--- a/src/api.py\n+++ b/src/api.py\n+    # fix api\n"
+  },
+  {
+    "id": "pr-207",
+    "project": "proj-02",
+    "author": "newcomer-04",
+    "created_at": "2026-10-15T12:00:00Z",
+    "title": "update: api in proj-02",
+    "body": "First contribution: this PR updates api for proj-02 and includes a unit test.",
+    "diff_text": "--- a/src/api.py\n+++ b/src/api.py\n+    # update api\n"
+  },
+  {
+    "id": "pr-208",
+    "project": "proj-22",
+    "author": "newcomer-05",
+    "created_at": "2026-10-06T23:00:00Z",
+    "title": "document: api in proj-22",
+    "body": "First contribution: this PR documents api for proj-22 and includes a unit test.",
+    "diff_text": "--- a/src/api.py\n+++ b/src/api.py\n+    # document api\n"
+  },
+  {
+    "id": "pr-209",
+    "project": "proj-17",
+    "author": "newcomer-06",
+    "created_at": "2026-10-22T03:00:00Z",
+    "title": "update: deps in proj-17",
+    "body": "First contribution: this PR updates deps for proj-17 and includes a unit test.",
+    "diff_text": "--- a/src/deps.py\n+++ b/src/deps.py\n+    # update deps\n"
+  },
+  {
+    "id": "pr-210",
+    "project": "proj-16",
+    "author": "newcomer-07",
+    "created_at": "2026-10-31T06:00:00Z",
+    "title": "remove: tests in proj-16",
+    "body": "First contribution: this PR removes tests for proj-16 and includes a unit test.",
+    "diff_text": "--- a/src/tests.py\n+++ b/src/tests.py\n+    # remove tests\n"
+  },
+  {
+    "id": "pr-211",
+    "project": "proj-09",
+    "author": "newcomer-08",
+    "created_at": "2026-10-04T01:00:00Z",
+    "title": "remove: tests in proj-09",
+    "body": "First contribution: this PR removes tests for proj-09 and includes a unit test.",
+    "diff_text": "--- a/src/tests.py\n+++ b/src/tests.py\n+    # remove tests\n"
+  },
+  {
+    "id": "pr-212",
+    "project": "proj-18",
+    "author": "newcomer-09",
+    "created_at": "2026-10-07T05:00:00Z",
+    "title": "update: README in proj-18",
+    "body": "First contribution: this PR updates README for proj-18 and includes a unit test.",
+    "diff_text": "--- a/src/README.py\n+++ b/src/README.py\n+    # update README\n"
+  },
+  {
+    "id": "pr-213",
+    "project": "proj-06",
+    "author": "newcomer-10",
+    "created_at": "2026-10-13T08:00:00Z",
+    "title": "refactor: docs in proj-06",
+    "body": "First contribution: this PR refactors docs for proj-06 and includes a unit test.",
+    "diff_text": "--- a/src/docs.py\n+++ b/src/docs.py\n+    # refactor docs\n"
+  },
+  {
+    "id": "pr-214",
+    "project": "proj-26",
+    "author": "newcomer-11",
+    "created_at": "2026-10-24T19:00:00Z",
+    "title": "fix: api in proj-26",
+    "body": "First contribution: this PR fixs api for proj-26 and includes a unit test.",
+    "diff_text": "--- a/src/api.py\n+++ b/src/api.py\n+    # fix api\n"
+  },
+  {
+    "id": "pr-215",
+    "project": "proj-04",
+    "author": "newcomer-12",
+    "created_at": "2026-10-23T01:00:00Z",
+    "title": "document: README in proj-04",
+    "body": "First contribution: this PR documents README for proj-04 and includes a unit test.",
+    "diff_text": "--- a/src/README.py\n+++ b/src/README.py\n+    # document README\n"
+  },
+  {
+    "id": "pr-216",
+    "project": "proj-01",
+    "author": "newcomer-13",
+    "created_at": "2026-10-31T03:00:00Z",
+    "title": "remove: CI in proj-01",
+    "body": "First contribution: this PR removes CI for proj-01 and includes a unit test.",
+    "diff_text": "--- a/src/CI.py\n+++ b/src/CI.py\n+    # remove CI\n"
+  },
+  {
+    "id": "pr-217",
+    "project": "proj-16",
+    "author": "newcomer-14",
+    "created_at": "2026-10-21T08:00:00Z",
+    "title": "add: tests in proj-16",
+    "body": "First contribution: this PR adds tests for proj-16 and includes a unit test.",
+    "diff_text": "--- a/src/tests.py\n+++ b/src/tests.py\n+    # add tests\n"
   }
 ]
