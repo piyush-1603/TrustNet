@@ -128,6 +128,10 @@ class TestReport:
             )
             assert result.returncode == 0, result.stderr
             assert out_html.exists()
+            for stage in ("Loading network snapshot", "Scanning PR text",
+                          "Evaluating PRs from proj-01", "Running adversarial regression fixtures",
+                          "Writing repository and evidence explorer"):
+                assert stage in result.stdout
 
     def test_report_html_valid(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -147,8 +151,7 @@ class TestReport:
             _simulate_into(net_dir)
             _run("report", "--network", str(net_dir), "--out", str(out_html))
             content = out_html.read_text(encoding="utf-8")
-            for section_id in ("overview", "decisions", "side-by-side",
-                               "campaigns", "lab", "trust-graph"):
+            for section_id in ("top", "repositories", "campaigns", "lab"):
                 assert f'id="{section_id}"' in content, (
                     f"Missing section #{section_id} in report HTML"
                 )
@@ -164,15 +167,15 @@ class TestReport:
             for label in ("ACCEPT", "PROVISIONAL", "HOLD"):
                 assert label in content, f"Text label {label!r} missing from report"
 
-    def test_report_has_dark_mode_css(self):
-        """Report must include prefers-color-scheme:dark media query."""
+    def test_report_uses_light_theme(self):
+        """The requested light theme also keeps native controls light."""
         with tempfile.TemporaryDirectory() as tmp:
             net_dir = Path(tmp) / "network"
             out_html = Path(tmp) / "report.html"
             _simulate_into(net_dir)
             _run("report", "--network", str(net_dir), "--out", str(out_html))
             content = out_html.read_text(encoding="utf-8")
-            assert "prefers-color-scheme:dark" in content.replace(" ", "")
+            assert "color-scheme:light" in content.replace(" ", "")
 
     def test_report_has_svg_graph(self):
         """Report must contain an inline SVG trust graph."""
