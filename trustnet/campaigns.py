@@ -1,0 +1,111 @@
+"""Connected PR clusters and deterministic campaign evidence."""
+
+from datetime import datetime, timezone
+from hashlib import sha256
+from importlib import import_module
+import json
+
+from .similarity import similarity_matrix
+
+
+# shortcut: shared policy loader is not merged; remove defaults after integration.
+DEFAULTS = dict(similarity_threshold=0.85, min_prs=8, min_projects=5,
+                window_hours=6, min_young_share=0.7, young_days=14,
+                flag_threshold=0.6, size_scale=20, projects_scale=10,
+                size_weight=0.4, projects_weight=0.3, young_weight=0.3)
+
+
+def campaign_policy():
+    """Shared loader may return a policy dict or (policy, hash)."""
+    digest = None
+    try:
+        loaders = import_module("trustnet.loaders")
+    except ModuleNotFoundError as exc:
+        if exc.name != "trustnet.loaders":
+            raise
+        policy = {"campaigns": DEFAULTS}
+    else:
+        policy = loaders.load_policy()
+        if isinstance(policy, tuple):
+            policy, digest = policy
+    settings = {**DEFAULTS, **policy.get("campaigns", {})}
+    if digest is None:
+        digest = sha256(json.dumps(policy, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    return settings, digest
+
+
+def _time(value):
+    result = value if isinstance(value, datetime) else datetime.fromisoformat(value.replace("Z", "+00:00"))
+    if result.tzinfo is None:
+        raise ValueError("campaign timestamps must include a timezone")
+    return result.astimezone(timezone.utc)
+
+
+def detect(net, use_embeddings=True):
+    """Keep qualifying connected components; age share counts distinct authors.
+
+    A component's full time span must fit the policy window. For repeat authors,
+    account age is measured at their earliest PR in the component.
+    """
+    from .models import Campaign
+
+    policy, policy_hash = campaign_policy()
+    prs = sorted(net.prs, key=lambda pr: str(pr.id))
+    if not prs:
+        return []
+    texts = ["\n".join((pr.title, pr.body, pr.diff_text)) for pr in prs]
+    matrix, embedding_used = similarity_matrix(texts, use_embeddings)
+    parents = list(range(len(prs)))
+
+    def root(i):
+        while parents[i] != i:
+            parents[i] = parents[parents[i]]
+            i = parents[i]
+        return i
+
+    for i in range(len(prs)):
+        for j in range(i):
+            if matrix[i, j] >= policy["similarity_threshold"]:
+                parents[root(i)] = root(j)
+    groups = {}
+    for i, pr in enumerate(prs):
+        groups.setdefault(root(i), []).append(pr)
+
+    found = []
+    for group in groups.values():
+        projects = sorted({pr.project for pr in group})
+        if len(group) < policy["min_prs"] or len(projects) < policy["min_projects"]:
+            continue
+        times = [_time(pr.created_at) for pr in group]
+        hours = (max(times) - min(times)).total_seconds() / 3600
+        if hours > policy["window_hours"]:
+            continue
+        first_pr = {}
+        for pr, when in zip(group, times):
+            first_pr[pr.author] = min(first_pr.get(pr.author, when), when)
+        young = 0
+        for author, when in first_pr.items():
+            account = net.accounts.get(author)
+            if account is not None:
+                age = (when - _time(account.created_at)).total_seconds() / 86400
+                young += 0 <= age < policy["young_days"]
+        share = young / len(first_pr)
+        if share < policy["min_young_share"]:
+            continue
+        score = (policy["size_weight"] * min(1, len(group) / policy["size_scale"])
+                 + policy["projects_weight"] * min(1, len(projects) / policy["projects_scale"])
+                 + policy["young_weight"] * share)
+        ids = [pr.id for pr in group]
+        identifier = sha256(json.dumps(ids).encode()).hexdigest()[:12]
+        minutes = round(hours * 60)
+        found.append(Campaign(
+            id=f"campaign-{identifier}", pr_ids=ids, projects=projects,
+            authors=sorted(first_pr), score=score, flagged=score >= policy["flag_threshold"],
+            evidence=[f"{len(group)} PRs, {len(projects)} projects, {minutes // 60}h{minutes % 60:02d}m window, "
+                      f"{share:.0%} accounts under {policy['young_days']} days",
+                      f"Connected text similarity >= {policy['similarity_threshold']}; "
+                      f"embedding_used={str(embedding_used).lower()}",
+                      f"policy_hash={policy_hash}"],
+            embedding_used=embedding_used,
+        ))
+    return found
