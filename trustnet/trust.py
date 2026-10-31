@@ -4,6 +4,7 @@ Every decision is made from one project's point of view (the "viewer"), using on
 public vouch/denounce lists. Thresholds come from policy.json; see docs/PLAN.md.
 """
 
+import math
 from datetime import datetime, timezone
 from functools import lru_cache
 
@@ -66,7 +67,34 @@ def _combine(contributions, top_k):
     return 1 - value, ranked[:top_k], ranked[top_k:]
 
 
-def evaluate_author(net, viewer, handle, campaign_handles=frozenset(), now=None, policy=None, pr_id=None):
+def _next_steps(net, viewer, handle, belief, vouchers, cfg):
+    """What would lift a PROVISIONAL author to ACCEPT: one more vouch from a project the viewer trusts enough.
+
+    A vouch of strength c raises belief to 1 - (1 - b)(1 - c); solving for the accept threshold gives the
+    trust the voucher needs: t = c / vouch_weight.
+    """
+    trust_cfg, accept = cfg["trust"], cfg["decision"]["accept_threshold"]
+    needed = (1 - (1 - accept) / (1 - belief)) / trust_cfg["vouch_weight"]
+    if needed > 1:
+        return ["one vouch is not enough: this author needs vouches from several trusted projects"]
+    needed = max(math.ceil(needed * 100) / 100, trust_cfg["min_trust"])
+    options = []
+    for pid in sorted(net.projects):
+        if pid in vouchers:
+            continue
+        trust, _ = project_trust(net, viewer, pid, cfg)
+        if trust >= needed:
+            options.append((-trust, pid))
+    if not options:
+        return [f"to reach ACCEPT: one vouch from a project trusted at {needed:.2f} or more; "
+                f"no project {viewer} trusts that much has vouched yet"]
+    ranked = ", ".join(f"{pid} ({-neg:.2f})" for neg, pid in sorted(options)[:3])
+    return [f"to reach ACCEPT: one vouch from a project {viewer} trusts at {needed:.2f} or more, "
+            f"for example {ranked}"]
+
+
+def evaluate_author(net, viewer, handle, campaign_handles=frozenset(), now=None, policy=None, pr_id=None,
+                    advisories=(), flagged_handles=frozenset()):
     """Decide what `viewer` should do with `handle`.
 
     belief b    = 1 - prod(1 - vouch_weight * T)      over the strongest top_k trusted vouchers
@@ -75,12 +103,18 @@ def evaluate_author(net, viewer, handle, campaign_handles=frozenset(), now=None,
     HOLD if d >= hold_threshold and d > b, else ACCEPT if b >= accept_threshold, else PROVISIONAL.
     T = project_trust(viewer, source); records from sources below min_trust are ignored, so an author
     that no trusted project has spoken about is unknown (PROVISIONAL), never HOLD. A member of a
-    flagged campaign is HOLD.
+    flagged campaign is HOLD. A project that vouched for a flagged campaign account has its other vouches
+    discounted by flagged_endorser_factor (flagged_handles: every account flagged anywhere).
     """
     cfg = _cfg(policy)
     trust_cfg, decision_cfg = cfg["trust"], cfg["decision"]
     now = parse_time(now) if now is not None else datetime.now(timezone.utc)
     ignored, vouches, denounces = [], [], []
+    # A campaign advisory counts only if its issuer is a project this viewer trusts.
+    advisory_trust = [(a, *project_trust(net, viewer, a["issuer"], cfg)) for a in advisories]
+    flagged_accounts = (set(flagged_handles) | set(campaign_handles)
+                        | {name for a, t, _ in advisory_trust if t >= trust_cfg["min_trust"]
+                           for c in a["campaigns"] for name in c["authors"]})
     for pid in sorted(net.projects):
         project = net.projects[pid]
         vouched = [v for v in project.vouches if v.handle == handle]
@@ -93,7 +127,11 @@ def evaluate_author(net, viewer, handle, campaign_handles=frozenset(), now=None,
             ignored.append(f"ignored: source not trusted: {pid} ({kinds})")
             continue
         if vouched:
-            vouches.append((trust_cfg["vouch_weight"] * trust, pid, path))
+            strength = trust_cfg["vouch_weight"] * trust
+            if handle not in flagged_accounts and any(v.handle in flagged_accounts for v in project.vouches):
+                strength *= trust_cfg["flagged_endorser_factor"]
+                ignored.append(f"discounted: {pid} also vouched for a flagged campaign account")
+            vouches.append((strength, pid, path))
         if denounced:
             active = [d for d in denounced if d.expires is None or parse_time(d.expires) > now]
             if not active:
@@ -111,12 +149,26 @@ def evaluate_author(net, viewer, handle, campaign_handles=frozenset(), now=None,
         ignored.append(f"not counted: {pid} is beyond the strongest {k} sources")
     uncertainty = max(0.0, 1 - belief - disbelief)
 
+    advised, advisory_paths = [], []
+    for advisory, trust, path in advisory_trust:
+        hits = [c["id"] for c in advisory["campaigns"] if handle in c["authors"]]
+        if not hits:
+            continue
+        issuer = advisory["issuer"]
+        if trust < trust_cfg["min_trust"]:
+            ignored.append(f"ignored: advisory from {issuer} (source not trusted)")
+            continue
+        advised.append(f"listed in campaign advisory {hits[0]} from {issuer} (trust {trust:.2f}, path {' > '.join(path)})")
+        advisory_paths.append(path)
+
     reasons = [f"vouched by {pid} (strength {c:.2f}, path {' > '.join(path)})" for c, pid, path in used_vouches]
     reasons += [f"denounced by {pid} (strength {c:.2f}, path {' > '.join(path)})" for c, pid, path in used_denounces]
-    in_campaign = handle in campaign_handles
+    in_campaign = handle in campaign_handles or bool(advised)
     if in_campaign:
         decision = "HOLD"
-        reasons.append("member of a flagged spam campaign")
+        if handle in campaign_handles:
+            reasons.append("member of a flagged spam campaign")
+        reasons += advised
     elif disbelief >= decision_cfg["hold_threshold"] and disbelief > belief:
         decision = "HOLD"
         reasons.append(f"disbelief {disbelief:.2f} is at least {decision_cfg['hold_threshold']} and above belief {belief:.2f}")
@@ -128,20 +180,25 @@ def evaluate_author(net, viewer, handle, campaign_handles=frozenset(), now=None,
         reasons.append("unknown to the projects this viewer trusts: provisional review, not a rejection"
                        if not used_vouches and not used_denounces else
                        f"belief {belief:.2f} is below {decision_cfg['accept_threshold']}: provisional review")
+    next_steps = (_next_steps(net, viewer, handle, belief, {pid for _, pid, _ in vouches}, cfg)
+                  if decision == "PROVISIONAL" else [])
     return Decision(pr_id=pr_id, viewer=viewer, author=handle, decision=decision, belief=belief,
                     disbelief=disbelief, uncertainty=uncertainty, reasons=reasons,
-                    paths=[path for _, _, path in used_vouches + used_denounces], ignored=ignored,
-                    in_campaign=in_campaign)
+                    paths=[path for _, _, path in used_vouches + used_denounces] + advisory_paths,
+                    ignored=ignored, in_campaign=in_campaign, next_steps=next_steps)
 
 
-def evaluate_pr(net, viewer, pr, campaigns, now=None, policy=None):
-    """Decide on one PR's author. The author is HOLD only if a flagged campaign contains this PR.
+def evaluate_pr(net, viewer, pr, campaigns, now=None, policy=None, advisories=()):
+    """Decide on one PR's author. The author is HOLD if a flagged campaign contains this PR, or if a
+    campaign advisory from a project the viewer trusts lists the author.
 
     `now` defaults to the PR's own time, so expiry is judged as of the PR and results repeat exactly.
     """
     flagged = any(c.flagged and pr.id in c.pr_ids for c in campaigns)
+    flagged_accounts = frozenset(a for c in campaigns if c.flagged for a in c.authors)
     return evaluate_author(net, viewer, pr.author, frozenset([pr.author]) if flagged else frozenset(),
-                           now=now if now is not None else pr.created_at, policy=policy, pr_id=pr.id)
+                           now=now if now is not None else pr.created_at, policy=policy, pr_id=pr.id,
+                           advisories=advisories, flagged_handles=flagged_accounts)
 
 
 def naive_score(net, handle):

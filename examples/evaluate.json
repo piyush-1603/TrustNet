@@ -28,5 +28,6 @@
     "ignored: source not trusted: proj-27 (vouch)",
     "ignored: source not trusted: proj-28 (vouch)"
   ],
-  "in_campaign": false
+  "in_campaign": false,
+  "next_steps": []
 }

@@ -1,0 +1,21 @@
+{
+  "pr_id": "pr-151",
+  "viewer": "proj-02",
+  "author": "bot-00",
+  "decision": "HOLD",
+  "belief": 0.0,
+  "disbelief": 0.0,
+  "uncertainty": 1.0,
+  "reasons": [
+    "listed in campaign advisory campaign-a12518d09843 from proj-01 (trust 0.69, path proj-02 > proj-01)"
+  ],
+  "paths": [
+    [
+      "proj-02",
+      "proj-01"
+    ]
+  ],
+  "ignored": [],
+  "in_campaign": true,
+  "next_steps": []
+}

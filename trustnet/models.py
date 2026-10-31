@@ -92,6 +92,7 @@ class Decision:
     paths: list = field(default_factory=list)
     ignored: list = field(default_factory=list)
     in_campaign: bool = False
+    next_steps: list = field(default_factory=list)  # what would move a PROVISIONAL author to ACCEPT
 
 
 @dataclass

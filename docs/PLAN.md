@@ -78,16 +78,16 @@ Tick a box only when the PR is merged and CI is green. Shaurya keeps this table 
 | 1 | Collaborator invites, branch protection on `main` | Piyush | Everyone can open PRs; direct pushes blocked | [ ] |
 | 2 | PR 1: LICENSE, CI, PR template, README stub, requirements, empty package, smoke test, these docs | Shaurya (with Claude Code) | CI green on the PR, then merged | [x] |
 | 3 | PR 2: `models.py`, `loaders.py`, `policy.json` | Shaurya | Others can import the contract (until it merges, code against the signatures above) | [x] |
-| 4 | PR 3: tiny hand-made test networks in `tests/fixtures/` | Arnav | newcomer, brigade, bulk_bump, campaign fixtures load | [ ] |
+| 4 | PR 3: tiny hand-made test networks in `tests/fixtures/` | Arnav | newcomer, brigade, bulk_bump, campaign fixtures load | [x] |
 | 5 | `trust.py` with tests | Shaurya | transitive 0.486, cycles end, brigade ignored, newcomer PROVISIONAL | [x] |
-| 6 | `similarity.py`, real Ollama call plus TF-IDF fallback | Anubhav | fallback test passes without Ollama; real call verified by hand | [ ] |
-| 7 | `simulate.py` with planted attacks | Piyush | same seed gives identical files; loader reads them | [ ] |
-| 8 | `campaigns.py` | Anubhav | planted campaign found, bulk bump not flagged | [ ] |
-| 9 | `cli.py` | Piyush | all five commands run on the simulated network | [ ] |
-| 10 | `lab.py` | Anubhav | defended beats naive in every scenario, table printed | [ ] |
-| 11 | `report.py` | Piyush | one HTML file, light and dark, readable on a phone | [ ] |
-| 12 | `examples/` from a real run | Piyush | input plus real outputs committed | [ ] |
-| 13 | README, DESIGN, DEMO script, slides outline | Arnav | judges can run it from the README | [ ] |
+| 6 | `similarity.py`, real Ollama call plus TF-IDF fallback | Anubhav | fallback test passes without Ollama; real call verified by hand | [x] |
+| 7 | `simulate.py` with planted attacks | Piyush | same seed gives identical files; loader reads them | [x] |
+| 8 | `campaigns.py` | Anubhav | planted campaign found, bulk bump not flagged | [x] |
+| 9 | `cli.py` | Piyush | all five commands run on the simulated network | [x] |
+| 10 | `lab.py` | Anubhav | defended beats naive in every scenario, table printed | [x] |
+| 11 | `report.py` | Piyush | one HTML file, light and dark, readable on a phone | [x] |
+| 12 | `examples/` from a real run | Piyush | input plus real outputs committed | [x] |
+| 13 | README, DESIGN, DEMO script, slides outline | Arnav | judges can run it from the README | [x] |
 | 14 | Feature freeze 5:00 AM; rehearse twice; secret scan; submit on OrganizerHQ before 6:30 AM | all | CI green on the last commit | [ ] |
 
 If we fall behind, cut in this order: Vouch-file adapter, SVG trust graph, extra lab scenarios. Never cut: tests, CI, real examples, the Ollama call, the newcomer rule.
@@ -101,6 +101,8 @@ Append a line when a decision changes. Shaurya edits this.
 - Newcomers are PROVISIONAL, never rejected for lack of history.
 - Timestamps stay as given (ISO string or datetime) in the data classes and are parsed on use with `models.parse_time`; `loaders.load_network` rejects unparseable ones. `load_policy` returns `(policy, 12-hex hash)`; `policy.json` has sections `trust`, `decision`, `campaigns`.
 - Trust engine simplification: belief and disbelief are reported and decided on raw (no rescaling when b + d > 1); uncertainty = max(0, 1 - b - d). A project that both vouches and denounces an author counts in both. `evaluate_pr` judges denounce expiry as of the PR's own time. `naive_score` counts projects (one vouch or denounce per project), unweighted.
+- Features added after the basics (all in `trust.py`, `advisory.py`, `cli.py`): path-to-trust hint (`Decision.next_steps`), campaign advisories honored only from trusted issuers (`trustnet advisory`, `evaluate --advisory`, `--no-local-detection`), and a vouch discount for projects that vouched for flagged accounts (`trust.flagged_endorser_factor`). Formulas: `docs/DESIGN.md` sections 7 to 9.
+- Examples are generated only with real Ollama and `nomic-embed-text`; `examples/make_examples.sh` refuses to run otherwise (a stand-in server was removed because it falsely reported the model).
 - Embedding model: `nomic-embed-text` via Ollama, pending a mentor answer on whether the organizers allow it. If not allowed, change `HACKATHON.md` and the code together.
 
 ## Open questions
