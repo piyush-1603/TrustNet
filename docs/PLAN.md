@@ -54,7 +54,8 @@ models.py      Project, Trust, Vouch, Denounce, Account, PR, Network(projects, a
                Decision(pr_id, viewer, author, decision, belief, disbelief, uncertainty,
                         reasons, paths, ignored, in_campaign),
                Campaign(id, pr_ids, projects, authors, score, flagged, evidence, embedding_used)
-loaders.py     load_network(path) -> Network
+loaders.py     load_network(path) -> Network ; load_policy(path=None) -> (policy dict, 12-hex hash)
+models.py      also parse_time(value) -> aware UTC datetime (timestamps stay as given: ISO string or datetime)
 trust.py       project_trust(net, viewer, target) -> (float, list[str])
                evaluate_author(net, viewer, handle, campaign_handles=frozenset(), now=None) -> Decision
                evaluate_pr(net, viewer, pr, campaigns) -> Decision
@@ -75,7 +76,7 @@ Tick a box only when the PR is merged and CI is green. Shaurya keeps this table 
 | # | Step | Owner | Done when | Status |
 |---|---|---|---|---|
 | 1 | Collaborator invites, branch protection on `main` | Piyush | Everyone can open PRs; direct pushes blocked | [ ] |
-| 2 | PR 1: LICENSE, CI, PR template, README stub, requirements, empty package, smoke test, these docs | Shaurya (with Claude Code) | CI green on the PR, then merged | [ ] |
+| 2 | PR 1: LICENSE, CI, PR template, README stub, requirements, empty package, smoke test, these docs | Shaurya (with Claude Code) | CI green on the PR, then merged | [x] |
 | 3 | PR 2: `models.py`, `loaders.py`, `policy.json` | Shaurya | Others can import the contract (until it merges, code against the signatures above) | [ ] |
 | 4 | PR 3: tiny hand-made test networks in `tests/fixtures/` | Arnav | newcomer, brigade, bulk_bump, campaign fixtures load | [ ] |
 | 5 | `trust.py` with tests | Shaurya | transitive 0.486, cycles end, brigade ignored, newcomer PROVISIONAL | [ ] |
@@ -98,6 +99,7 @@ Append a line when a decision changes. Shaurya edits this.
 - Python 3.11, pytest, scikit-learn, requests. No web server; CLI plus a static HTML report.
 - Viewpoint-relative evaluation is how we show decentralization: the same author can get two answers from two projects.
 - Newcomers are PROVISIONAL, never rejected for lack of history.
+- Timestamps stay as given (ISO string or datetime) in the data classes and are parsed on use with `models.parse_time`; `loaders.load_network` rejects unparseable ones. `load_policy` returns `(policy, 12-hex hash)`; `policy.json` has sections `trust`, `decision`, `campaigns`.
 - Embedding model: `nomic-embed-text` via Ollama, pending a mentor answer on whether the organizers allow it. If not allowed, change `HACKATHON.md` and the code together.
 
 ## Open questions
