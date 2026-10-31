@@ -1,0 +1,11 @@
+[
+  {
+    "id": "pr-001",
+    "project": "proj-01",
+    "author": "new_dev",
+    "created_at": "2026-10-31T20:00:00Z",
+    "title": "Add dark mode support",
+    "body": "Adds dark mode support to the UI using CSS variables for theming.",
+    "diff_text": "+.dark { background:#1a1a1a; color:#f0f0f0; }"
+  }
+]

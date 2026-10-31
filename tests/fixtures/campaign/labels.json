@@ -1,0 +1,31 @@
+{
+  "campaign_pr_ids": [
+    "pr-spam-01",
+    "pr-spam-02",
+    "pr-spam-03",
+    "pr-spam-04",
+    "pr-spam-05",
+    "pr-spam-06",
+    "pr-spam-07",
+    "pr-spam-08",
+    "pr-spam-09",
+    "pr-spam-10",
+    "pr-spam-11",
+    "pr-spam-12"
+  ],
+  "newcomer_handles": [],
+  "attack_handles": [
+    "spam-01",
+    "spam-02",
+    "spam-03",
+    "spam-04",
+    "spam-05",
+    "spam-06",
+    "spam-07",
+    "spam-08",
+    "spam-09",
+    "spam-10",
+    "spam-11",
+    "spam-12"
+  ]
+}

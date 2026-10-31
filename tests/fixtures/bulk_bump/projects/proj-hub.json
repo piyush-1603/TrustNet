@@ -1,0 +1,13 @@
+{
+  "id": "proj-hub",
+  "name": "DepsHubProject",
+  "trusts": [],
+  "vouches": [
+    {
+      "handle": "dep_maintainer",
+      "date": "2021-01-01",
+      "evidence_url": "https://example.com/dep-maintainer-profile"
+    }
+  ],
+  "denounces": []
+}

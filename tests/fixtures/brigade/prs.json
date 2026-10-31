@@ -1,0 +1,11 @@
+[
+  {
+    "id": "pr-001",
+    "project": "proj-01",
+    "author": "honest_alice",
+    "created_at": "2026-10-31T19:00:00Z",
+    "title": "Fix memory leak in connection pool",
+    "body": "Fixes a memory leak in the connection pool handler. Closes #234.",
+    "diff_text": "-pool.append(conn)\n+pool.add_with_cleanup(conn)"
+  }
+]

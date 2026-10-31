@@ -1,0 +1,110 @@
+[
+  {
+    "id": "pr-spam-01",
+    "project": "proj-01",
+    "author": "spam-01",
+    "created_at": "2026-10-31T10:00:00Z",
+    "title": "Add analytics tracking script",
+    "body": "Add analytics tracking script. Sends user engagement metrics to our endpoint at collect.example.io.",
+    "diff_text": "+import requests\n+requests.post('https://collect.example.io/track', json={'uid': uid})"
+  },
+  {
+    "id": "pr-spam-02",
+    "project": "proj-02",
+    "author": "spam-02",
+    "created_at": "2026-10-31T10:10:00Z",
+    "title": "Add analytics tracking script",
+    "body": "Add analytics tracking script. This sends user engagement metrics to our endpoint at collect.example.io.",
+    "diff_text": "+import requests\n+requests.post('https://collect.example.io/track', json={'uid': uid})"
+  },
+  {
+    "id": "pr-spam-03",
+    "project": "proj-03",
+    "author": "spam-03",
+    "created_at": "2026-10-31T10:20:00Z",
+    "title": "Add analytics tracking script",
+    "body": "Add analytics tracking script. Sends user interaction metrics to our endpoint at collect.example.io.",
+    "diff_text": "+import requests\n+requests.post('https://collect.example.io/track', json={'uid': uid})"
+  },
+  {
+    "id": "pr-spam-04",
+    "project": "proj-04",
+    "author": "spam-04",
+    "created_at": "2026-10-31T10:30:00Z",
+    "title": "Add analytics tracking script",
+    "body": "Add analytics tracking. This script sends user engagement metrics to our endpoint at collect.example.io.",
+    "diff_text": "+import requests\n+requests.post('https://collect.example.io/track', json={'uid': uid})"
+  },
+  {
+    "id": "pr-spam-05",
+    "project": "proj-05",
+    "author": "spam-05",
+    "created_at": "2026-10-31T10:40:00Z",
+    "title": "Add analytics tracking script",
+    "body": "Add analytics tracking script. User engagement metrics are sent to our endpoint at collect.example.io.",
+    "diff_text": "+import requests\n+requests.post('https://collect.example.io/track', json={'uid': uid})"
+  },
+  {
+    "id": "pr-spam-06",
+    "project": "proj-06",
+    "author": "spam-06",
+    "created_at": "2026-10-31T10:50:00Z",
+    "title": "Add analytics tracking script",
+    "body": "Add analytics tracking script. This sends user behaviour metrics to our endpoint at collect.example.io.",
+    "diff_text": "+import requests\n+requests.post('https://collect.example.io/track', json={'uid': uid})"
+  },
+  {
+    "id": "pr-spam-07",
+    "project": "proj-07",
+    "author": "spam-07",
+    "created_at": "2026-10-31T11:00:00Z",
+    "title": "Add analytics tracking script",
+    "body": "Add analytics tracking script. Sends user engagement metrics to the endpoint at collect.example.io.",
+    "diff_text": "+import requests\n+requests.post('https://collect.example.io/track', json={'uid': uid})"
+  },
+  {
+    "id": "pr-spam-08",
+    "project": "proj-08",
+    "author": "spam-08",
+    "created_at": "2026-10-31T11:10:00Z",
+    "title": "Add analytics tracking script",
+    "body": "Add user analytics tracking script. Sends engagement metrics to our endpoint at collect.example.io.",
+    "diff_text": "+import requests\n+requests.post('https://collect.example.io/track', json={'uid': uid})"
+  },
+  {
+    "id": "pr-spam-09",
+    "project": "proj-01",
+    "author": "spam-09",
+    "created_at": "2026-10-31T11:20:00Z",
+    "title": "Add analytics tracking script",
+    "body": "Add analytics script for tracking. Sends user engagement metrics to our endpoint at collect.example.io.",
+    "diff_text": "+import requests\n+requests.post('https://collect.example.io/track', json={'uid': uid})"
+  },
+  {
+    "id": "pr-spam-10",
+    "project": "proj-02",
+    "author": "spam-10",
+    "created_at": "2026-10-31T11:30:00Z",
+    "title": "Add analytics tracking script",
+    "body": "Add analytics tracking script. This sends engagement metrics to our endpoint at collect.example.io.",
+    "diff_text": "+import requests\n+requests.post('https://collect.example.io/track', json={'uid': uid})"
+  },
+  {
+    "id": "pr-spam-11",
+    "project": "proj-03",
+    "author": "spam-11",
+    "created_at": "2026-10-31T11:40:00Z",
+    "title": "Add analytics tracking script",
+    "body": "Add an analytics tracking script. Sends user engagement metrics to our endpoint at collect.example.io.",
+    "diff_text": "+import requests\n+requests.post('https://collect.example.io/track', json={'uid': uid})"
+  },
+  {
+    "id": "pr-spam-12",
+    "project": "proj-04",
+    "author": "spam-12",
+    "created_at": "2026-10-31T11:50:00Z",
+    "title": "Add analytics tracking script",
+    "body": "Add analytics tracking script. This sends user engagement metrics to collect.example.io endpoint.",
+    "diff_text": "+import requests\n+requests.post('https://collect.example.io/track', json={'uid': uid})"
+  }
+]

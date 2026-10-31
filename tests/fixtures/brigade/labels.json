@@ -1,0 +1,13 @@
+{
+  "campaign_pr_ids": [],
+  "newcomer_handles": [],
+  "attack_handles": [],
+  "honest_handle": "honest_alice",
+  "attack_project_ids": [
+    "fake-01",
+    "fake-02",
+    "fake-03",
+    "fake-04",
+    "fake-05"
+  ]
+}
