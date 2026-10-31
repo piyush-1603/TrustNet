@@ -13,27 +13,21 @@ else
     PY="python"
 fi
 
-# Ensure Ollama service is active on 127.0.0.1:11434
-SERVER_PID=""
-cleanup() {
-    if [ -n "$SERVER_PID" ]; then
-        kill "$SERVER_PID" 2>/dev/null || true
-    fi
-}
-trap cleanup EXIT
-
-if ! curl -s -m 1 http://localhost:11434/api/tags >/dev/null 2>&1; then
+# The examples must come from the real model: Ollama running with nomic-embed-text pulled.
+if ! curl -s -m 2 http://localhost:11434/api/tags >/dev/null 2>&1; then
     if command -v ollama >/dev/null 2>&1; then
         echo "==> Starting local Ollama server..."
         ollama serve >/dev/null 2>&1 &
         SERVER_PID=$!
-        sleep 2
+        sleep 3
     else
-        echo "==> Starting local nomic-embed-text compatibility daemon on 11434..."
-        $PY "$DIR/ollama_embed_server.py" &
-        SERVER_PID=$!
-        sleep 1
+        echo "ERROR: Ollama is not installed. Install it from https://ollama.com, then run: ollama pull nomic-embed-text" >&2
+        exit 1
     fi
+fi
+if ! curl -s -m 5 http://localhost:11434/api/tags | grep -q '"nomic-embed-text'; then
+    echo "ERROR: model nomic-embed-text is not installed. Run: ollama pull nomic-embed-text" >&2
+    exit 1
 fi
 
 echo "==> 1. Generating simulated network (seed=42, 30 projects)..."
