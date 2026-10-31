@@ -188,3 +188,67 @@ def test_results_repeat_exactly():
     net = network(project("V", trusts={"P": 0.9, "Q": 0.9}), project("P", vouches=["a"]),
                   project("Q", vouches=["a"]))
     assert evaluate_author(net, "V", "a", now=NOW) == evaluate_author(net, "V", "a", now=NOW)
+
+
+# --- What would move a newcomer to ACCEPT? --------------------------------------------------------
+
+def test_a_newcomer_is_told_which_trusted_projects_could_vouch():
+    net = network(project("V", trusts={"P": 0.9, "Q": 0.5}), project("P"), project("Q"))
+    d = evaluate_author(net, "V", "newbie", now=NOW)
+    assert d.decision == "PROVISIONAL"
+    assert len(d.next_steps) == 1
+    step = d.next_steps[0]
+    assert "0.63 or more" in step and "P (0.90)" in step and "Q" not in step  # 0.5 / 0.8 = 0.625, rounded up
+
+
+def test_partial_belief_lowers_the_trust_the_next_voucher_needs():
+    net = network(project("V", trusts={"P": 0.9}), project("P", trusts={"Q": 0.9}), project("Q", vouches=["x"]))
+    d = evaluate_author(net, "V", "x", now=NOW)
+    assert d.belief == pytest.approx(0.8 * 0.486) and d.decision == "PROVISIONAL"
+    assert "0.25 or more" in d.next_steps[0]  # needs 0.23, floor is the minimum trust of 0.25
+
+
+def test_no_hint_unless_the_author_is_provisional():
+    net = network(project("V", vouches=["a"], denounces=[denounce("b")]))
+    assert evaluate_author(net, "V", "a", now=NOW).next_steps == []  # ACCEPT
+    assert evaluate_author(net, "V", "b", now=NOW).next_steps == []  # HOLD
+
+
+def test_the_hint_says_so_when_no_trusted_project_exists():
+    d = evaluate_author(network(project("P")), "V", "newbie", now=NOW)  # V is not in the network
+    assert "no project V trusts that much has vouched yet" in d.next_steps[0]
+
+
+def test_the_viewer_itself_is_always_a_possible_voucher():
+    d = evaluate_author(network(project("V", trusts={"P": 0.4}), project("P")), "V", "newbie", now=NOW)
+    assert "V (1.00)" in d.next_steps[0] and "P (" not in d.next_steps[0]
+
+
+# --- Vouching for a campaign account costs you ----------------------------------------------------
+
+def endorsement_network():
+    # V trusts P fully. P vouched for honest "alice" and for "bot-1", who later joins a spam campaign.
+    return network(project("V", trusts={"P": 1.0}), project("P", vouches=["alice", "bot-1"]))
+
+
+def test_a_project_that_vouched_for_a_flagged_account_has_its_other_vouches_discounted():
+    net = endorsement_network()
+    assert evaluate_author(net, "V", "alice", now=NOW).belief == pytest.approx(0.8)
+    d = evaluate_author(net, "V", "alice", now=NOW, flagged_handles=frozenset({"bot-1"}))
+    assert d.belief == pytest.approx(0.4) and d.decision == "PROVISIONAL"  # not HOLD: only the endorsement weakens
+    assert d.ignored == ["discounted: P also vouched for a flagged campaign account"]
+
+
+def test_projects_that_only_received_spam_are_not_penalised():
+    net = network(project("V", trusts={"P": 1.0}), project("P", vouches=["alice"]))  # P never vouched for a bot
+    d = evaluate_author(net, "V", "alice", now=NOW, flagged_handles=frozenset({"bot-1"}))
+    assert d.belief == pytest.approx(0.8) and d.decision == "ACCEPT" and d.ignored == []
+
+
+def test_evaluate_pr_applies_the_discount_for_every_flagged_campaign_author():
+    net = endorsement_network()
+    pr = PR(id="pr-7", project="V", author="alice", created_at="2026-10-31T10:00:00Z", title="t", body="b", diff_text="d")
+    spam = Campaign(id="c", pr_ids=["pr-1"], projects=["V"], authors=["bot-1"], score=0.9, flagged=True,
+                    evidence=[], embedding_used=False)
+    assert evaluate_pr(net, "V", pr, [spam]).belief == pytest.approx(0.4)
+    assert evaluate_pr(net, "V", pr, [Campaign(**{**spam.__dict__, "flagged": False})]).belief == pytest.approx(0.8)

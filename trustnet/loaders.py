@@ -15,7 +15,8 @@ POLICY_PATH = Path(__file__).resolve().parent.parent / "policy.json"
 # section -> key -> (min, max, integer?); min is exclusive for "decay" and "vouch_weight" via MIN_EXCLUSIVE.
 _RULES = {
     "trust": {"decay": (0, 1, False), "max_hops": (1, 10, True), "min_trust": (0, 1, False),
-              "vouch_weight": (0, 1, False), "top_k": (1, 100, True), "no_evidence_factor": (0, 1, False)},
+              "vouch_weight": (0, 1, False), "top_k": (1, 100, True), "no_evidence_factor": (0, 1, False),
+              "flagged_endorser_factor": (0, 1, False)},
     "decision": {"hold_threshold": (0, 1, False), "accept_threshold": (0, 1, False)},
     "campaigns": {"similarity_threshold": (0, 1, False), "min_prs": (1, 10**6, True),
                   "min_projects": (1, 10**6, True), "window_hours": (0, 10**4, False),

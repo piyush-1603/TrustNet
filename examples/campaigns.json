@@ -56,7 +56,7 @@
     "evidence": [
       "38 PRs, 25 projects, 1h57m window, 100% accounts under 14 days",
       "Connected text similarity >= 0.85; embedding_used=true",
-      "policy_hash=9627212e5d74"
+      "policy_hash=d4a3f19cf397"
     ],
     "embedding_used": true
   }

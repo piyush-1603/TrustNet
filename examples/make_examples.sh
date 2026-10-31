@@ -44,6 +44,13 @@ if [ "$EMB_USED" != "True" ]; then
 fi
 echo "    [verified] embedding_used is true (nomic-embed-text)"
 
+echo "==> 2b. Publishing proj-01's campaign advisory, and proj-02 importing it..."
+$PY -m trustnet advisory --as proj-01 --network "$DIR/network" --out "$DIR/advisory.json"
+$PY -m trustnet evaluate --as proj-02 --pr pr-151 --network "$DIR/network" --no-local-detection --advisory "$DIR/advisory.json" --json > "$DIR/evaluate_with_advisory.json"
+
+echo "==> 2c. Evaluating a newcomer's PR (pr-203) as proj-01..."
+$PY -m trustnet evaluate --as proj-01 --pr pr-203 --network "$DIR/network" --json > "$DIR/evaluate_newcomer.json"
+
 echo "==> 3. Evaluating sample PR pr-001 as proj-01..."
 $PY -m trustnet evaluate --as proj-01 --pr pr-001 --network "$DIR/network" --json > "$DIR/evaluate.json"
 

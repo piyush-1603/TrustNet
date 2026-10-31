@@ -194,6 +194,39 @@ confirm which thresholds were active.
 
 ---
 
+## 7. Path to trust (what would move a newcomer to ACCEPT)
+
+For an author who is PROVISIONAL with belief `b`, one more vouch of strength `c` gives
+`b' = 1 − (1 − b)(1 − c)`. Setting `b' = accept_threshold` (0.5) gives `c = 1 − (1 − 0.5)/(1 − b)`,
+so the vouching project must be trusted by the viewer at `t = c / vouch_weight`. With `b = 0`,
+`t = 0.5 / 0.8 = 0.625`, shown as 0.63 (rounded up, never below `trust.min_trust`).
+The card lists up to three projects the viewer trusts at least that much, strongest first
+(the viewer itself counts, at 1.00). If `t > 1`, one vouch cannot be enough and the card says so.
+
+---
+
+## 8. Campaign advisories (how projects exchange findings)
+
+`trustnet advisory --as PROJ` writes `{format: "trustnet-advisory/1", issuer, issued_at, policy_hash,
+campaigns: [{id, authors, pr_ids, projects, score, evidence, embedding_used}]}` for the flagged campaigns only.
+No PR text is published. When another project passes the file to `evaluate --advisory`, the engine computes
+`T = project_trust(viewer, issuer)`. If `T ≥ trust.min_trust` and the PR author is listed, the decision is
+HOLD with the issuer and trust path as the reason. If not, the advisory is ignored and the output says
+`ignored: advisory from <issuer> (source not trusted)`.
+
+---
+
+## 9. Cost of vouching for campaign accounts
+
+Let `F` be every account flagged by a local campaign or listed in an advisory from a trusted issuer.
+When evaluating author `A ∉ F`, any voucher project that also vouched for some account in `F` has its
+contribution multiplied by `trust.flagged_endorser_factor` (0.5) and the output lists
+`discounted: <project> also vouched for a flagged campaign account`. This lowers belief; it never
+creates a HOLD by itself. Projects that only received campaign PRs are not affected. It is a heuristic:
+an honest project that vouched for one bot loses half the weight of its other vouches.
+
+---
+
 ## Summary of all thresholds
 
 | Key | Value | Meaning |
@@ -204,6 +237,7 @@ confirm which thresholds were active.
 | `trust.vouch_weight` | 0.8 | Scales each vouch/denounce contribution |
 | `trust.top_k` | 3 | Max vouching/denouncing projects used |
 | `trust.no_evidence_factor` | 0.5 | Denounce weight when no evidence_url |
+| `trust.flagged_endorser_factor` | 0.5 | Vouch weight multiplier for a project that also vouched for a flagged account |
 | `decision.hold_threshold` | 0.5 | d must reach this to trigger HOLD |
 | `decision.accept_threshold` | 0.5 | b must reach this to trigger ACCEPT |
 | `campaigns.similarity_threshold` | 0.85 | Minimum cosine similarity to cluster |

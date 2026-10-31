@@ -1,0 +1,18 @@
+{
+  "pr_id": "pr-203",
+  "viewer": "proj-01",
+  "author": "newcomer-00",
+  "decision": "PROVISIONAL",
+  "belief": 0.0,
+  "disbelief": 0.0,
+  "uncertainty": 1.0,
+  "reasons": [
+    "unknown to the projects this viewer trusts: provisional review, not a rejection"
+  ],
+  "paths": [],
+  "ignored": [],
+  "in_campaign": false,
+  "next_steps": [
+    "to reach ACCEPT: one vouch from a project proj-01 trusts at 0.63 or more, for example proj-01 (1.00), proj-02 (0.79), proj-29 (0.78)"
+  ]
+}

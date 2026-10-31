@@ -6,7 +6,8 @@
     "min_trust": 0.25,
     "vouch_weight": 0.8,
     "top_k": 3,
-    "no_evidence_factor": 0.5
+    "no_evidence_factor": 0.5,
+    "flagged_endorser_factor": 0.5
   },
   "decision": {
     "hold_threshold": 0.5,

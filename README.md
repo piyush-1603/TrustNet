@@ -10,8 +10,32 @@ as distrusted.
 
 ---
 
+## What makes TrustNet different
+
+1. **Every answer is relative to the asking project.** The same pull request can be ACCEPT for one
+   project and PROVISIONAL for another. There is no global score and no central server.
+2. **Newcomers are unknown, not guilty, and they get a way forward.** No history means PROVISIONAL
+   (a review queue), never a block. The decision card also says what would move them to ACCEPT:
+   "one vouch from a project you trust at 0.63 or more, for example proj-02 (0.79)".
+3. **Brigading does nothing.** Denounces from projects you do not trust are ignored and listed. A
+   denounce without evidence counts half; an expired one counts zero.
+4. **Evidence travels, authority does not.** A project that finds a spam campaign publishes an
+   advisory file. Another project imports it, and it only counts if that project already trusts the
+   issuer. A fake project cannot get anyone held.
+5. **Vouching for spam costs you.** If a project vouched for an account that is later flagged in a
+   campaign, its other vouches count half. Projects that merely received the spam are not penalised.
+6. **A real open model, kept in its place.** `nomic-embed-text` (via Ollama) catches reworded spam;
+   deterministic rules in `policy.json` make every decision, and every decision shows its trust path.
+7. **An honest benchmark.** The attack lab compares naive counting with TrustNet on five synthetic
+   attacks, and includes one where the defense fails by design (a compromised trusted source).
+   These are regression fixtures, not general attack-resistance claims.
+
+---
+
 ## Table of contents
 
+- [What makes TrustNet different](#what-makes-trustnet-different)
+- [Problem statement coverage](#problem-statement-coverage)
 - [Install](#install)
 - [Quick start](#quick-start)
 - [Commands](#commands)
@@ -55,6 +79,10 @@ python -m trustnet evaluate --as proj-01 --pr pr-042
 # 3. Detect coordinated spam campaigns
 python -m trustnet campaigns
 
+# 3b. Share what one project found, and let another project use it
+python -m trustnet advisory --as proj-01 --out advisory.json
+python -m trustnet evaluate --as proj-02 --pr pr-151 --no-local-detection --advisory advisory.json
+
 # 4. Run the adversarial lab (naive vs defended comparison)
 python -m trustnet lab
 
@@ -72,8 +100,11 @@ python -m trustnet report
 |---|---|
 | `simulate` | Generates a seeded network with planted attacks in `network/` |
 | `evaluate --as PROJ --pr ID` | Evaluates PR `ID` from project `PROJ`'s viewpoint |
+| `evaluate ... --advisory FILE` | Also imports a campaign advisory; honored only if its issuer is trusted. Repeatable. |
+| `evaluate ... --no-local-detection` | Skips the local detector, to show what an imported advisory alone does |
 | `campaigns` | Clusters near-duplicate PRs and flags coordinated campaigns |
-| `lab` | Runs four attack scenarios; prints naive vs defended table |
+| `advisory --as PROJ --out FILE` | Publishes the flagged campaigns as a shareable advisory file |
+| `lab` | Runs five synthetic attack scenarios (four defended, one failing control); prints naive vs defended decisions |
 | `report` | Renders a self-contained HTML report with all results |
 
 ---
@@ -127,7 +158,9 @@ long as the viewer does not trust those projects.
 
 A contributor with no vouches and no denounces anywhere in the network gets `PROVISIONAL`.
 They are never auto-rejected for lack of history. `PROVISIONAL` means the project's normal
-review process applies — a human looks at the PR.
+review process applies — a human looks at the PR. The decision also carries a **path to
+trust**: how strong a vouch would lift the author to ACCEPT, and which projects the viewer
+trusts enough to give it.
 
 ### 5. Where is the decentralization?
 
@@ -149,6 +182,41 @@ Crucially, the model only supplies a similarity score. All trust and campaign de
 are made by **deterministic rules** in `policy.json`. This keeps the system auditable and
 explainable.
 
+### 7. How do projects exchange trust information?
+
+Two ways, both without a central server. First, every project's vouch and denounce lists are
+public files that other projects read, weighted by how much the reader trusts the owner.
+Second, a project that detects a campaign can publish an **advisory** (`trustnet advisory`):
+a small JSON file with the flagged accounts and the evidence. A project that imports it
+(`evaluate --advisory`) holds those accounts only if it already trusts the issuer; otherwise the
+advisory is ignored and says so.
+
+### 8. What stops projects from vouching for spammers or colluding?
+
+Trust is relative to the viewer, so colluding projects only affect people who already trust
+them. Within a viewer's own trust graph, a project that vouched for an account later flagged in a
+campaign has its other vouches discounted (`trust.flagged_endorser_factor`, default 0.5).
+Projects that only received the spam are not penalised. The lab includes one case that still
+defeats the defense: a project the viewer trusts directly that turns malicious.
+
+---
+
+## Problem statement coverage
+
+| Requirement (Problem 7) | Where it is covered |
+|---|---|
+| Public vouch and denounce records per project | `network/projects/<id>.json`, validated by `loaders.py` |
+| Projects exchange trust information | Trust edges between projects, plus campaign advisories (`advisory`, `--advisory`) |
+| Identify suspicious patterns across projects | Campaign detector: similarity clusters, project spread, time window, account age |
+| Detect coordinated spam campaigns | `campaigns`; 38-PR planted campaign found with `nomic-embed-text` |
+| No central authority | Decisions are computed per viewer from public files; advisories only count from trusted issuers |
+| Fair evaluation of new contributors | PROVISIONAL, never HOLD for lack of history; path-to-trust hint |
+| Do not exclude legitimate newcomers | 15 simulated newcomers: 0 HOLD; legitimate bulk bump not flagged |
+| Malicious denounces | Untrusted sources ignored; evidence and expiry matter |
+| Transitive trust (A trusts B trusts C) | Best path, 0.6 decay per hop, 3 hops, never summed |
+| Why AI-text detection alone is not enough | Behavior signals (similarity, account age, spread, timing) |
+| Simulated network of 20-50 projects | `simulate` makes 39 projects; the organizers' own format is not known (see below) |
+
 ---
 
 ## What is not built
@@ -161,8 +229,13 @@ explainable.
   designed to read real data once the organizers share their format.
 - **Collusion cap:** The design notes a stretch goal to cap how much two mutually-trusting
   projects can inflate each other's score. Not implemented.
-- **Extra lab scenarios:** The lab covers four attack types. Additional scenarios
-  (e.g. gradual reputation laundering) are not yet included.
+- **Extra lab scenarios:** The lab covers four attacks plus one failing control. Additional
+  scenarios (e.g. gradual reputation laundering) are not included.
+- **Live GitHub integration:** TrustNet reads files, not GitHub. A GitHub Action or webhook that
+  produces the input files is the natural next step; it was not built.
+- **Organizers' input format:** If it differs from ours, a small adapter in `loaders.py` is needed.
+- **Calibrated thresholds:** All numbers in `policy.json` are our own defaults, tuned on our own
+  simulation.
 
 ---
 
@@ -171,7 +244,8 @@ explainable.
 ```
 trustnet/           Python package
   models.py         dataclasses: Project, Account, PR, Network, Decision, Campaign
-  loaders.py        load_network(path) -> Network
+  loaders.py        load_network(path) -> Network, load_policy() -> (policy, hash)
+  advisory.py       build_advisory / load_advisory (campaign advisories)
   trust.py          project_trust, evaluate_author, evaluate_pr, naive_score
   similarity.py     TF-IDF + nomic-embed-text cosine similarity
   campaigns.py      coordinated campaign detector
@@ -185,6 +259,7 @@ tests/
   test_smoke.py     package import + PR template checks
   test_fixtures.py  fixture structure and scenario validation
   test_trust.py     trust engine unit tests
+  test_advisory.py  advisory file and trusted-issuer tests
   test_loaders.py   loader tests
   test_similarity.py  TF-IDF + mocked Ollama tests
   test_campaigns.py   campaign detector tests

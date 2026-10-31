@@ -11,7 +11,8 @@ Hacktoberfest 2026 Hack Day, Sonipat · Team Sophons · Problem 7
 
 - [ ] `cd TrustNet && source .venv/bin/activate`
 - [ ] `python -m trustnet simulate --projects 30 --seed 42` — confirm it finishes
-- [ ] `ollama list` — confirm `nomic-embed-text` is listed
+- [ ] `ollama list` — confirm `nomic-embed-text` is listed (Ollama must be running: `ollama serve`)
+- [ ] `python -m trustnet advisory --as proj-01 --out advisory.json` — creates the file used in 3f
 - [ ] Open the HTML report in a browser tab (generated in the step above)
 - [ ] Font size in terminal ≥ 18pt, browser zoom ≥ 125%
 - [ ] Have `examples/` folder open in a second tab as backup
@@ -69,7 +70,8 @@ python -m trustnet evaluate --as proj-01 --pr pr-203
 **Say:**
 > "This newcomer has no vouch and no denounce anywhere. Belief is 0,
 > disbelief is 0, uncertainty is 1. The decision is PROVISIONAL.
-> They are never blocked just for being new."
+> They are never blocked just for being new. And the card tells them the way
+> forward: which trusted projects could vouch for them, and how strongly."
 
 **Point to output lines:**
 ```
@@ -77,6 +79,7 @@ PR pr-203  |  Author: newcomer-00  |  Viewer: proj-01
 Decision     : PROVISIONAL
 Belief       : 0.00   Disbelief: 0.00   Uncertainty: 1.00
 Reasons      : unknown to the projects this viewer trusts: provisional review, not a rejection
+Path to trust: to reach ACCEPT: one vouch from a project proj-01 trusts at 0.63 or more, for example proj-01 (1.00), proj-02 (0.79), ...
 ```
 
 🔴 **Fallback:** run the same command with `--network examples/network` (the pre-generated data).
@@ -144,7 +147,33 @@ campaign-...  [FLAGGED]  score=1.00
 
 ---
 
-## Segment 4 — Lab & synthetic regressions (4:30 – 5:30)
+### 3f. Evidence travels, authority does not (4:30 – 5:15)
+
+```bash
+python -m trustnet advisory --as proj-01 --out advisory.json
+python -m trustnet evaluate --as proj-02 --pr pr-151 --no-local-detection
+python -m trustnet evaluate --as proj-02 --pr pr-151 --no-local-detection --advisory advisory.json
+python -m trustnet evaluate --as proj-03 --pr pr-151 --no-local-detection --advisory advisory.json
+```
+
+**Say:**
+> "proj-01 found the campaign and published an advisory: a small file with the flagged
+> accounts and the evidence. proj-02 never ran the detector. Without the file it says
+> PROVISIONAL. With the file, HOLD — because proj-02 trusts proj-01. proj-03 does not trust
+> proj-01, so it ignores the same file and says why. Evidence travels between projects,
+> but only along trust. A fake project can't use this to get anyone held."
+
+**Point to output lines:**
+```
+proj-02 with advisory : HOLD   listed in campaign advisory ... from proj-01 (trust 0.69, path proj-02 > proj-01)
+proj-03 with advisory : PROVISIONAL   ignored: advisory from proj-01 (source not trusted)
+```
+
+🔴 **Fallback:** `cat examples/advisory.json`, then `cat examples/evaluate_with_advisory.json`.
+
+---
+
+## Segment 4 — Lab & synthetic regressions (5:15 – 6:00)
 
 ```bash
 python -m trustnet lab
@@ -181,7 +210,7 @@ python -m trustnet lab
 
 ---
 
-## Segment 5 — Model and close (5:30 – 7:00)
+## Segment 5 — Model and close (6:00 – 7:15)
 
 ### Open the HTML report
 
@@ -211,7 +240,7 @@ open report.html        # macOS; use xdg-open on Linux
 
 ---
 
-## Segment 6 — Buffer / Q&A prep (7:00 – 8:00)
+## Segment 6 — Buffer / Q&A prep (7:15 – 8:00)
 
 Use this time to switch to the browser report if judges want to see it,
 or to run any command a judge asks for. See Q&A cards below.

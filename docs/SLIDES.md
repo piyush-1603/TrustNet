@@ -51,6 +51,19 @@
 
 ---
 
+## Slide 3b: What Makes TrustNet Different (add after Slide 3, 30 seconds)
+
+### Visual / Layout:
+- Five short lines, one icon each: viewpoint, newcomer path, brigade ignored, advisory file, endorsement cost.
+
+### Talking Points:
+- "Every answer is relative to the project asking. There is no global score."
+- "A newcomer is unknown, not guilty — and the card tells them which trusted project could vouch for them."
+- "Brigades of fake projects are ignored. Evidence travels as an advisory file, but only along trust."
+- "If a project vouches for an account that turns out to be spam, its other vouches count half."
+
+---
+
 ## Slide 4: Mathematics of Trust Propagation
 
 ### Visual / Layout:
