@@ -1,0 +1,186 @@
+{
+  "id": "proj-29",
+  "name": "meta-net",
+  "trusts": [
+    {
+      "project": "proj-23",
+      "weight": 0.66
+    },
+    {
+      "project": "proj-03",
+      "weight": 0.74
+    },
+    {
+      "project": "proj-08",
+      "weight": 0.65
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "carol-h139",
+      "date": "2026-02-17T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/carol-h139"
+    },
+    {
+      "handle": "jack-k009",
+      "date": "2025-07-02T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/jack-k009"
+    },
+    {
+      "handle": "bob-e092",
+      "date": "2025-09-13T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/bob-e092"
+    },
+    {
+      "handle": "paul-d179",
+      "date": "2025-08-27T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/paul-d179"
+    },
+    {
+      "handle": "nate-f137",
+      "date": "2025-06-14T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/nate-f137"
+    },
+    {
+      "handle": "bob-y152",
+      "date": "2025-05-07T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/bob-y152"
+    },
+    {
+      "handle": "alice-k163",
+      "date": "2026-04-30T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/alice-k163"
+    },
+    {
+      "handle": "quinn-z021",
+      "date": "2025-10-13T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/quinn-z021"
+    },
+    {
+      "handle": "opal-f027",
+      "date": "2026-09-06T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/opal-f027"
+    },
+    {
+      "handle": "dana-x063",
+      "date": "2025-05-25T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/dana-x063"
+    },
+    {
+      "handle": "iris-r168",
+      "date": "2026-06-16T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/iris-r168"
+    },
+    {
+      "handle": "zach-t170",
+      "date": "2025-12-03T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/zach-t170"
+    },
+    {
+      "handle": "blake-c090",
+      "date": "2025-08-02T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/blake-c090"
+    },
+    {
+      "handle": "uma-y042",
+      "date": "2026-07-06T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/uma-y042"
+    },
+    {
+      "handle": "sam-n165",
+      "date": "2026-06-05T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/sam-n165"
+    },
+    {
+      "handle": "dave-c156",
+      "date": "2026-05-09T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/dave-c156"
+    },
+    {
+      "handle": "leo-n011",
+      "date": "2025-10-10T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/leo-n011"
+    },
+    {
+      "handle": "mia-p144",
+      "date": "2025-11-16T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/mia-p144"
+    },
+    {
+      "handle": "victor-k185",
+      "date": "2025-10-15T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/victor-k185"
+    },
+    {
+      "handle": "grace-x173",
+      "date": "2025-06-22T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/grace-x173"
+    },
+    {
+      "handle": "frank-f181",
+      "date": "2026-03-04T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/frank-f181"
+    },
+    {
+      "handle": "uma-r102",
+      "date": "2025-04-16T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/uma-r102"
+    },
+    {
+      "handle": "mia-w084",
+      "date": "2025-05-25T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/mia-w084"
+    },
+    {
+      "handle": "zach-a110",
+      "date": "2025-10-10T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/zach-a110"
+    },
+    {
+      "handle": "leo-s191",
+      "date": "2025-06-01T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/leo-s191"
+    },
+    {
+      "handle": "bob-c002",
+      "date": "2026-06-24T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/bob-c002"
+    },
+    {
+      "handle": "eve-d025",
+      "date": "2025-07-10T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/eve-d025"
+    },
+    {
+      "handle": "dave-a066",
+      "date": "2025-06-25T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/dave-a066"
+    },
+    {
+      "handle": "rose-p056",
+      "date": "2025-11-09T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/rose-p056"
+    },
+    {
+      "handle": "yara-y130",
+      "date": "2026-07-25T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/yara-y130"
+    },
+    {
+      "handle": "uma-a132",
+      "date": "2025-11-28T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/uma-a132"
+    },
+    {
+      "handle": "tara-m142",
+      "date": "2026-08-17T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/tara-m142"
+    },
+    {
+      "handle": "hank-t148",
+      "date": "2026-06-06T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/hank-t148"
+    }
+  ],
+  "denounces": []
+}

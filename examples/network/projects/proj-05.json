@@ -1,0 +1,121 @@
+{
+  "id": "proj-05",
+  "name": "arch-box",
+  "trusts": [
+    {
+      "project": "proj-02",
+      "weight": 0.34
+    },
+    {
+      "project": "proj-29",
+      "weight": 0.31
+    },
+    {
+      "project": "proj-09",
+      "weight": 0.69
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "grace-v083",
+      "date": "2026-04-12T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/grace-v083"
+    },
+    {
+      "handle": "alice-z043",
+      "date": "2026-07-15T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/alice-z043"
+    },
+    {
+      "handle": "corey-e158",
+      "date": "2025-04-27T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/corey-e158"
+    },
+    {
+      "handle": "opal-h117",
+      "date": "2026-06-07T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/opal-h117"
+    },
+    {
+      "handle": "rose-a176",
+      "date": "2025-04-06T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/rose-a176"
+    },
+    {
+      "handle": "bob-e092",
+      "date": "2025-04-27T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/bob-e092"
+    },
+    {
+      "handle": "tara-a022",
+      "date": "2026-03-17T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/tara-a022"
+    },
+    {
+      "handle": "quinn-b111",
+      "date": "2025-10-09T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/quinn-b111"
+    },
+    {
+      "handle": "opal-f027",
+      "date": "2025-10-07T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/opal-f027"
+    },
+    {
+      "handle": "bob-w062",
+      "date": "2026-05-03T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/bob-w062"
+    },
+    {
+      "handle": "blake-w150",
+      "date": "2026-02-02T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/blake-w150"
+    },
+    {
+      "handle": "uma-r102",
+      "date": "2026-06-18T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/uma-r102"
+    },
+    {
+      "handle": "aria-c134",
+      "date": "2026-05-05T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/aria-c134"
+    },
+    {
+      "handle": "zach-y020",
+      "date": "2026-01-12T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/zach-y020"
+    },
+    {
+      "handle": "leo-q101",
+      "date": "2026-03-13T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/leo-q101"
+    },
+    {
+      "handle": "carol-q079",
+      "date": "2026-04-07T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/carol-q079"
+    },
+    {
+      "handle": "yara-r190",
+      "date": "2026-04-28T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/yara-r190"
+    },
+    {
+      "handle": "rose-y086",
+      "date": "2026-07-16T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/rose-y086"
+    },
+    {
+      "handle": "rose-p056",
+      "date": "2026-04-03T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/rose-p056"
+    },
+    {
+      "handle": "eve-x085",
+      "date": "2025-05-14T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/eve-x085"
+    }
+  ],
+  "denounces": []
+}

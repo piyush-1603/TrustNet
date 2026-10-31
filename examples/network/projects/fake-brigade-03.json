@@ -1,0 +1,15 @@
+{
+  "id": "fake-brigade-03",
+  "name": "fake-brigade-project-03",
+  "trusts": [],
+  "vouches": [],
+  "denounces": [
+    {
+      "handle": "blake-a000",
+      "reason_code": "spam",
+      "evidence_url": null,
+      "date": "2026-10-21T20:00:00Z",
+      "expires": null
+    }
+  ]
+}

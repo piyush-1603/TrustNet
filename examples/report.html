@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TrustNet decentralised trust evaluation report">
+  <title>TrustNet Report</title>
+  <style>
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#f0f4ff;--surface:#fff;--card:#fff;--card-hover:#f5f8ff;
+  --border:#d8e0f0;--text:#0f172a;--text-muted:#5a6e8a;
+  --accent:#4f46e5;--accent2:#818cf8;
+  --accept-bg:#dcfce7;--accept-text:#15803d;--accept-bd:#86efac;
+  --prov-bg:#fef9c3;--prov-text:#854d0e;--prov-bd:#fde047;
+  --hold-bg:#fee2e2;--hold-text:#b91c1c;--hold-bd:#fca5a5;
+  --node-f:#dbeafe;--node-s:#3b82f6;--node-t:#1e40af;
+  --edge:#3b82f6;--edge-dashed:#ef4444;
+  --fake-f:#fef2f2;--fake-s:#ef4444;--fake-t:#b91c1c;
+  --shadow:0 1px 4px rgba(0,0,0,.08),0 2px 10px rgba(0,0,0,.06);
+  --shadow-h:0 4px 16px rgba(0,0,0,.12);
+  --r:12px;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#080e1f;--surface:#0f1729;--card:#141f35;--card-hover:#1a2844;
+    --border:#1e2d4a;--text:#e2e8f0;--text-muted:#94a3b8;
+    --accent:#818cf8;--accent2:#a5b4fc;
+    --accept-bg:#052e16;--accept-text:#86efac;--accept-bd:#16a34a;
+    --prov-bg:#431407;--prov-text:#fcd34d;--prov-bd:#d97706;
+    --hold-bg:#450a0a;--hold-text:#fca5a5;--hold-bd:#dc2626;
+    --node-f:#0f2144;--node-s:#60a5fa;--node-t:#bfdbfe;
+    --edge:#60a5fa;--edge-dashed:#f87171;
+    --fake-f:#300a0a;--fake-s:#f87171;--fake-t:#fca5a5;
+    --shadow:0 1px 4px rgba(0,0,0,.4),0 2px 10px rgba(0,0,0,.3);
+    --shadow-h:0 4px 20px rgba(0,0,0,.5);
+  }
+}
+
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.6;font-size:16px}
+
+.site-header{background:var(--surface);border-bottom:1px solid var(--border);
+  padding:1rem 1.5rem;position:sticky;top:0;z-index:100}
+.header-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);letter-spacing:-.02em}
+.subtitle{font-size:.8rem;color:var(--text-muted)}
+
+main{max-width:1100px;margin:0 auto;padding:2rem 1rem}
+section{margin-bottom:3rem}
+h2{font-size:1.15rem;font-weight:700;color:var(--text);display:inline-block;
+  border-bottom:3px solid var(--accent);padding-bottom:.3rem;margin-bottom:1rem}
+.section-note{font-size:.8rem;color:var(--text-muted);margin-bottom:.75rem}
+
+/* stat bar */
+.stat-bar{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:.85rem 1.25rem;min-width:110px;text-align:center;box-shadow:var(--shadow);flex:1}
+.stat-card .num{font-size:1.9rem;font-weight:800;color:var(--accent);line-height:1}
+.stat-card .lbl{font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-top:.2rem}
+
+/* badge */
+.badge{display:inline-block;padding:.2rem .65rem;border-radius:999px;
+  font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;border-width:1px;border-style:solid}
+.badge-accept{background:var(--accept-bg);color:var(--accept-text);border-color:var(--accept-bd)}
+.badge-provisional{background:var(--prov-bg);color:var(--prov-text);border-color:var(--prov-bd)}
+.badge-hold{background:var(--hold-bg);color:var(--hold-text);border-color:var(--hold-bd)}
+
+/* decision grid */
+.decision-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1rem;margin-top:1rem}
+.dc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem;
+  box-shadow:var(--shadow);transition:box-shadow .2s,transform .2s}
+.dc:hover{box-shadow:var(--shadow-h);transform:translateY(-2px)}
+.dc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.65rem}
+.pr-id{font-family:ui-monospace,monospace;font-size:.82rem;font-weight:700;color:var(--text)}
+.pr-meta{font-size:.75rem;color:var(--text-muted);margin-top:.15rem}
+.metrics{display:flex;gap:1.25rem;margin:.65rem 0;flex-wrap:wrap}
+.metric .ml{font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em}
+.metric .mv{font-size:1rem;font-weight:700;color:var(--text)}
+.tag-list{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.5rem}
+.tag{background:var(--surface);border:1px solid var(--border);border-radius:6px;
+  padding:.12rem .45rem;font-size:.7rem;color:var(--text-muted);font-family:ui-monospace,monospace}
+.tag-ign{background:var(--hold-bg);border-color:var(--hold-bd);color:var(--hold-text)}
+.campaign-flag{font-size:.72rem;font-weight:700;color:var(--hold-text);
+  background:var(--hold-bg);border:1px solid var(--hold-bd);border-radius:6px;
+  padding:.15rem .5rem;display:inline-block;margin-top:.4rem}
+.more-note{font-size:.8rem;color:var(--text-muted);text-align:center;margin-top:1rem;padding:.5rem;
+  border:1px dashed var(--border);border-radius:var(--r)}
+
+/* side by side */
+.sbs-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+.sbs-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:1.1rem;box-shadow:var(--shadow)}
+.sbs-viewer{font-size:.75rem;color:var(--text-muted);margin-bottom:.25rem}
+.sbs-proj{font-family:ui-monospace,monospace;font-size:.88rem;font-weight:700;margin-bottom:.65rem}
+
+/* campaign card */
+.campaign-card{background:var(--card);border:1px solid var(--hold-bd);border-left:4px solid var(--hold-text);
+  border-radius:var(--r);padding:1.1rem;margin-top:1rem;box-shadow:var(--shadow)}
+.cc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.65rem}
+.cc-header h3{font-size:.95rem;font-weight:700}
+.score-pill{background:var(--hold-bg);color:var(--hold-text);border:1px solid var(--hold-bd);
+  border-radius:999px;padding:.15rem .6rem;font-size:.78rem;font-weight:700}
+.ev-list{list-style:none;margin-top:.5rem}
+.ev-list li{font-size:.82rem;color:var(--text-muted);padding:.18rem 0 .18rem 1.3rem;position:relative}
+.ev-list li::before{content:"⚡";position:absolute;left:0;font-size:.7rem}
+.cc-counts{display:flex;gap:1.5rem;margin-top:.75rem;flex-wrap:wrap}
+.cc-count .cc-num{font-size:1.3rem;font-weight:700;color:var(--hold-text)}
+.cc-count .cc-lbl{font-size:.7rem;color:var(--text-muted);text-transform:uppercase}
+.no-campaigns{font-size:.9rem;color:var(--text-muted);padding:1rem;
+  border:1px dashed var(--border);border-radius:var(--r);text-align:center;margin-top:1rem}
+
+/* lab table */
+.lab-wrap{overflow-x:auto;margin-top:1rem}
+.lab-table{width:100%;border-collapse:collapse;font-size:.88rem}
+.lab-table th,.lab-table td{text-align:left;padding:.65rem 1rem;border-bottom:1px solid var(--border)}
+.lab-table th{background:var(--surface);color:var(--text-muted);font-size:.73rem;
+  text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.lab-table tr:hover td{background:var(--card-hover)}
+.better{color:var(--accept-text);font-weight:700}
+.no-lab{font-size:.9rem;color:var(--text-muted);padding:1rem;
+  border:1px dashed var(--border);border-radius:var(--r);text-align:center;margin-top:1rem}
+
+/* trust graph */
+.graph-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:1rem;margin-top:1rem;overflow-x:auto}
+.graph-wrap svg{display:block;margin:auto;max-width:100%;height:auto}
+
+/* graph SVG classes (CSS vars work in inline SVG) */
+.gn{fill:var(--node-f);stroke:var(--node-s);stroke-width:1.5}
+.gn-fake{fill:var(--fake-f);stroke:var(--fake-s);stroke-width:1.5;stroke-dasharray:4 3}
+.gn-victim{fill:var(--accept-bg);stroke:var(--accept-bd);stroke-width:2}
+.ge{stroke:var(--edge);fill:none;stroke-width:1;stroke-opacity:.5}
+.ge-ignored{stroke:var(--edge-dashed);fill:none;stroke-width:1.5;stroke-dasharray:5 4}
+.gt{fill:var(--node-t);font-size:8px;text-anchor:middle;dominant-baseline:central;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:600}
+.gt-fake{fill:var(--fake-t);font-size:8px;text-anchor:middle;dominant-baseline:central;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif}
+.ge-label{fill:var(--edge-dashed);font-size:8px;text-anchor:middle;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif}
+.graph-legend{font-size:.78rem;color:var(--text-muted);margin-top:.5rem;display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center}
+.legend-item{display:flex;align-items:center;gap:.35rem}
+.legend-line{width:24px;height:2px;display:inline-block}
+.legend-solid{background:var(--edge)}
+.legend-dashed{background:transparent;border-top:2px dashed var(--edge-dashed)}
+
+/* footer */
+.site-footer{text-align:center;padding:2rem 1rem;color:var(--text-muted);
+  font-size:.8rem;border-top:1px solid var(--border);margin-top:3rem}
+
+/* responsive */
+@media(max-width:640px){
+  main{padding:1rem .75rem}
+  .stat-bar{gap:.5rem}
+  .stat-card{min-width:80px;padding:.65rem .9rem}
+  .stat-card .num{font-size:1.4rem}
+  .decision-grid{grid-template-columns:1fr}
+  .sbs-grid{grid-template-columns:1fr}
+  .metrics{gap:.75rem}
+  h2{font-size:1rem}
+}
+
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <span class="logo">&#x1F6E1; TrustNet</span>
+    <span class="subtitle">Decentralised Trust Report &middot; 2026-10-31 18:29 UTC</span>
+  </div>
+</header>
+<main>
+<section id="overview">
+  <h2>Overview</h2>
+  <div class="stat-bar">
+    <div class="stat-card"><div class="num">39</div><div class="lbl">Projects</div></div>
+    <div class="stat-card"><div class="num">238</div><div class="lbl">Accounts</div></div>
+    <div class="stat-card"><div class="num">202</div><div class="lbl">PRs evaluated</div></div>
+    <div class="stat-card"><div class="num" style="color:var(--accept-text)">89</div><div class="lbl">Accept</div></div>
+    <div class="stat-card"><div class="num" style="color:var(--prov-text)">74</div><div class="lbl">Provisional</div></div>
+    <div class="stat-card"><div class="num" style="color:var(--hold-text)">39</div><div class="lbl">Hold</div></div>
+    <div class="stat-card"><div class="num" style="color:var(--hold-text)">1</div><div class="lbl">Campaigns flagged</div></div>
+  </div>
+</section>
+<section id="decisions">
+  <h2>Decisions</h2>
+  <p class="section-note">Evaluated from the default viewer project&apos;s perspective.</p>
+  <div class="decision-grid">
+<div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-151</div>
+      <div class="pr-meta">Author: <strong>bot-00</strong> &middot; Viewer: proj-01</div>
+    </div>
+    <span class="badge badge-hold">HOLD</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">1.00</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">member of a flagged spam campaign</span></div>
+  
+  <div class="campaign-flag">&#x26A0; Campaign member</div>
+</div>
+<div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-152</div>
+      <div class="pr-meta">Author: <strong>bot-01</strong> &middot; Viewer: proj-01</div>
+    </div>
+    <span class="badge badge-hold">HOLD</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">1.00</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">member of a flagged spam campaign</span></div>
+  
+  <div class="campaign-flag">&#x26A0; Campaign member</div>
+</div>
+<div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-153</div>
+      <div class="pr-meta">Author: <strong>bot-02</strong> &middot; Viewer: proj-01</div>
+    </div>
+    <span class="badge badge-hold">HOLD</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">1.00</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">member of a flagged spam campaign</span></div>
+  
+  <div class="campaign-flag">&#x26A0; Campaign member</div>
+</div>
+<div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-154</div>
+      <div class="pr-meta">Author: <strong>bot-03</strong> &middot; Viewer: proj-01</div>
+    </div>
+    <span class="badge badge-hold">HOLD</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">1.00</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">member of a flagged spam campaign</span></div>
+  
+  <div class="campaign-flag">&#x26A0; Campaign member</div>
+</div>
+<div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-155</div>
+      <div class="pr-meta">Author: <strong>bot-04</strong> &middot; Viewer: proj-01</div>
+    </div>
+    <span class="badge badge-hold">HOLD</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">1.00</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">member of a flagged spam campaign</span></div>
+  
+  <div class="campaign-flag">&#x26A0; Campaign member</div>
+</div>
+<div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-156</div>
+      <div class="pr-meta">Author: <strong>bot-05</strong> &middot; Viewer: proj-01</div>
+    </div>
+    <span class="badge badge-hold">HOLD</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">1.00</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">member of a flagged spam campaign</span></div>
+  
+  <div class="campaign-flag">&#x26A0; Campaign member</div>
+</div>
+<div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-157</div>
+      <div class="pr-meta">Author: <strong>bot-06</strong> &middot; Viewer: proj-01</div>
+    </div>
+    <span class="badge badge-hold">HOLD</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">1.00</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">member of a flagged spam campaign</span></div>
+  
+  <div class="campaign-flag">&#x26A0; Campaign member</div>
+</div>
+<div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-158</div>
+      <div class="pr-meta">Author: <strong>bot-07</strong> &middot; Viewer: proj-01</div>
+    </div>
+    <span class="badge badge-hold">HOLD</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">1.00</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">member of a flagged spam campaign</span></div>
+  
+  <div class="campaign-flag">&#x26A0; Campaign member</div>
+</div>
+<div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-003</div>
+      <div class="pr-meta">Author: <strong>jack-n099</strong> &middot; Viewer: proj-01</div>
+    </div>
+    <span class="badge badge-provisional">PROVISIONAL</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.45</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">0.55</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">vouched by proj-26 (strength 0.27, path proj-01 &gt; proj-02 &gt; proj-26)</span><span class="tag">vouched by proj-23 (strength 0.25, path proj-01 &gt; proj-29 &gt; proj-23)</span><span class="tag">belief 0.45 is below 0.5: provisional review</span></div>
+  
+  
+</div>
+<div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-004</div>
+      <div class="pr-meta">Author: <strong>paul-b089</strong> &middot; Viewer: proj-01</div>
+    </div>
+    <span class="badge badge-provisional">PROVISIONAL</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.28</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">0.72</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">vouched by proj-03 (strength 0.28, path proj-01 &gt; proj-29 &gt; proj-03)</span><span class="tag">belief 0.28 is below 0.5: provisional review</span></div>
+  <div class="tag-list"><span class="tag tag-ign">ignored: source not trusted: proj-07 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-09 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-18 (vouch)</span></div>
+  
+</div>
+<div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-006</div>
+      <div class="pr-meta">Author: <strong>wendy-d157</strong> &middot; Viewer: proj-01</div>
+    </div>
+    <span class="badge badge-provisional">PROVISIONAL</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.28</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">0.72</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">vouched by proj-03 (strength 0.28, path proj-01 &gt; proj-29 &gt; proj-03)</span><span class="tag">belief 0.28 is below 0.5: provisional review</span></div>
+  <div class="tag-list"><span class="tag tag-ign">ignored: source not trusted: proj-10 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-14 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-22 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-25 (vouch)</span></div>
+  
+</div>
+<div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-008</div>
+      <div class="pr-meta">Author: <strong>kate-c046</strong> &middot; Viewer: proj-01</div>
+    </div>
+    <span class="badge badge-provisional">PROVISIONAL</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.45</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">0.55</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">vouched by proj-03 (strength 0.28, path proj-01 &gt; proj-29 &gt; proj-03)</span><span class="tag">vouched by proj-08 (strength 0.24, path proj-01 &gt; proj-29 &gt; proj-08)</span><span class="tag">belief 0.45 is below 0.5: provisional review</span></div>
+  <div class="tag-list"><span class="tag tag-ign">ignored: source not trusted: proj-11 (vouch)</span></div>
+  
+</div>
+<div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-009</div>
+      <div class="pr-meta">Author: <strong>jack-n099</strong> &middot; Viewer: proj-01</div>
+    </div>
+    <span class="badge badge-provisional">PROVISIONAL</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.45</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">0.55</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">vouched by proj-26 (strength 0.27, path proj-01 &gt; proj-02 &gt; proj-26)</span><span class="tag">vouched by proj-23 (strength 0.25, path proj-01 &gt; proj-29 &gt; proj-23)</span><span class="tag">belief 0.45 is below 0.5: provisional review</span></div>
+  
+  
+</div>
+<div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-016</div>
+      <div class="pr-meta">Author: <strong>aria-t104</strong> &middot; Viewer: proj-01</div>
+    </div>
+    <span class="badge badge-provisional">PROVISIONAL</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">1.00</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">unknown to the projects this viewer trusts: provisional review, not a rejection</span></div>
+  <div class="tag-list"><span class="tag tag-ign">ignored: source not trusted: proj-27 (vouch)</span></div>
+  
+</div>
+<div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-001</div>
+      <div class="pr-meta">Author: <strong>frank-b001</strong> &middot; Viewer: proj-01</div>
+    </div>
+    <span class="badge badge-accept">ACCEPT</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.86</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">0.14</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">vouched by proj-01 (strength 0.80, path proj-01)</span><span class="tag">vouched by proj-03 (strength 0.28, path proj-01 &gt; proj-29 &gt; proj-03)</span><span class="tag">belief 0.86 is at least 0.5</span></div>
+  <div class="tag-list"><span class="tag tag-ign">ignored: source not trusted: proj-04 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-20 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-25 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-27 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-28 (vouch)</span></div>
+  
+</div>
+<div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-002</div>
+      <div class="pr-meta">Author: <strong>blake-a000</strong> &middot; Viewer: proj-01</div>
+    </div>
+    <span class="badge badge-accept">ACCEPT</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.80</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">0.20</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">vouched by proj-01 (strength 0.80, path proj-01)</span><span class="tag">belief 0.80 is at least 0.5</span></div>
+  <div class="tag-list"><span class="tag tag-ign">ignored: source not trusted: fake-brigade-00 (denounce)</span><span class="tag tag-ign">ignored: source not trusted: fake-brigade-01 (denounce)</span><span class="tag tag-ign">ignored: source not trusted: fake-brigade-02 (denounce)</span><span class="tag tag-ign">ignored: source not trusted: fake-brigade-03 (denounce)</span><span class="tag tag-ign">ignored: source not trusted: fake-brigade-04 (denounce)</span><span class="tag tag-ign">ignored: source not trusted: proj-10 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-21 (vouch)</span></div>
+  
+</div>
+<div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-005</div>
+      <div class="pr-meta">Author: <strong>aria-a044</strong> &middot; Viewer: proj-01</div>
+    </div>
+    <span class="badge badge-accept">ACCEPT</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.80</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">0.20</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">vouched by proj-01 (strength 0.80, path proj-01)</span><span class="tag">belief 0.80 is at least 0.5</span></div>
+  <div class="tag-list"><span class="tag tag-ign">ignored: source not trusted: proj-13 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-19 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-30 (vouch)</span></div>
+  
+</div>
+<div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-007</div>
+      <div class="pr-meta">Author: <strong>zach-r080</strong> &middot; Viewer: proj-01</div>
+    </div>
+    <span class="badge badge-accept">ACCEPT</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.73</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">0.27</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">vouched by proj-02 (strength 0.63, path proj-01 &gt; proj-02)</span><span class="tag">vouched by proj-26 (strength 0.27, path proj-01 &gt; proj-02 &gt; proj-26)</span><span class="tag">belief 0.73 is at least 0.5</span></div>
+  <div class="tag-list"><span class="tag tag-ign">ignored: source not trusted: proj-06 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-11 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-15 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-24 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-28 (vouch)</span></div>
+  
+</div>
+<div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-010</div>
+      <div class="pr-meta">Author: <strong>corey-m098</strong> &middot; Viewer: proj-01</div>
+    </div>
+    <span class="badge badge-accept">ACCEPT</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.70</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">0.30</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">vouched by proj-12 (strength 0.59, path proj-01 &gt; proj-12)</span><span class="tag">vouched by proj-26 (strength 0.27, path proj-01 &gt; proj-02 &gt; proj-26)</span><span class="tag">belief 0.70 is at least 0.5</span></div>
+  <div class="tag-list"><span class="tag tag-ign">ignored: source not trusted: proj-07 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-15 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-16 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-20 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-27 (vouch)</span></div>
+  
+</div>
+<div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-011</div>
+      <div class="pr-meta">Author: <strong>nate-f137</strong> &middot; Viewer: proj-01</div>
+    </div>
+    <span class="badge badge-accept">ACCEPT</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.72</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">0.28</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">vouched by proj-29 (strength 0.62, path proj-01 &gt; proj-29)</span><span class="tag">vouched by proj-23 (strength 0.25, path proj-01 &gt; proj-29 &gt; proj-23)</span><span class="tag">belief 0.72 is at least 0.5</span></div>
+  <div class="tag-list"><span class="tag tag-ign">ignored: source not trusted: proj-10 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-16 (vouch)</span><span class="tag tag-ign">ignored: source not trusted: proj-25 (vouch)</span></div>
+  
+</div>
+  </div>
+  <div class="more-note">Showing 20 of 202 decisions (sorted: HOLD first, then PROVISIONAL, then ACCEPT)</div>
+</section>
+<section id="side-by-side">
+  <h2>Viewpoint-Relative Evaluation</h2>
+  <p class="section-note">Synthetic demonstration &mdash; real decisions available once trust.py is merged.</p>
+  <p class="section-note">Author: <strong>dave-r036</strong> &mdash; same person, different verdicts from different projects.</p>
+  <div class="sbs-grid">
+    <div><div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-001</div>
+      <div class="pr-meta">Author: <strong>dave-r036</strong> &middot; Viewer: proj-01</div>
+    </div>
+    <span class="badge badge-accept">ACCEPT</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.72</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">0.28</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">Vouched by proj-01 via direct trust edge (T=0.9)</span></div>
+  
+  
+</div></div>
+    <div><div class="dc">
+  <div class="dc-header">
+    <div>
+      <div class="pr-id">pr-001</div>
+      <div class="pr-meta">Author: <strong>dave-r036</strong> &middot; Viewer: proj-15</div>
+    </div>
+    <span class="badge badge-provisional">PROVISIONAL</span>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="ml">Belief</div><div class="mv">0.08</div></div>
+    <div class="metric"><div class="ml">Disbelief</div><div class="mv">0.00</div></div>
+    <div class="metric"><div class="ml">Uncertainty</div><div class="mv">0.92</div></div>
+  </div>
+  <div class="tag-list"><span class="tag">No trusted project in proj-15&#x27;s network vouches this author</span></div>
+  
+  
+</div></div>
+  </div>
+</section>
+<section id="campaigns">
+  <h2>Campaigns</h2>
+  <p class="section-note">Coordinated spam waves detected by PR-text similarity clustering.</p>
+  <div class="campaign-card">
+  <div class="cc-header">
+    <h3>Campaign campaign-a12518d09843</h3>
+    <span>
+      <span class="badge badge-hold">HOLD</span>
+      <span class="score-pill">score 1.00</span>
+    </span>
+  </div>
+  <div class="cc-counts">
+    <div class="cc-count"><div class="cc-num">38</div><div class="cc-lbl">PRs</div></div>
+    <div class="cc-count"><div class="cc-num">25</div><div class="cc-lbl">Projects hit</div></div>
+    <div class="cc-count"><div class="cc-num">20</div><div class="cc-lbl">Authors</div></div>
+  </div>
+  <ul class="ev-list"><li>38 PRs, 25 projects, 1h57m window, 100% accounts under 14 days</li><li>Connected text similarity &gt;= 0.85; embedding_used=true</li><li>policy_hash=9627212e5d74</li></ul>
+  <div style="margin-top:.5rem;font-size:.75rem;color:var(--text-muted)">
+    Similarity model: nomic-embed-text (Ollama)
+  </div>
+</div>
+</section>
+<section id="lab">
+  <h2>Adversarial Lab</h2>
+  <p class="section-note">Naive baseline (all projects equal) vs TrustNet defence. Decisions before and after attack.</p>
+  <div class="lab-wrap">
+    <table class="lab-table">
+      <thead>
+        <tr>
+          <th>Scenario</th>
+          <th>Naive (Before &rarr; After)</th>
+          <th>Defended (Before &rarr; After)</th>
+          <th>Defense Goal</th>
+          <th>Campaign FP Rate</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>brigade-denounce</strong></td><td>ACCEPT &rarr; HOLD</td><td>ACCEPT &rarr; ACCEPT</td><td><span class="badge badge-accept">&#x2705; MET</span></td><td>0.0%</td></tr>
+<tr><td><strong>sybil-clique</strong></td><td>PROVISIONAL &rarr; ACCEPT</td><td>PROVISIONAL &rarr; PROVISIONAL</td><td><span class="badge badge-accept">&#x2705; MET</span></td><td>0.0%</td></tr>
+<tr><td><strong>trust-laundering</strong></td><td>PROVISIONAL &rarr; ACCEPT</td><td>PROVISIONAL &rarr; PROVISIONAL</td><td><span class="badge badge-accept">&#x2705; MET</span></td><td>0.0%</td></tr>
+<tr><td><strong>collusive-cluster</strong></td><td>PROVISIONAL &rarr; ACCEPT</td><td>PROVISIONAL &rarr; HOLD</td><td><span class="badge badge-accept">&#x2705; MET</span></td><td>0.0%</td></tr>
+<tr><td><strong>trusted-source-compromise</strong></td><td>PROVISIONAL &rarr; ACCEPT</td><td>PROVISIONAL &rarr; ACCEPT</td><td><span class="badge badge-hold">&#x274C; MISSED</span></td><td>0.0%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+<section id="trust-graph">
+  <h2>Trust Graph</h2>
+  <p class="section-note">Showing 20 of 30 projects. Solid edges: project trust &middot; Dashed red edges from brigade nodes (B0&ndash;B2): ignored denounces, source not trusted.</p>
+  <div class="graph-wrap">
+    <svg viewBox="0 0 700 660" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px">
+<line class="ge" x1="340.0" y1="70.0" x2="414.2" y2="81.7" stroke-opacity="0.79"/>
+<line class="ge" x1="340.0" y1="70.0" x2="111.7" y2="235.8" stroke-opacity="0.35"/>
+<line class="ge" x1="340.0" y1="70.0" x2="265.8" y2="538.3" stroke-opacity="0.74"/>
+<line class="ge" x1="414.2" y1="81.7" x2="534.2" y2="168.9" stroke-opacity="0.47"/>
+<line class="ge" x1="414.2" y1="81.7" x2="340.0" y2="70.0" stroke-opacity="0.69"/>
+<line class="ge" x1="414.2" y1="81.7" x2="111.7" y2="384.2" stroke-opacity="0.48"/>
+<line class="ge" x1="481.1" y1="115.8" x2="198.9" y2="115.8" stroke-opacity="0.97"/>
+<line class="ge" x1="481.1" y1="115.8" x2="100.0" y2="310.0" stroke-opacity="0.91"/>
+<line class="ge" x1="534.2" y1="168.9" x2="198.9" y2="115.8" stroke-opacity="0.96"/>
+<line class="ge" x1="534.2" y1="168.9" x2="265.8" y2="81.7" stroke-opacity="0.36"/>
+<line class="ge" x1="568.3" y1="235.8" x2="414.2" y2="81.7" stroke-opacity="0.34"/>
+<line class="ge" x1="568.3" y1="235.8" x2="481.1" y2="504.2" stroke-opacity="0.69"/>
+<line class="ge" x1="580.0" y1="310.0" x2="568.3" y2="235.8" stroke-opacity="0.76"/>
+<line class="ge" x1="580.0" y1="310.0" x2="100.0" y2="310.0" stroke-opacity="0.55"/>
+<line class="ge" x1="568.3" y1="384.2" x2="414.2" y2="538.3" stroke-opacity="0.42"/>
+<line class="ge" x1="568.3" y1="384.2" x2="111.7" y2="384.2" stroke-opacity="0.64"/>
+<line class="ge" x1="534.2" y1="451.1" x2="481.1" y2="504.2" stroke-opacity="0.66"/>
+<line class="ge" x1="481.1" y1="504.2" x2="414.2" y2="538.3" stroke-opacity="0.31"/>
+<line class="ge" x1="481.1" y1="504.2" x2="340.0" y2="70.0" stroke-opacity="0.73"/>
+<line class="ge" x1="340.0" y1="550.0" x2="198.9" y2="115.8" stroke-opacity="0.68"/>
+<line class="ge" x1="340.0" y1="550.0" x2="534.2" y2="168.9" stroke-opacity="0.88"/>
+<line class="ge" x1="340.0" y1="550.0" x2="100.0" y2="310.0" stroke-opacity="0.71"/>
+<line class="ge" x1="265.8" y1="538.3" x2="111.7" y2="235.8" stroke-opacity="0.57"/>
+<line class="ge" x1="198.9" y1="504.2" x2="534.2" y2="168.9" stroke-opacity="0.72"/>
+<line class="ge" x1="198.9" y1="504.2" x2="111.7" y2="384.2" stroke-opacity="0.54"/>
+<line class="ge" x1="145.8" y1="451.1" x2="100.0" y2="310.0" stroke-opacity="0.43"/>
+<line class="ge" x1="111.7" y1="384.2" x2="414.2" y2="81.7" stroke-opacity="0.77"/>
+<line class="ge" x1="111.7" y1="384.2" x2="265.8" y2="538.3" stroke-opacity="0.46"/>
+<line class="ge" x1="100.0" y1="310.0" x2="481.1" y2="504.2" stroke-opacity="0.94"/>
+<line class="ge" x1="111.7" y1="235.8" x2="481.1" y2="504.2" stroke-opacity="0.46"/>
+<line class="ge" x1="111.7" y1="235.8" x2="568.3" y2="384.2" stroke-opacity="0.54"/>
+<line class="ge" x1="145.8" y1="168.9" x2="481.1" y2="504.2" stroke-opacity="0.49"/>
+<line class="ge" x1="145.8" y1="168.9" x2="414.2" y2="81.7" stroke-opacity="0.64"/>
+<line class="ge" x1="145.8" y1="168.9" x2="100.0" y2="310.0" stroke-opacity="0.57"/>
+<line class="ge" x1="198.9" y1="115.8" x2="340.0" y2="550.0" stroke-opacity="0.83"/>
+<line class="ge" x1="198.9" y1="115.8" x2="265.8" y2="81.7" stroke-opacity="0.88"/>
+<line class="ge" x1="198.9" y1="115.8" x2="481.1" y2="504.2" stroke-opacity="0.48"/>
+<line class="ge" x1="198.9" y1="115.8" x2="414.2" y2="538.3" stroke-opacity="0.36"/>
+<line class="ge" x1="265.8" y1="81.7" x2="481.1" y2="504.2" stroke-opacity="0.84"/>
+<line class="ge" x1="265.8" y1="81.7" x2="111.7" y2="235.8" stroke-opacity="0.41"/>
+<line class="ge-ignored" x1="610.0" y1="120.0" x2="340.0" y2="310.0"/>
+<text class="ge-label" x="475.0" y="209.0">ignored: source not trusted</text>
+<line class="ge-ignored" x1="610.0" y1="180.0" x2="340.0" y2="310.0"/>
+<text class="ge-label" x="475.0" y="239.0">ignored: source not trusted</text>
+<line class="ge-ignored" x1="610.0" y1="240.0" x2="340.0" y2="310.0"/>
+<text class="ge-label" x="475.0" y="269.0">ignored: source not trusted</text>
+<circle class="gn" cx="340.0" cy="70.0" r="14"/><text class="gt" x="340.0" y="47.0" text-anchor="middle">01</text>
+<circle class="gn" cx="414.2" cy="81.7" r="14"/><text class="gt" x="421.3" y="59.9" text-anchor="start">02</text>
+<circle class="gn" cx="481.1" cy="115.8" r="14"/><text class="gt" x="494.6" y="97.2" text-anchor="start">03</text>
+<circle class="gn" cx="534.2" cy="168.9" r="14"/><text class="gt" x="552.8" y="155.4" text-anchor="start">04</text>
+<circle class="gn" cx="568.3" cy="235.8" r="14"/><text class="gt" x="590.1" y="228.7" text-anchor="start">05</text>
+<circle class="gn" cx="580.0" cy="310.0" r="14"/><text class="gt" x="603.0" y="310.0" text-anchor="start">06</text>
+<circle class="gn" cx="568.3" cy="384.2" r="14"/><text class="gt" x="590.1" y="391.3" text-anchor="start">07</text>
+<circle class="gn" cx="534.2" cy="451.1" r="14"/><text class="gt" x="552.8" y="464.6" text-anchor="start">08</text>
+<circle class="gn" cx="481.1" cy="504.2" r="14"/><text class="gt" x="494.6" y="522.8" text-anchor="start">09</text>
+<circle class="gn" cx="414.2" cy="538.3" r="14"/><text class="gt" x="421.3" y="560.1" text-anchor="start">10</text>
+<circle class="gn" cx="340.0" cy="550.0" r="14"/><text class="gt" x="340.0" y="573.0" text-anchor="middle">11</text>
+<circle class="gn" cx="265.8" cy="538.3" r="14"/><text class="gt" x="258.7" y="560.1" text-anchor="end">12</text>
+<circle class="gn" cx="198.9" cy="504.2" r="14"/><text class="gt" x="185.4" y="522.8" text-anchor="end">13</text>
+<circle class="gn" cx="145.8" cy="451.1" r="14"/><text class="gt" x="127.2" y="464.6" text-anchor="end">14</text>
+<circle class="gn" cx="111.7" cy="384.2" r="14"/><text class="gt" x="89.9" y="391.3" text-anchor="end">15</text>
+<circle class="gn" cx="100.0" cy="310.0" r="14"/><text class="gt" x="77.0" y="310.0" text-anchor="end">16</text>
+<circle class="gn" cx="111.7" cy="235.8" r="14"/><text class="gt" x="89.9" y="228.7" text-anchor="end">17</text>
+<circle class="gn" cx="145.8" cy="168.9" r="14"/><text class="gt" x="127.2" y="155.4" text-anchor="end">18</text>
+<circle class="gn" cx="198.9" cy="115.8" r="14"/><text class="gt" x="185.4" y="97.2" text-anchor="end">19</text>
+<circle class="gn" cx="265.8" cy="81.7" r="14"/><text class="gt" x="258.7" y="59.9" text-anchor="end">20</text>
+<circle class="gn-victim" cx="340.0" cy="310.0" r="16"/><text class="gt" x="340.0" y="336.0" text-anchor="middle" style="font-size:7px">blake-a000</text><text class="gt" x="340.0" y="345.0" text-anchor="middle" style="font-size:7px;fill:var(--accept-text)">(brigaded author)</text>
+<circle class="gn-fake" cx="610.0" cy="120.0" r="14"/><text class="gt-fake" x="610.0" y="120.0">B00</text>
+<circle class="gn-fake" cx="610.0" cy="180.0" r="14"/><text class="gt-fake" x="610.0" y="180.0">B01</text>
+<circle class="gn-fake" cx="610.0" cy="240.0" r="14"/><text class="gt-fake" x="610.0" y="240.0">B02</text>
+</svg>
+    <div class="graph-legend">
+      <span class="legend-item"><span class="legend-line legend-solid"></span> Trust edge</span>
+      <span class="legend-item"><span class="legend-line legend-dashed"></span> Ignored denounce (source not trusted)</span>
+      <span class="legend-item">&#x25CF; Honest project &nbsp; &#x25CB; Brigade fake project &nbsp; &#x1F7E2; Brigade target (honest author)</span>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="site-footer">
+  <p>TrustNet &middot; Team Sophons &middot; Hacktoberfest 2026 Hack Day Sonipat &middot; Problem 7</p>
+</footer>
+</body>
+</html>

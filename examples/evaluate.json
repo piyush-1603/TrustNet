@@ -1,0 +1,32 @@
+{
+  "pr_id": "pr-001",
+  "viewer": "proj-01",
+  "author": "frank-b001",
+  "decision": "ACCEPT",
+  "belief": 0.8554112,
+  "disbelief": 0.0,
+  "uncertainty": 0.14458879999999996,
+  "reasons": [
+    "vouched by proj-01 (strength 0.80, path proj-01)",
+    "vouched by proj-03 (strength 0.28, path proj-01 > proj-29 > proj-03)",
+    "belief 0.86 is at least 0.5"
+  ],
+  "paths": [
+    [
+      "proj-01"
+    ],
+    [
+      "proj-01",
+      "proj-29",
+      "proj-03"
+    ]
+  ],
+  "ignored": [
+    "ignored: source not trusted: proj-04 (vouch)",
+    "ignored: source not trusted: proj-20 (vouch)",
+    "ignored: source not trusted: proj-25 (vouch)",
+    "ignored: source not trusted: proj-27 (vouch)",
+    "ignored: source not trusted: proj-28 (vouch)"
+  ],
+  "in_campaign": false
+}

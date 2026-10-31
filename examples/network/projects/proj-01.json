@@ -1,0 +1,163 @@
+{
+  "id": "proj-01",
+  "name": "net-flow",
+  "trusts": [
+    {
+      "project": "proj-02",
+      "weight": 0.79
+    },
+    {
+      "project": "proj-29",
+      "weight": 0.78
+    },
+    {
+      "project": "proj-17",
+      "weight": 0.35
+    },
+    {
+      "project": "proj-12",
+      "weight": 0.74
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "carol-s169",
+      "date": "2025-06-26T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/carol-s169"
+    },
+    {
+      "handle": "dave-g006",
+      "date": "2025-05-04T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/dave-g006"
+    },
+    {
+      "handle": "dana-n033",
+      "date": "2026-02-17T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/dana-n033"
+    },
+    {
+      "handle": "dana-d003",
+      "date": "2026-08-18T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/dana-d003"
+    },
+    {
+      "handle": "frank-d091",
+      "date": "2025-04-16T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/frank-d091"
+    },
+    {
+      "handle": "blake-t060",
+      "date": "2025-11-27T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/blake-t060"
+    },
+    {
+      "handle": "blake-w150",
+      "date": "2025-06-19T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/blake-w150"
+    },
+    {
+      "handle": "tara-t082",
+      "date": "2026-08-31T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/tara-t082"
+    },
+    {
+      "handle": "xander-e004",
+      "date": "2026-07-31T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/xander-e004"
+    },
+    {
+      "handle": "aria-a044",
+      "date": "2025-05-29T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/aria-a044"
+    },
+    {
+      "handle": "wendy-b067",
+      "date": "2025-08-16T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/wendy-b067"
+    },
+    {
+      "handle": "alice-q013",
+      "date": "2025-07-22T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/alice-q013"
+    },
+    {
+      "handle": "bob-m032",
+      "date": "2026-06-13T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/bob-m032"
+    },
+    {
+      "handle": "nate-x107",
+      "date": "2025-05-17T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/nate-x107"
+    },
+    {
+      "handle": "aria-c134",
+      "date": "2025-07-04T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/aria-c134"
+    },
+    {
+      "handle": "paul-h029",
+      "date": "2026-07-18T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/paul-h029"
+    },
+    {
+      "handle": "kate-t016",
+      "date": "2026-07-11T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/kate-t016"
+    },
+    {
+      "handle": "frank-n121",
+      "date": "2025-11-06T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/frank-n121"
+    },
+    {
+      "handle": "mia-e114",
+      "date": "2026-05-03T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/mia-e114"
+    },
+    {
+      "handle": "bob-e092",
+      "date": "2026-07-26T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/bob-e092"
+    },
+    {
+      "handle": "leo-z131",
+      "date": "2026-05-25T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/leo-z131"
+    },
+    {
+      "handle": "frank-x151",
+      "date": "2025-12-24T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/frank-x151"
+    },
+    {
+      "handle": "opal-f027",
+      "date": "2025-03-19T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/opal-f027"
+    },
+    {
+      "handle": "frank-b001",
+      "date": "2026-08-02T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/frank-b001"
+    },
+    {
+      "handle": "maintainer-dep",
+      "date": "2026-05-04T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/maintainer-dep"
+    },
+    {
+      "handle": "blake-a000",
+      "date": "2026-07-03T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/blake-a000"
+    }
+  ],
+  "denounces": [
+    {
+      "handle": "malicious-actor",
+      "reason_code": "malicious-backdoor",
+      "evidence_url": "https://example.com/security/advisory/malicious-actor",
+      "date": "2026-10-21T20:00:00Z",
+      "expires": null
+    }
+  ]
+}
