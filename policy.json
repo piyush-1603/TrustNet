@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "trust": {
+    "decay": 0.6,
+    "max_hops": 3,
+    "min_trust": 0.25,
+    "vouch_weight": 0.8,
+    "top_k": 3,
+    "no_evidence_factor": 0.5
+  },
+  "decision": {
+    "hold_threshold": 0.5,
+    "accept_threshold": 0.5
+  },
+  "campaigns": {
+    "similarity_threshold": 0.85,
+    "min_prs": 8,
+    "min_projects": 5,
+    "window_hours": 6,
+    "min_young_share": 0.7,
+    "young_days": 14,
+    "flag_threshold": 0.6,
+    "size_scale": 20,
+    "projects_scale": 10,
+    "size_weight": 0.4,
+    "projects_weight": 0.3,
+    "young_weight": 0.3
+  }
+}
