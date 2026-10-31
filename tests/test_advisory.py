@@ -23,7 +23,7 @@ def test_build_lists_only_flagged_campaigns_and_no_pr_text():
     adv = build_advisory("proj-01", [campaign(), campaign(flagged=False)], "abc123", now=NOW)
     assert adv["format"] == FORMAT and adv["issuer"] == "proj-01" and adv["policy_hash"] == "abc123"
     assert len(adv["campaigns"]) == 1 and adv["campaigns"][0]["authors"] == ["bot-1", "bot-2"]
-    assert set(adv["campaigns"][0]) == {"id", "authors", "pr_ids", "projects", "score", "evidence", "embedding_used"}
+    assert set(adv["campaigns"][0]) == {"id", "kind", "authors", "pr_ids", "projects", "score", "evidence", "embedding_used"}
 
 
 def test_round_trip_through_a_file(tmp_path):

@@ -27,7 +27,10 @@ as distrusted.
 6. **A real open model, kept in its place.** `nomic-embed-text` (via Ollama) catches heavily reworded spam
    that keyword matching misses entirely (`python -m trustnet ablation` runs both side by side);
    deterministic rules in `policy.json` make every decision, and every decision shows its trust path.
-7. **An honest benchmark.** The attack lab compares naive counting with TrustNet on five synthetic
+7. **A second alarm that ignores the text.** One new account opening PRs in five or more projects within
+   six hours is flagged even when no two PRs share a word (`python -m trustnet fanout`). A strong vouch from
+   a trusted project overrides it, so a vouched newcomer who is just getting started is not held.
+8. **An honest benchmark.** The attack lab compares naive counting with TrustNet on five synthetic
    attacks, and includes one where the defense fails by design (a compromised trusted source).
    These are regression fixtures, not general attack-resistance claims.
 
@@ -105,6 +108,7 @@ python -m trustnet report
 | `evaluate ... --no-local-detection` | Skips the local detector, to show what an imported advisory alone does |
 | `campaigns` | Clusters near-duplicate PRs and flags coordinated campaigns |
 | `advisory --as PROJ --out FILE` | Publishes the flagged campaigns as a shareable advisory file |
+| `fanout` | Three people, ten different PRs each: shows the text-independent behavior flag and the vouch override |
 | `ablation` | Same reworded campaign with the model off and on: shows what the model adds |
 | `lab` | Runs five synthetic attack scenarios (four defended, one failing control); prints naive vs defended decisions |
 | `report` | Renders a self-contained HTML report with all results |
@@ -198,7 +202,16 @@ a small JSON file with the flagged accounts and the evidence. A project that imp
 (`evaluate --advisory`) holds those accounts only if it already trusts the issuer; otherwise the
 advisory is ignored and says so.
 
-### 8. What stops projects from vouching for spammers or colluding?
+### 8. What if the spammer writes a different PR every time?
+
+The text detector sees nothing, so there is a second, text-independent alarm: one account under 14 days
+old that opens PRs in at least five different projects within six hours is flagged (`fanout_min_projects`
+in `policy.json`). An unvouched flagged account is held for review. An account that trusted projects
+already vouch for strongly enough to ACCEPT is not held, so honest newcomers are protected, and a flag
+never costs the people who vouched. It does not catch an old account, a patient spammer who spreads PRs
+over days, or many accounts that each send one different PR.
+
+### 9. What stops projects from vouching for spammers or colluding?
 
 Trust is relative to the viewer, so colluding projects only affect people who already trust
 them. Within a viewer's own trust graph, a project that vouched for an account later flagged in a
@@ -214,7 +227,7 @@ defeats the defense: a project the viewer trusts directly that turns malicious.
 |---|---|
 | Public vouch and denounce records per project | `network/projects/<id>.json`, validated by `loaders.py` |
 | Projects exchange trust information | Trust edges between projects, plus campaign advisories (`advisory`, `--advisory`) |
-| Identify suspicious patterns across projects | Campaign detector: similarity clusters, project spread, time window, account age |
+| Identify suspicious patterns across projects | Campaign detector (text similarity, project spread, time window, account age) and a text-independent fan-out flag for one new account across many projects |
 | Detect coordinated spam campaigns | `campaigns`; 38-PR planted campaign found with `nomic-embed-text` |
 | No central authority | Decisions are computed per viewer from public files; advisories only count from trusted issuers |
 | Fair evaluation of new contributors | PROVISIONAL, never HOLD for lack of history; path-to-trust hint |
@@ -236,6 +249,8 @@ defeats the defense: a project the viewer trusts directly that turns malicious.
   designed to read real data once the organizers share their format.
 - **Collusion cap:** The design notes a stretch goal to cap how much two mutually-trusting
   projects can inflate each other's score. Not implemented.
+- **Cohort bursts:** many new accounts that each send a single, different PR to a different project are not
+  detected. Only one account hitting many projects, or near-identical text, is.
 - **Extra lab scenarios:** The lab covers four attacks plus one failing control. Additional
   scenarios (e.g. gradual reputation laundering) are not included.
 - **Live GitHub integration:** TrustNet reads files, not GitHub. A GitHub Action or webhook that

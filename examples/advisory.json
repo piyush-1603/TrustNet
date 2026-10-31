@@ -1,11 +1,12 @@
 {
   "format": "trustnet-advisory/1",
   "issuer": "proj-01",
-  "issued_at": "2026-10-31T21:28:19.550519+00:00",
-  "policy_hash": "a362187ee098",
+  "issued_at": "2026-10-31T22:15:51.578648+00:00",
+  "policy_hash": "4a6d377bcefb",
   "campaigns": [
     {
       "id": "campaign-a12518d09843",
+      "kind": "text",
       "authors": [
         "bot-00",
         "bot-01",
@@ -99,7 +100,7 @@
       "evidence": [
         "38 PRs, 25 projects, 1h57m window, 100% accounts under 14 days",
         "Connected by keyword similarity >= 0.85 or model similarity >= 0.8; embedding_used=true",
-        "policy_hash=a362187ee098"
+        "policy_hash=4a6d377bcefb"
       ],
       "embedding_used": true
     }

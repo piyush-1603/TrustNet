@@ -94,7 +94,7 @@ def _next_steps(net, viewer, handle, belief, vouchers, cfg):
 
 
 def evaluate_author(net, viewer, handle, campaign_handles=frozenset(), now=None, policy=None, pr_id=None,
-                    advisories=(), flagged_handles=frozenset()):
+                    advisories=(), flagged_handles=frozenset(), behavior_handles=frozenset()):
     """Decide what `viewer` should do with `handle`.
 
     belief b    = 1 - prod(1 - vouch_weight * T)      over the strongest top_k trusted vouchers
@@ -105,6 +105,8 @@ def evaluate_author(net, viewer, handle, campaign_handles=frozenset(), now=None,
     that no trusted project has spoken about is unknown (PROVISIONAL), never HOLD. A member of a
     flagged campaign is HOLD. A project that vouched for a flagged campaign account has its other vouches
     discounted by flagged_endorser_factor (flagged_handles: every account flagged anywhere).
+    A behavior flag (behavior_handles: one new account across many projects, whatever the text) holds the
+    author unless trusted projects already vouch for them strongly enough to ACCEPT.
     """
     cfg = _cfg(policy)
     trust_cfg, decision_cfg = cfg["trust"], cfg["decision"]
@@ -161,13 +163,19 @@ def evaluate_author(net, viewer, handle, campaign_handles=frozenset(), now=None,
         advised.append(f"listed in campaign advisory {hits[0]} from {issuer} (trust {trust:.2f}, path {' > '.join(path)})")
         advisory_paths.append(path)
 
+    behavior_hold = handle in behavior_handles and belief < decision_cfg["accept_threshold"]
+    if handle in behavior_handles and not behavior_hold:
+        ignored.append(f"behavior flag overridden: vouched by trusted projects (belief {belief:.2f})")
+
     reasons = [f"vouched by {pid} (strength {c:.2f}, path {' > '.join(path)})" for c, pid, path in used_vouches]
     reasons += [f"denounced by {pid} (strength {c:.2f}, path {' > '.join(path)})" for c, pid, path in used_denounces]
-    in_campaign = handle in campaign_handles or bool(advised)
+    in_campaign = handle in campaign_handles or bool(advised) or behavior_hold
     if in_campaign:
         decision = "HOLD"
         if handle in campaign_handles:
             reasons.append("member of a flagged spam campaign")
+        if behavior_hold:
+            reasons.append("new account opened PRs in many projects within a few hours (behavior flag, any text)")
         reasons += advised
     elif disbelief >= decision_cfg["hold_threshold"] and disbelief > belief:
         decision = "HOLD"
@@ -194,11 +202,16 @@ def evaluate_pr(net, viewer, pr, campaigns, now=None, policy=None, advisories=()
 
     `now` defaults to the PR's own time, so expiry is judged as of the PR and results repeat exactly.
     """
-    flagged = any(c.flagged and pr.id in c.pr_ids for c in campaigns)
-    flagged_accounts = frozenset(a for c in campaigns if c.flagged for a in c.authors)
-    return evaluate_author(net, viewer, pr.author, frozenset([pr.author]) if flagged else frozenset(),
+    def flagged_as(kind):
+        return any(c.flagged and getattr(c, "kind", "text") == kind and pr.id in c.pr_ids for c in campaigns)
+
+    # Only text campaigns cost vouchers: a behavior flag is weaker evidence and a vouched newcomer can override it.
+    flagged_accounts = frozenset(a for c in campaigns if c.flagged and getattr(c, "kind", "text") == "text"
+                                 for a in c.authors)
+    return evaluate_author(net, viewer, pr.author, frozenset([pr.author]) if flagged_as("text") else frozenset(),
                            now=now if now is not None else pr.created_at, policy=policy, pr_id=pr.id,
-                           advisories=advisories, flagged_handles=flagged_accounts)
+                           advisories=advisories, flagged_handles=flagged_accounts,
+                           behavior_handles=frozenset([pr.author]) if flagged_as("behavior") else frozenset())
 
 
 def naive_score(net, handle):
