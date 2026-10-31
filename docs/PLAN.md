@@ -100,6 +100,7 @@ Append a line when a decision changes. Shaurya edits this.
 - Viewpoint-relative evaluation is how we show decentralization: the same author can get two answers from two projects.
 - Newcomers are PROVISIONAL, never rejected for lack of history.
 - Timestamps stay as given (ISO string or datetime) in the data classes and are parsed on use with `models.parse_time`; `loaders.load_network` rejects unparseable ones. `load_policy` returns `(policy, 12-hex hash)`; `policy.json` has sections `trust`, `decision`, `campaigns`.
+- Trust engine simplification: belief and disbelief are reported and decided on raw (no rescaling when b + d > 1); uncertainty = max(0, 1 - b - d). A project that both vouches and denounces an author counts in both. `evaluate_pr` judges denounce expiry as of the PR's own time. `naive_score` counts projects (one vouch or denounce per project), unweighted.
 - Embedding model: `nomic-embed-text` via Ollama, pending a mentor answer on whether the organizers allow it. If not allowed, change `HACKATHON.md` and the code together.
 
 ## Open questions
