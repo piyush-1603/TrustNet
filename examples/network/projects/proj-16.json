@@ -1,0 +1,32 @@
+{
+  "id": "proj-16",
+  "name": "byte-base",
+  "trusts": [
+    {
+      "project": "proj-09",
+      "weight": 0.94
+    },
+    {
+      "project": "proj-23",
+      "weight": 0.38
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "hank-a088",
+      "date": "2025-12-15T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-16/hank-a088"
+    },
+    {
+      "handle": "zach-a110",
+      "date": "2025-05-21T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-16/zach-a110"
+    },
+    {
+      "handle": "hank-g028",
+      "date": "2025-04-10T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-16/hank-g028"
+    }
+  ],
+  "denounces": []
+}

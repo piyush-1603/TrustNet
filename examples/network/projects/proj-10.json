@@ -1,0 +1,40 @@
+{
+  "id": "proj-10",
+  "name": "grid-hub",
+  "trusts": [
+    {
+      "project": "proj-21",
+      "weight": 0.82
+    },
+    {
+      "project": "proj-30",
+      "weight": 0.41
+    },
+    {
+      "project": "proj-27",
+      "weight": 0.5
+    },
+    {
+      "project": "proj-22",
+      "weight": 0.45
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "sam-x195",
+      "date": "2026-02-12T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-10/sam-x195"
+    },
+    {
+      "handle": "leo-f071",
+      "date": "2025-07-19T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-10/leo-f071"
+    },
+    {
+      "handle": "rose-r146",
+      "date": "2025-03-10T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-10/rose-r146"
+    }
+  ],
+  "denounces": []
+}

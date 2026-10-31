@@ -1,0 +1,51 @@
+{
+  "id": "proj-04",
+  "name": "pixel-forge",
+  "trusts": [
+    {
+      "project": "proj-29",
+      "weight": 0.91
+    },
+    {
+      "project": "proj-19",
+      "weight": 0.96
+    },
+    {
+      "project": "proj-20",
+      "weight": 0.36
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "eve-z175",
+      "date": "2026-07-11T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-04/eve-z175"
+    },
+    {
+      "handle": "opal-f027",
+      "date": "2025-11-06T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-04/opal-f027"
+    },
+    {
+      "handle": "victor-s125",
+      "date": "2026-05-03T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-04/victor-s125"
+    },
+    {
+      "handle": "bob-g182",
+      "date": "2026-07-26T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-04/bob-g182"
+    },
+    {
+      "handle": "grace-d113",
+      "date": "2026-05-25T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-04/grace-d113"
+    },
+    {
+      "handle": "iris-w018",
+      "date": "2025-12-24T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-04/iris-w018"
+    }
+  ],
+  "denounces": []
+}

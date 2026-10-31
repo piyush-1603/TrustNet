@@ -1,0 +1,55 @@
+{
+  "id": "proj-19",
+  "name": "auto-ware",
+  "trusts": [
+    {
+      "project": "proj-11",
+      "weight": 0.83
+    },
+    {
+      "project": "proj-20",
+      "weight": 0.88
+    },
+    {
+      "project": "proj-09",
+      "weight": 0.48
+    },
+    {
+      "project": "proj-10",
+      "weight": 0.36
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "xander-e004",
+      "date": "2025-08-13T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-19/xander-e004"
+    },
+    {
+      "handle": "opal-h117",
+      "date": "2025-07-31T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-19/opal-h117"
+    },
+    {
+      "handle": "carol-x019",
+      "date": "2025-12-09T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-19/carol-x019"
+    },
+    {
+      "handle": "zach-r080",
+      "date": "2026-06-06T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-19/zach-r080"
+    },
+    {
+      "handle": "opal-s147",
+      "date": "2025-08-13T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-19/opal-s147"
+    },
+    {
+      "handle": "carol-z109",
+      "date": "2026-09-10T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-19/carol-z109"
+    }
+  ],
+  "denounces": []
+}

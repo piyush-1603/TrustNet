@@ -1,0 +1,65 @@
+{
+  "id": "proj-06",
+  "name": "core-core",
+  "trusts": [
+    {
+      "project": "proj-05",
+      "weight": 0.76
+    },
+    {
+      "project": "proj-16",
+      "weight": 0.55
+    },
+    {
+      "project": "proj-29",
+      "weight": 0.59
+    },
+    {
+      "project": "proj-26",
+      "weight": 0.9
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "kate-p166",
+      "date": "2025-08-04T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-06/kate-p166"
+    },
+    {
+      "handle": "kate-y196",
+      "date": "2025-10-19T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-06/kate-y196"
+    },
+    {
+      "handle": "quinn-k141",
+      "date": "2025-06-24T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-06/quinn-k141"
+    },
+    {
+      "handle": "xander-j184",
+      "date": "2025-08-19T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-06/xander-j184"
+    },
+    {
+      "handle": "eve-n055",
+      "date": "2025-08-02T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-06/eve-n055"
+    },
+    {
+      "handle": "zach-a110",
+      "date": "2026-06-26T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-06/zach-a110"
+    },
+    {
+      "handle": "eve-f115",
+      "date": "2025-11-15T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-06/eve-f115"
+    },
+    {
+      "handle": "hank-r058",
+      "date": "2025-07-21T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-06/hank-r058"
+    }
+  ],
+  "denounces": []
+}

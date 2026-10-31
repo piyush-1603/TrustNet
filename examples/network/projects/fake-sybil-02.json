@@ -1,0 +1,18 @@
+{
+  "id": "fake-sybil-02",
+  "name": "fake-sybil-project-02",
+  "trusts": [
+    {
+      "project": "fake-sybil-03",
+      "weight": 1.0
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "spammer-zed",
+      "date": "2026-10-26T20:00:00Z",
+      "evidence_url": null
+    }
+  ],
+  "denounces": []
+}

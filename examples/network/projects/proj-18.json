@@ -1,0 +1,55 @@
+{
+  "id": "proj-18",
+  "name": "sync-kit",
+  "trusts": [
+    {
+      "project": "proj-25",
+      "weight": 0.64
+    },
+    {
+      "project": "proj-09",
+      "weight": 0.49
+    },
+    {
+      "project": "proj-02",
+      "weight": 0.64
+    },
+    {
+      "project": "proj-16",
+      "weight": 0.57
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "leo-s191",
+      "date": "2026-02-08T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-18/leo-s191"
+    },
+    {
+      "handle": "zach-a110",
+      "date": "2025-05-07T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-18/zach-a110"
+    },
+    {
+      "handle": "aria-a044",
+      "date": "2025-10-04T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-18/aria-a044"
+    },
+    {
+      "handle": "dana-n033",
+      "date": "2026-07-20T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-18/dana-n033"
+    },
+    {
+      "handle": "wendy-k097",
+      "date": "2025-08-21T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-18/wendy-k097"
+    },
+    {
+      "handle": "kate-e136",
+      "date": "2026-08-19T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-18/kate-e136"
+    }
+  ],
+  "denounces": []
+}

@@ -1,0 +1,42 @@
+{
+  "id": "proj-20",
+  "name": "bright-craft",
+  "trusts": [
+    {
+      "project": "proj-09",
+      "weight": 0.84
+    },
+    {
+      "project": "proj-17",
+      "weight": 0.41
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "alice-z043",
+      "date": "2026-07-03T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-20/alice-z043"
+    },
+    {
+      "handle": "corey-e158",
+      "date": "2025-07-11T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-20/corey-e158"
+    },
+    {
+      "handle": "opal-h117",
+      "date": "2026-06-15T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-20/opal-h117"
+    },
+    {
+      "handle": "rose-a176",
+      "date": "2026-01-25T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-20/rose-a176"
+    },
+    {
+      "handle": "bob-e092",
+      "date": "2025-07-12T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-20/bob-e092"
+    }
+  ],
+  "denounces": []
+}

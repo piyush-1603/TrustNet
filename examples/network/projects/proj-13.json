@@ -1,0 +1,41 @@
+{
+  "id": "proj-13",
+  "name": "forge-lab",
+  "trusts": [
+    {
+      "project": "proj-23",
+      "weight": 0.33
+    },
+    {
+      "project": "proj-04",
+      "weight": 0.72
+    },
+    {
+      "project": "proj-15",
+      "weight": 0.54
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "jack-q189",
+      "date": "2025-04-06T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-13/jack-q189"
+    },
+    {
+      "handle": "uma-j162",
+      "date": "2026-02-23T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-13/uma-j162"
+    },
+    {
+      "handle": "wendy-h007",
+      "date": "2025-09-11T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-13/wendy-h007"
+    },
+    {
+      "handle": "grace-b023",
+      "date": "2025-07-29T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-13/grace-b023"
+    }
+  ],
+  "denounces": []
+}

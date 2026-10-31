@@ -1,0 +1,60 @@
+{
+  "id": "proj-22",
+  "name": "proto-link",
+  "trusts": [
+    {
+      "project": "proj-03",
+      "weight": 0.65
+    },
+    {
+      "project": "proj-01",
+      "weight": 0.53
+    },
+    {
+      "project": "proj-11",
+      "weight": 0.64
+    },
+    {
+      "project": "proj-08",
+      "weight": 0.55
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "carol-f049",
+      "date": "2026-06-18T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-22/carol-f049"
+    },
+    {
+      "handle": "iris-a198",
+      "date": "2026-05-05T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-22/iris-a198"
+    },
+    {
+      "handle": "paul-b089",
+      "date": "2026-01-12T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-22/paul-b089"
+    },
+    {
+      "handle": "dave-m186",
+      "date": "2026-03-13T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-22/dave-m186"
+    },
+    {
+      "handle": "sam-n165",
+      "date": "2026-04-07T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-22/sam-n165"
+    },
+    {
+      "handle": "wendy-s037",
+      "date": "2026-04-28T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-22/wendy-s037"
+    },
+    {
+      "handle": "blake-t060",
+      "date": "2026-07-16T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-22/blake-t060"
+    }
+  ],
+  "denounces": []
+}

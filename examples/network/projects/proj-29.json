@@ -1,0 +1,46 @@
+{
+  "id": "proj-29",
+  "name": "meta-net",
+  "trusts": [
+    {
+      "project": "proj-23",
+      "weight": 0.66
+    },
+    {
+      "project": "proj-03",
+      "weight": 0.74
+    },
+    {
+      "project": "proj-08",
+      "weight": 0.65
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "victor-k185",
+      "date": "2026-07-10T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/victor-k185"
+    },
+    {
+      "handle": "iris-r168",
+      "date": "2026-05-10T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/iris-r168"
+    },
+    {
+      "handle": "xander-a154",
+      "date": "2025-10-08T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/xander-a154"
+    },
+    {
+      "handle": "corey-t038",
+      "date": "2025-11-18T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/corey-t038"
+    },
+    {
+      "handle": "eve-x085",
+      "date": "2025-08-26T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-29/eve-x085"
+    }
+  ],
+  "denounces": []
+}

@@ -1,0 +1,42 @@
+{
+  "id": "proj-12",
+  "name": "smart-ops",
+  "trusts": [
+    {
+      "project": "proj-17",
+      "weight": 0.57
+    },
+    {
+      "project": "proj-22",
+      "weight": 0.33
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "paul-d179",
+      "date": "2026-09-25T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-12/paul-d179"
+    },
+    {
+      "handle": "sam-x195",
+      "date": "2026-03-30T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-12/sam-x195"
+    },
+    {
+      "handle": "carol-q079",
+      "date": "2026-05-08T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-12/carol-q079"
+    },
+    {
+      "handle": "rose-y086",
+      "date": "2025-08-17T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-12/rose-y086"
+    },
+    {
+      "handle": "paul-b089",
+      "date": "2026-07-22T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-12/paul-b089"
+    }
+  ],
+  "denounces": []
+}

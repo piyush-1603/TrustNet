@@ -1,0 +1,47 @@
+{
+  "id": "proj-08",
+  "name": "pure-cli",
+  "trusts": [
+    {
+      "project": "proj-28",
+      "weight": 0.34
+    },
+    {
+      "project": "proj-09",
+      "weight": 0.66
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "mia-c024",
+      "date": "2026-08-01T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-08/mia-c024"
+    },
+    {
+      "handle": "yara-r190",
+      "date": "2025-10-29T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-08/yara-r190"
+    },
+    {
+      "handle": "jack-q189",
+      "date": "2026-05-29T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-08/jack-q189"
+    },
+    {
+      "handle": "victor-h095",
+      "date": "2025-08-07T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-08/victor-h095"
+    },
+    {
+      "handle": "dana-n033",
+      "date": "2025-10-04T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-08/dana-n033"
+    },
+    {
+      "handle": "tara-m142",
+      "date": "2025-07-25T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-08/tara-m142"
+    }
+  ],
+  "denounces": []
+}

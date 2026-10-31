@@ -357,13 +357,13 @@ def generate(n_projects: int = 30, seed: int = 42):
         evidence_url=f"https://example.com/vouch/{proj_ids[0]}/{legit_handle}",
     ))
 
-    bump_projects = rng.sample(proj_ids, 10)
+    bump_projects = rng.sample(proj_ids, min(10, len(proj_ids)))
     legit_bump_pr_ids = []
     bump_start = now - timedelta(hours=3)  # within 6-hour window; old account saves it
     for i, pid in enumerate(bump_projects):
         pr_id = f"pr-{pr_counter:03d}"
         pr_counter += 1
-        offset = int((i / 10) * 10800)  # spread across 3 hours
+        offset = int((i / max(len(bump_projects), 1)) * 10800)  # spread across 3 hours
         created = bump_start + timedelta(seconds=offset)
         legit_bump_pr_ids.append(pr_id)
         prs.append(PR(

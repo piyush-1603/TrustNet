@@ -1,0 +1,55 @@
+{
+  "id": "proj-26",
+  "name": "cloud-core",
+  "trusts": [
+    {
+      "project": "proj-09",
+      "weight": 0.59
+    },
+    {
+      "project": "proj-03",
+      "weight": 0.78
+    },
+    {
+      "project": "proj-30",
+      "weight": 0.63
+    },
+    {
+      "project": "proj-01",
+      "weight": 0.32
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "rose-r146",
+      "date": "2025-05-06T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-26/rose-r146"
+    },
+    {
+      "handle": "kate-p166",
+      "date": "2026-04-30T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-26/kate-p166"
+    },
+    {
+      "handle": "iris-e048",
+      "date": "2026-07-30T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-26/iris-e048"
+    },
+    {
+      "handle": "tara-t082",
+      "date": "2025-06-27T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-26/tara-t082"
+    },
+    {
+      "handle": "xander-a154",
+      "date": "2026-06-18T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-26/xander-a154"
+    },
+    {
+      "handle": "frank-n121",
+      "date": "2025-10-15T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-26/frank-n121"
+    }
+  ],
+  "denounces": []
+}

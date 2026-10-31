@@ -1,0 +1,56 @@
+{
+  "id": "proj-05",
+  "name": "arch-box",
+  "trusts": [
+    {
+      "project": "proj-02",
+      "weight": 0.34
+    },
+    {
+      "project": "proj-29",
+      "weight": 0.31
+    },
+    {
+      "project": "proj-09",
+      "weight": 0.69
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "uma-j162",
+      "date": "2025-04-06T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/uma-j162"
+    },
+    {
+      "handle": "paul-v149",
+      "date": "2025-12-04T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/paul-v149"
+    },
+    {
+      "handle": "zach-j140",
+      "date": "2025-06-24T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/zach-j140"
+    },
+    {
+      "handle": "bob-g182",
+      "date": "2025-05-02T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/bob-g182"
+    },
+    {
+      "handle": "grace-v083",
+      "date": "2025-07-18T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/grace-v083"
+    },
+    {
+      "handle": "wendy-k097",
+      "date": "2026-06-22T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/wendy-k097"
+    },
+    {
+      "handle": "bob-y152",
+      "date": "2026-06-06T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-05/bob-y152"
+    }
+  ],
+  "denounces": []
+}

@@ -1,0 +1,57 @@
+{
+  "id": "proj-09",
+  "name": "fast-net",
+  "trusts": [
+    {
+      "project": "proj-10",
+      "weight": 0.31
+    },
+    {
+      "project": "proj-01",
+      "weight": 0.73
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "alice-q013",
+      "date": "2026-02-26T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-09/alice-q013"
+    },
+    {
+      "handle": "alice-h073",
+      "date": "2026-04-26T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-09/alice-h073"
+    },
+    {
+      "handle": "dana-z153",
+      "date": "2025-05-26T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-09/dana-z153"
+    },
+    {
+      "handle": "carol-q079",
+      "date": "2026-02-14T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-09/carol-q079"
+    },
+    {
+      "handle": "blake-c090",
+      "date": "2026-06-13T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-09/blake-c090"
+    },
+    {
+      "handle": "rose-e026",
+      "date": "2025-10-08T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-09/rose-e026"
+    },
+    {
+      "handle": "opal-s147",
+      "date": "2025-03-11T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-09/opal-s147"
+    },
+    {
+      "handle": "jack-x129",
+      "date": "2025-09-20T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-09/jack-x129"
+    }
+  ],
+  "denounces": []
+}

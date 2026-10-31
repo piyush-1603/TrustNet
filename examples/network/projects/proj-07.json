@@ -1,0 +1,42 @@
+{
+  "id": "proj-07",
+  "name": "hyper-tool",
+  "trusts": [
+    {
+      "project": "proj-10",
+      "weight": 0.42
+    },
+    {
+      "project": "proj-15",
+      "weight": 0.64
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "zach-t170",
+      "date": "2025-06-03T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/zach-t170"
+    },
+    {
+      "handle": "victor-z065",
+      "date": "2026-07-25T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/victor-z065"
+    },
+    {
+      "handle": "victor-h095",
+      "date": "2026-06-30T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/victor-h095"
+    },
+    {
+      "handle": "jack-v039",
+      "date": "2026-07-06T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/jack-v039"
+    },
+    {
+      "handle": "eve-z175",
+      "date": "2026-06-28T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/eve-z175"
+    }
+  ],
+  "denounces": []
+}

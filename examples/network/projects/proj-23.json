@@ -1,0 +1,41 @@
+{
+  "id": "proj-23",
+  "name": "nano-app",
+  "trusts": [
+    {
+      "project": "proj-26",
+      "weight": 0.63
+    },
+    {
+      "project": "proj-21",
+      "weight": 0.67
+    },
+    {
+      "project": "proj-05",
+      "weight": 0.6
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "nate-z197",
+      "date": "2025-06-29T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-23/nate-z197"
+    },
+    {
+      "handle": "yara-g160",
+      "date": "2025-11-05T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-23/yara-g160"
+    },
+    {
+      "handle": "dave-t126",
+      "date": "2025-11-12T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-23/dave-t126"
+    },
+    {
+      "handle": "hank-j118",
+      "date": "2026-04-30T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-23/hank-j118"
+    }
+  ],
+  "denounces": []
+}

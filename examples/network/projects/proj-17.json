@@ -1,0 +1,57 @@
+{
+  "id": "proj-17",
+  "name": "open-api",
+  "trusts": [
+    {
+      "project": "proj-09",
+      "weight": 0.46
+    },
+    {
+      "project": "proj-07",
+      "weight": 0.54
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "iris-p078",
+      "date": "2025-11-27T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-17/iris-p078"
+    },
+    {
+      "handle": "leo-n011",
+      "date": "2026-02-27T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-17/leo-n011"
+    },
+    {
+      "handle": "rose-p056",
+      "date": "2026-05-14T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-17/rose-p056"
+    },
+    {
+      "handle": "leo-q101",
+      "date": "2026-01-13T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-17/leo-q101"
+    },
+    {
+      "handle": "dana-z153",
+      "date": "2025-12-09T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-17/dana-z153"
+    },
+    {
+      "handle": "aria-r014",
+      "date": "2025-10-31T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-17/aria-r014"
+    },
+    {
+      "handle": "frank-b001",
+      "date": "2026-06-01T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-17/frank-b001"
+    },
+    {
+      "handle": "tara-j052",
+      "date": "2026-09-24T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-17/tara-j052"
+    }
+  ],
+  "denounces": []
+}

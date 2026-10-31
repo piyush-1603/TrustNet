@@ -1,0 +1,15 @@
+{
+  "pr_id": "pr-001",
+  "viewer": "proj-01",
+  "author": "sam-n165",
+  "decision": "ACCEPT",
+  "belief": 0.68,
+  "disbelief": 0.0,
+  "uncertainty": 0.32,
+  "reasons": [
+    "Vouched by a trusted project in the network"
+  ],
+  "paths": [],
+  "ignored": [],
+  "in_campaign": false
+}

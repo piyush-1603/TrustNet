@@ -1,0 +1,55 @@
+{
+  "id": "proj-24",
+  "name": "light-forge",
+  "trusts": [
+    {
+      "project": "proj-13",
+      "weight": 0.51
+    },
+    {
+      "project": "proj-19",
+      "weight": 0.8
+    },
+    {
+      "project": "proj-14",
+      "weight": 0.39
+    },
+    {
+      "project": "proj-16",
+      "weight": 0.33
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "nate-v017",
+      "date": "2026-08-05T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-24/nate-v017"
+    },
+    {
+      "handle": "blake-m120",
+      "date": "2025-10-06T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-24/blake-m120"
+    },
+    {
+      "handle": "grace-d113",
+      "date": "2025-04-30T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-24/grace-d113"
+    },
+    {
+      "handle": "leo-h161",
+      "date": "2026-07-18T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-24/leo-h161"
+    },
+    {
+      "handle": "nate-n077",
+      "date": "2025-11-18T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-24/nate-n077"
+    },
+    {
+      "handle": "yara-e070",
+      "date": "2025-06-16T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-24/yara-e070"
+    }
+  ],
+  "denounces": []
+}

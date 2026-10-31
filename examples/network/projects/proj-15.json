@@ -1,0 +1,46 @@
+{
+  "id": "proj-15",
+  "name": "node-stack",
+  "trusts": [
+    {
+      "project": "proj-02",
+      "weight": 0.77
+    },
+    {
+      "project": "proj-12",
+      "weight": 0.46
+    },
+    {
+      "project": "proj-30",
+      "weight": 0.44
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "grace-d113",
+      "date": "2025-07-06T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-15/grace-d113"
+    },
+    {
+      "handle": "carol-s169",
+      "date": "2025-08-03T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-15/carol-s169"
+    },
+    {
+      "handle": "iris-y108",
+      "date": "2025-12-26T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-15/iris-y108"
+    },
+    {
+      "handle": "xander-r124",
+      "date": "2026-02-23T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-15/xander-r124"
+    },
+    {
+      "handle": "victor-b155",
+      "date": "2025-04-25T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-15/victor-b155"
+    }
+  ],
+  "denounces": []
+}

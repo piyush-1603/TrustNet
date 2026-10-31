@@ -1,0 +1,60 @@
+{
+  "id": "proj-03",
+  "name": "safe-app",
+  "trusts": [
+    {
+      "project": "proj-22",
+      "weight": 0.6
+    },
+    {
+      "project": "proj-25",
+      "weight": 0.62
+    },
+    {
+      "project": "proj-19",
+      "weight": 0.97
+    },
+    {
+      "project": "proj-16",
+      "weight": 0.91
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "frank-x151",
+      "date": "2025-04-16T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-03/frank-x151"
+    },
+    {
+      "handle": "opal-f027",
+      "date": "2025-11-27T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-03/opal-f027"
+    },
+    {
+      "handle": "eve-f115",
+      "date": "2025-06-19T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-03/eve-f115"
+    },
+    {
+      "handle": "corey-w128",
+      "date": "2026-08-31T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-03/corey-w128"
+    },
+    {
+      "handle": "rose-p056",
+      "date": "2026-07-31T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-03/rose-p056"
+    },
+    {
+      "handle": "wendy-d157",
+      "date": "2025-05-29T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-03/wendy-d157"
+    },
+    {
+      "handle": "leo-n011",
+      "date": "2025-08-16T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-03/leo-n011"
+    }
+  ],
+  "denounces": []
+}

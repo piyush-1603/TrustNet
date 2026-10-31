@@ -1,0 +1,60 @@
+{
+  "id": "proj-02",
+  "name": "flux-link",
+  "trusts": [
+    {
+      "project": "proj-04",
+      "weight": 0.47
+    },
+    {
+      "project": "proj-01",
+      "weight": 0.69
+    },
+    {
+      "project": "proj-15",
+      "weight": 0.48
+    },
+    {
+      "project": "proj-26",
+      "weight": 0.71
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "tara-t082",
+      "date": "2025-07-27T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-02/tara-t082"
+    },
+    {
+      "handle": "xander-e004",
+      "date": "2025-04-11T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-02/xander-e004"
+    },
+    {
+      "handle": "aria-a044",
+      "date": "2026-06-07T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-02/aria-a044"
+    },
+    {
+      "handle": "wendy-b067",
+      "date": "2026-07-28T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-02/wendy-b067"
+    },
+    {
+      "handle": "alice-q013",
+      "date": "2025-06-01T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-02/alice-q013"
+    },
+    {
+      "handle": "bob-m032",
+      "date": "2025-06-29T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-02/bob-m032"
+    },
+    {
+      "handle": "jack-q189",
+      "date": "2025-09-26T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-02/jack-q189"
+    }
+  ],
+  "denounces": []
+}

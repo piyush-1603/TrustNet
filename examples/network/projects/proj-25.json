@@ -1,0 +1,47 @@
+{
+  "id": "proj-25",
+  "name": "data-box",
+  "trusts": [
+    {
+      "project": "proj-17",
+      "weight": 0.36
+    },
+    {
+      "project": "proj-28",
+      "weight": 0.47
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "jack-k009",
+      "date": "2026-07-01T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-25/jack-k009"
+    },
+    {
+      "handle": "aria-r014",
+      "date": "2025-04-30T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-25/aria-r014"
+    },
+    {
+      "handle": "xander-g094",
+      "date": "2025-09-03T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-25/xander-g094"
+    },
+    {
+      "handle": "alice-h073",
+      "date": "2025-06-15T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-25/alice-h073"
+    },
+    {
+      "handle": "carol-x019",
+      "date": "2025-03-13T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-25/carol-x019"
+    },
+    {
+      "handle": "sam-n165",
+      "date": "2026-08-20T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-25/sam-n165"
+    }
+  ],
+  "denounces": []
+}

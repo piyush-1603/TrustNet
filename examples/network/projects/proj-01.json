@@ -1,0 +1,45 @@
+{
+  "id": "proj-01",
+  "name": "net-flow",
+  "trusts": [
+    {
+      "project": "proj-02",
+      "weight": 0.79
+    },
+    {
+      "project": "proj-29",
+      "weight": 0.78
+    },
+    {
+      "project": "proj-17",
+      "weight": 0.35
+    },
+    {
+      "project": "proj-12",
+      "weight": 0.74
+    }
+  ],
+  "vouches": [
+    {
+      "handle": "carol-s169",
+      "date": "2026-09-16T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/carol-s169"
+    },
+    {
+      "handle": "dave-g006",
+      "date": "2025-09-30T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/dave-g006"
+    },
+    {
+      "handle": "dana-n033",
+      "date": "2026-01-31T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/dana-n033"
+    },
+    {
+      "handle": "maintainer-dep",
+      "date": "2026-05-04T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-01/maintainer-dep"
+    }
+  ],
+  "denounces": []
+}
