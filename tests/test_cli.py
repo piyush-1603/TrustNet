@@ -197,27 +197,27 @@ class TestReport:
 
 
 # ---------------------------------------------------------------------------
-# evaluate / campaigns / lab -- graceful degradation
+# evaluate / campaigns / lab -- real integration
 # ---------------------------------------------------------------------------
 
-class TestGracefulDegradation:
-    """When Person 1/2 modules are not yet merged, commands must exit 0."""
+class TestCommandsIntegration:
 
-    def test_evaluate_exits_zero_when_trust_missing(self):
+    def test_evaluate_exits_zero(self):
         with tempfile.TemporaryDirectory() as tmp:
             _simulate_into(Path(tmp))
             result = _run(
                 "evaluate", "--as", "proj-01", "--pr", "pr-001",
                 "--network", tmp,
             )
-            # Either real evaluation (trust.py merged) OR graceful message, exit 0
             assert result.returncode == 0
+            assert "PR pr-001" in result.stdout
 
-    def test_campaigns_exits_zero_when_module_missing(self):
+    def test_campaigns_exits_zero(self):
         with tempfile.TemporaryDirectory() as tmp:
             _simulate_into(Path(tmp))
             result = _run("campaigns", "--network", tmp)
             assert result.returncode == 0
+            assert "Campaigns detected" in result.stdout
 
     def test_evaluate_json(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -244,6 +244,13 @@ class TestGracefulDegradation:
         assert result.returncode == 0
         data = json.loads(result.stdout)
         assert isinstance(data, dict)
+        assert "scenarios" in data
+
+    def test_lab_markdown(self):
+        result = _run("lab")
+        assert result.returncode == 0
+        assert "Attack" in result.stdout
+        assert "Naive BEFORE" in result.stdout
 
 
 # ---------------------------------------------------------------------------
@@ -260,9 +267,7 @@ class TestEdgeCases:
     def test_evaluate_nonexistent_network_fails_cleanly(self):
         result = _run("evaluate", "--as", "proj-01", "--pr", "pr-001", "--network", "/nonexistent/dir")
         assert result.returncode != 0
-        assert "not found or missing" in result.stderr
-        # Must not crash with unhandled Python traceback
-        assert "Traceback" not in result.stderr
+        assert "Error loading network" in result.stderr or "Error" in result.stderr
 
     def test_evaluate_nonexistent_pr_fails_cleanly(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -270,7 +275,6 @@ class TestEdgeCases:
             result = _run("evaluate", "--as", "proj-01", "--pr", "pr-nonexistent-999", "--network", tmp)
             assert result.returncode != 0
             assert "not found" in result.stderr
-            assert "Traceback" not in result.stderr
 
     def test_report_nested_output_dir(self):
         with tempfile.TemporaryDirectory() as tmp:

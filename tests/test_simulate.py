@@ -243,3 +243,29 @@ def test_simulate_minimal_single_project():
         write_network(net, labels, Path(tmp) / "nested" / "dir")
         assert (Path(tmp) / "nested" / "dir" / "accounts.json").exists()
 
+
+def test_trusted_denounce_planted():
+    """Trusted denounce planted case must exist in labels and evaluate to HOLD."""
+    from trustnet.trust import evaluate_pr
+    net, labels, _ = _write_tmp()
+    assert "trusted_denounced_handle" in labels
+    assert "trusted_denounced_pr_id" in labels
+    pr_id = labels["trusted_denounced_pr_id"]
+    pr = next(p for p in net.prs if p.id == pr_id)
+    dec = evaluate_pr(net, "proj-01", pr, campaigns=[])
+    assert dec.decision == "HOLD"
+    assert any("denounced by proj-01" in r for r in dec.reasons)
+
+
+def test_brigaded_author_vouched_by_trusted_project():
+    """Brigaded author must be vouched by proj-01 and evaluate to ACCEPT from proj-01."""
+    from trustnet.trust import evaluate_pr
+    net, labels, _ = _write_tmp()
+    handle = labels["brigaded_handle"]
+    vouched = [v.handle for v in net.projects["proj-01"].vouches]
+    assert handle in vouched
+    pr = next((p for p in net.prs if p.author == handle), None)
+    if pr:
+        dec = evaluate_pr(net, "proj-01", pr, campaigns=[])
+        assert dec.decision == "ACCEPT"
+

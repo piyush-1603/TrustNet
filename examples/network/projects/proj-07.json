@@ -13,29 +13,114 @@
   ],
   "vouches": [
     {
-      "handle": "zach-t170",
-      "date": "2025-06-03T20:00:00Z",
-      "evidence_url": "https://example.com/vouch/proj-07/zach-t170"
+      "handle": "mia-w084",
+      "date": "2026-05-22T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/mia-w084"
     },
     {
-      "handle": "victor-z065",
-      "date": "2026-07-25T20:00:00Z",
-      "evidence_url": "https://example.com/vouch/proj-07/victor-z065"
+      "handle": "mia-c024",
+      "date": "2026-07-07T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/mia-c024"
     },
     {
-      "handle": "victor-h095",
-      "date": "2026-06-30T20:00:00Z",
-      "evidence_url": "https://example.com/vouch/proj-07/victor-h095"
+      "handle": "tara-m142",
+      "date": "2025-11-18T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/tara-m142"
     },
     {
-      "handle": "jack-v039",
-      "date": "2026-07-06T20:00:00Z",
-      "evidence_url": "https://example.com/vouch/proj-07/jack-v039"
+      "handle": "grace-x173",
+      "date": "2025-09-11T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/grace-x173"
     },
     {
-      "handle": "eve-z175",
+      "handle": "corey-m098",
+      "date": "2025-10-30T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/corey-m098"
+    },
+    {
+      "handle": "uma-g072",
+      "date": "2026-05-24T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/uma-g072"
+    },
+    {
+      "handle": "xander-y064",
+      "date": "2025-04-10T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/xander-y064"
+    },
+    {
+      "handle": "victor-k185",
       "date": "2026-06-28T20:00:00Z",
-      "evidence_url": "https://example.com/vouch/proj-07/eve-z175"
+      "evidence_url": "https://example.com/vouch/proj-07/victor-k185"
+    },
+    {
+      "handle": "iris-r168",
+      "date": "2025-07-25T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/iris-r168"
+    },
+    {
+      "handle": "xander-a154",
+      "date": "2025-04-29T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/xander-a154"
+    },
+    {
+      "handle": "corey-t038",
+      "date": "2025-09-26T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/corey-t038"
+    },
+    {
+      "handle": "eve-x085",
+      "date": "2026-09-13T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/eve-x085"
+    },
+    {
+      "handle": "zach-y020",
+      "date": "2025-09-25T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/zach-y020"
+    },
+    {
+      "handle": "paul-v149",
+      "date": "2025-11-19T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/paul-v149"
+    },
+    {
+      "handle": "carol-s169",
+      "date": "2026-03-31T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/carol-s169"
+    },
+    {
+      "handle": "dave-r036",
+      "date": "2026-02-24T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/dave-r036"
+    },
+    {
+      "handle": "paul-b089",
+      "date": "2025-10-17T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/paul-b089"
+    },
+    {
+      "handle": "carol-q079",
+      "date": "2025-05-22T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/carol-q079"
+    },
+    {
+      "handle": "nate-q167",
+      "date": "2026-03-19T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/nate-q167"
+    },
+    {
+      "handle": "hank-c178",
+      "date": "2026-02-12T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/hank-c178"
+    },
+    {
+      "handle": "uma-t192",
+      "date": "2026-05-14T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/uma-t192"
+    },
+    {
+      "handle": "yara-p100",
+      "date": "2026-04-26T20:00:00Z",
+      "evidence_url": "https://example.com/vouch/proj-07/yara-p100"
     }
   ],
   "denounces": []

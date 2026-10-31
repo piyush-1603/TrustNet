@@ -471,39 +471,56 @@ def _section_lab(lab_results: dict) -> str:
   <div class="no-lab">Lab results not available. Run <code>trustnet lab</code> to generate.</div>
 </section>"""
 
+    scenarios = lab_results.get("scenarios", lab_results) if isinstance(lab_results, dict) else {}
+    if not scenarios or not isinstance(scenarios, dict):
+        return """<section id="lab">
+  <h2>Adversarial Lab</h2>
+  <div class="no-lab">Lab results not available. Run <code>trustnet lab</code> to generate.</div>
+</section>"""
+
     rows = []
-    for scenario, row in lab_results.items():
-        naive    = row.get("naive", "N/A")
-        defended = row.get("defended", "N/A")
-        if isinstance(naive, (int, float)) and isinstance(defended, (int, float)) and naive:
-            reduction = f"{(1 - defended / naive) * 100:.1f}%"
-            better_cls = "better" if defended < naive else ""
-        else:
-            reduction = "N/A"
-            better_cls = ""
-        fp = row.get("false_positive_rate", "N/A")
+    for scenario, row in scenarios.items():
+        if not isinstance(row, dict):
+            continue
+        n_before = row.get("naive_before", "N/A")
+        n_after  = row.get("naive_after", "N/A")
+        d_before = row.get("defended_before", "N/A")
+        d_after  = row.get("defended_after", "N/A")
+        goal_met = row.get("defense_goal_met", False)
+
+        goal_badge = (
+            '<span class="badge badge-accept">&#x2705; MET</span>'
+            if goal_met else
+            '<span class="badge badge-hold">&#x274C; MISSED</span>'
+        )
+
+        fp = row.get("campaign_false_positive_rate", row.get("false_positive_rate", "N/A"))
         fp_str = f"{fp:.1%}" if isinstance(fp, float) else str(fp)
+
+        naive_str = f"{escape(str(n_before))} &rarr; {escape(str(n_after))}"
+        defended_str = f"{escape(str(d_before))} &rarr; {escape(str(d_after))}"
+
         rows.append(
-            f"<tr><td>{escape(str(scenario))}</td>"
-            f"<td>{_fmt(naive)}</td>"
-            f'<td class="{better_cls}">{_fmt(defended)}</td>'
-            f"<td>{escape(reduction)}</td>"
+            f"<tr><td><strong>{escape(str(scenario))}</strong></td>"
+            f"<td>{naive_str}</td>"
+            f"<td>{defended_str}</td>"
+            f"<td>{goal_badge}</td>"
             f"<td>{escape(fp_str)}</td></tr>"
         )
 
     rows_html = "\n".join(rows)
     return f"""<section id="lab">
   <h2>Adversarial Lab</h2>
-  <p class="section-note">Naive baseline (all projects equal) vs TrustNet defence. Lower is better for attacker scores.</p>
+  <p class="section-note">Naive baseline (all projects equal) vs TrustNet defence. Decisions before and after attack.</p>
   <div class="lab-wrap">
     <table class="lab-table">
       <thead>
         <tr>
           <th>Scenario</th>
-          <th>Naive score</th>
-          <th>Defended score</th>
-          <th>Reduction</th>
-          <th>FP rate (newcomers)</th>
+          <th>Naive (Before &rarr; After)</th>
+          <th>Defended (Before &rarr; After)</th>
+          <th>Defense Goal</th>
+          <th>Campaign FP Rate</th>
         </tr>
       </thead>
       <tbody>

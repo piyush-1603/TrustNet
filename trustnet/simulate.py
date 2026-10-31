@@ -25,64 +25,7 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Optional
 
-# ---------------------------------------------------------------------------
-# Stub imports -- when trustnet/models.py is merged, replace this entire block:
-#   from trustnet.models import Project, Trust, Vouch, Denounce, Account, PR, Network
-# The stubs below exactly mirror the contract in docs/PLAN.md.
-# ---------------------------------------------------------------------------
-try:
-    from trustnet.models import (  # type: ignore[import]
-        Project, Trust, Vouch, Denounce, Account, PR, Network,
-    )
-except ImportError:
-
-    @dataclass
-    class Trust:
-        project: str
-        weight: float
-
-    @dataclass
-    class Vouch:
-        handle: str
-        date: str
-        evidence_url: Optional[str]
-
-    @dataclass
-    class Denounce:
-        handle: str
-        reason_code: str
-        evidence_url: Optional[str]
-        date: str
-        expires: Optional[str]
-
-    @dataclass
-    class Project:
-        id: str
-        name: str
-        trusts: list = field(default_factory=list)
-        vouches: list = field(default_factory=list)
-        denounces: list = field(default_factory=list)
-
-    @dataclass
-    class Account:
-        handle: str
-        created_at: datetime
-
-    @dataclass
-    class PR:
-        id: str
-        project: str
-        author: str
-        created_at: datetime
-        title: str
-        body: str
-        diff_text: str
-
-    @dataclass
-    class Network:
-        projects: dict  # str -> Project
-        accounts: dict  # str -> Account
-        prs: list       # list[PR]
+from trustnet.models import Project, Trust, Vouch, Denounce, Account, PR, Network
 
 
 # ---------------------------------------------------------------------------
@@ -255,11 +198,11 @@ def generate(n_projects: int = 30, seed: int = 42):
         newcomer_handles.append(handle)
 
     # ------------------------------------------------------------------ #
-    # 3. Vouches for honest accounts                                      #
+    # 3. Vouches for honest accounts (denser: 20-35 per project)          #
     # ------------------------------------------------------------------ #
     for pid in proj_ids:
-        n_vouch = rng.randint(3, 8)
-        for handle in rng.sample(honest_handles, n_vouch):
+        n_vouch = rng.randint(20, 35)
+        for handle in rng.sample(honest_handles, min(n_vouch, len(honest_handles))):
             age_days = rng.randint(30, 600)
             projects[pid].vouches.append(Vouch(
                 handle=handle,
@@ -271,11 +214,25 @@ def generate(n_projects: int = 30, seed: int = 42):
     # 4. Normal PRs (~150 varied)                                         #
     # ------------------------------------------------------------------ #
     prs = []
-    pr_counter = 1
+    pr1_author = honest_handles[1]
+    if not any(v.handle == pr1_author for v in projects[proj_ids[0]].vouches):
+        projects[proj_ids[0]].vouches.append(Vouch(
+            handle=pr1_author,
+            date=_iso(now - timedelta(days=90)),
+            evidence_url=f"https://example.com/vouch/{proj_ids[0]}/{pr1_author}",
+        ))
 
-    for _ in range(150):
-        pid = rng.choice(proj_ids)
-        author = rng.choice(honest_handles)
+    pr_counter = 1
+    for i in range(150):
+        if i == 0:
+            pid = proj_ids[0]
+            author = pr1_author
+        elif i == 1:
+            pid = proj_ids[0]
+            author = honest_handles[0]  # brigaded_handle
+        else:
+            pid = rng.choice(proj_ids)
+            author = rng.choice(honest_handles)
         created = now - timedelta(hours=rng.randint(1, 720))
         verb = rng.choice(_PR_VERBS)
         obj = rng.choice(_PR_OBJS)
@@ -380,8 +337,14 @@ def generate(n_projects: int = 30, seed: int = 42):
     # ------------------------------------------------------------------ #
     # 7. PLANTED (c): Brigade                                             #
     #    5 fake projects with NO real trust path denounce brigaded_handle  #
+    #    An honest project vouches brigaded_handle so decision stays ACCEPT #
     # ------------------------------------------------------------------ #
     brigaded_handle = honest_handles[0]
+    projects[proj_ids[0]].vouches.append(Vouch(
+        handle=brigaded_handle,
+        date=_iso(now - timedelta(days=120)),
+        evidence_url=f"https://example.com/vouch/{proj_ids[0]}/{brigaded_handle}",
+    ))
     brigade_ids = [f"fake-brigade-{i:02d}" for i in range(5)]
     for fake_pid in brigade_ids:
         projects[fake_pid] = Project(
@@ -441,9 +404,35 @@ def generate(n_projects: int = 30, seed: int = 42):
         ))
 
     # ------------------------------------------------------------------ #
-    # 9. Assemble                                                         #
+    # 9. PLANTED (e): Trusted Denounce -> HOLD                           #
+    #    A trusted project denounces a malicious actor with evidence     #
     # ------------------------------------------------------------------ #
-    attack_handles = spam_handles + [sybil_spammer]
+    denounced_handle = "malicious-actor"
+    accounts[denounced_handle] = Account(
+        handle=denounced_handle,
+        created_at=now - timedelta(days=200),
+    )
+    projects[proj_ids[0]].denounces.append(Denounce(
+        handle=denounced_handle,
+        reason_code="malicious-backdoor",
+        evidence_url=f"https://example.com/security/advisory/{denounced_handle}",
+        date=_iso(now - timedelta(days=10)),
+        expires=None,
+    ))
+    denounced_pr_id = f"pr-{pr_counter:03d}"
+    pr_counter += 1
+    prs.append(PR(
+        id=denounced_pr_id, project=proj_ids[0], author=denounced_handle,
+        created_at=now - timedelta(days=2),
+        title="Security patch and dependency update",
+        body="Applying routine security update to dependencies.",
+        diff_text="+ # security fix\n- vulnerable_code()",
+    ))
+
+    # ------------------------------------------------------------------ #
+    # 10. Assemble                                                        #
+    # ------------------------------------------------------------------ #
+    attack_handles = spam_handles + [sybil_spammer, denounced_handle]
     net = Network(projects=projects, accounts=accounts, prs=prs)
     labels = {
         "campaign_pr_ids": campaign_pr_ids,
@@ -452,6 +441,8 @@ def generate(n_projects: int = 30, seed: int = 42):
         "brigaded_handle": brigaded_handle,
         "legit_bump_pr_ids": legit_bump_pr_ids,
         "sybil_spammer_handle": sybil_spammer,
+        "trusted_denounced_handle": denounced_handle,
+        "trusted_denounced_pr_id": denounced_pr_id,
     }
     return net, labels
 

@@ -861,75 +861,75 @@
   },
   {
     "handle": "bot-00",
-    "created_at": "2026-10-19T20:00:00Z"
+    "created_at": "2026-10-29T20:00:00Z"
   },
   {
     "handle": "bot-01",
-    "created_at": "2026-10-26T20:00:00Z"
-  },
-  {
-    "handle": "bot-02",
-    "created_at": "2026-10-21T20:00:00Z"
-  },
-  {
-    "handle": "bot-03",
-    "created_at": "2026-10-23T20:00:00Z"
-  },
-  {
-    "handle": "bot-04",
-    "created_at": "2026-10-27T20:00:00Z"
-  },
-  {
-    "handle": "bot-05",
-    "created_at": "2026-10-27T20:00:00Z"
-  },
-  {
-    "handle": "bot-06",
-    "created_at": "2026-10-26T20:00:00Z"
-  },
-  {
-    "handle": "bot-07",
-    "created_at": "2026-10-22T20:00:00Z"
-  },
-  {
-    "handle": "bot-08",
-    "created_at": "2026-10-26T20:00:00Z"
-  },
-  {
-    "handle": "bot-09",
-    "created_at": "2026-10-27T20:00:00Z"
-  },
-  {
-    "handle": "bot-10",
-    "created_at": "2026-10-26T20:00:00Z"
-  },
-  {
-    "handle": "bot-11",
     "created_at": "2026-10-18T20:00:00Z"
   },
   {
+    "handle": "bot-02",
+    "created_at": "2026-10-25T20:00:00Z"
+  },
+  {
+    "handle": "bot-03",
+    "created_at": "2026-10-29T20:00:00Z"
+  },
+  {
+    "handle": "bot-04",
+    "created_at": "2026-10-30T20:00:00Z"
+  },
+  {
+    "handle": "bot-05",
+    "created_at": "2026-10-23T20:00:00Z"
+  },
+  {
+    "handle": "bot-06",
+    "created_at": "2026-10-30T20:00:00Z"
+  },
+  {
+    "handle": "bot-07",
+    "created_at": "2026-10-28T20:00:00Z"
+  },
+  {
+    "handle": "bot-08",
+    "created_at": "2026-10-21T20:00:00Z"
+  },
+  {
+    "handle": "bot-09",
+    "created_at": "2026-10-24T20:00:00Z"
+  },
+  {
+    "handle": "bot-10",
+    "created_at": "2026-10-19T20:00:00Z"
+  },
+  {
+    "handle": "bot-11",
+    "created_at": "2026-10-24T20:00:00Z"
+  },
+  {
     "handle": "bot-12",
-    "created_at": "2026-10-26T20:00:00Z"
+    "created_at": "2026-10-23T20:00:00Z"
   },
   {
     "handle": "bot-13",
-    "created_at": "2026-10-19T20:00:00Z"
+    "created_at": "2026-10-30T20:00:00Z"
   },
   {
     "handle": "bot-14",
-    "created_at": "2026-10-27T20:00:00Z"
+    "created_at": "2026-10-24T20:00:00Z"
   },
   {
     "handle": "bot-15",
-    "created_at": "2026-10-19T20:00:00Z"
+    "created_at": "2026-10-20T20:00:00Z"
   },
   {
     "handle": "bot-16",
-    "created_at": "2026-10-19T20:00:00Z"
+    "created_at": "2026-10-24T20:00:00Z"
   },
   {
     "handle": "bot-17",
-    "created_at": "2026-10-23T20:00:00Z"
+    "created_at": "2026-10-28T20:00:00Z"
   },
   {
     "handle": "bot-18",
@@ -937,7 +937,7 @@
   },
   {
     "handle": "bot-19",
-    "created_at": "2026-10-23T20:00:00Z"
+    "created_at": "2026-10-27T20:00:00Z"
   },
   {
     "handle": "maintainer-dep",
@@ -945,6 +945,10 @@
   },
   {
     "handle": "spammer-zed",
-    "created_at": "2026-10-27T20:00:00Z"
+    "created_at": "2026-10-21T20:00:00Z"
+  },
+  {
+    "handle": "malicious-actor",
+    "created_at": "2026-04-14T20:00:00Z"
   }
 ]

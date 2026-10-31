@@ -77,7 +77,8 @@
     "bot-17",
     "bot-18",
     "bot-19",
-    "spammer-zed"
+    "spammer-zed",
+    "malicious-actor"
   ],
   "brigaded_handle": "blake-a000",
   "legit_bump_pr_ids": [
@@ -92,5 +93,7 @@
     "pr-197",
     "pr-198"
   ],
-  "sybil_spammer_handle": "spammer-zed"
+  "sybil_spammer_handle": "spammer-zed",
+  "trusted_denounced_handle": "malicious-actor",
+  "trusted_denounced_pr_id": "pr-202"
 }
