@@ -58,10 +58,13 @@ from trustnet.report import render as _render_report
 # Reads the exact folder layout written by write_network().
 # ---------------------------------------------------------------------------
 def _load_network(path: str) -> SimpleNamespace:
-    """Load network from JSON folder. Falls back to built-in reader if loaders.py absent."""
     if _HAS_LOADERS:
         return _load_network_real(path)
     out = Path(path)
+    if not out.is_dir() or not (out / "accounts.json").exists():
+        print(f"Error: Network directory '{path}' not found or missing accounts.json. "
+              f"Run 'python -m trustnet simulate --out {path}' first.", file=sys.stderr)
+        sys.exit(1)
     # accounts
     accounts: dict = {}
     for a in json.loads((out / "accounts.json").read_text()):
@@ -207,6 +210,9 @@ def _print_decision(d: SimpleNamespace) -> None:
 
 def cmd_simulate(args: argparse.Namespace) -> None:
     """Generate and write a seeded synthetic trust network."""
+    if args.projects < 1:
+        print("Error: --projects must be at least 1", file=sys.stderr)
+        sys.exit(1)
     net, labels = generate(n_projects=args.projects, seed=args.seed)
     write_network(net, labels, args.out)
 

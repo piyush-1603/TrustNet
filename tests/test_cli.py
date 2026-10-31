@@ -244,3 +244,51 @@ class TestGracefulDegradation:
         assert result.returncode == 0
         data = json.loads(result.stdout)
         assert isinstance(data, dict)
+
+
+# ---------------------------------------------------------------------------
+# CLI & Report Edge Cases
+# ---------------------------------------------------------------------------
+
+class TestEdgeCases:
+
+    def test_simulate_projects_zero_fails(self):
+        result = _run("simulate", "--projects", "0")
+        assert result.returncode != 0
+        assert "must be at least 1" in result.stderr
+
+    def test_evaluate_nonexistent_network_fails_cleanly(self):
+        result = _run("evaluate", "--as", "proj-01", "--pr", "pr-001", "--network", "/nonexistent/dir")
+        assert result.returncode != 0
+        assert "not found or missing" in result.stderr
+        # Must not crash with unhandled Python traceback
+        assert "Traceback" not in result.stderr
+
+    def test_evaluate_nonexistent_pr_fails_cleanly(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            _simulate_into(Path(tmp))
+            result = _run("evaluate", "--as", "proj-01", "--pr", "pr-nonexistent-999", "--network", tmp)
+            assert result.returncode != 0
+            assert "not found" in result.stderr
+            assert "Traceback" not in result.stderr
+
+    def test_report_nested_output_dir(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            _simulate_into(Path(tmp))
+            out_file = Path(tmp) / "sub1" / "sub2" / "report.html"
+            result = _run("report", "--network", tmp, "--out", str(out_file))
+            assert result.returncode == 0
+            assert out_file.exists()
+
+    def test_report_render_empty_data(self):
+        """Report render() must succeed even with minimal/empty data."""
+        from types import SimpleNamespace
+        from trustnet.report import render
+        with tempfile.TemporaryDirectory() as tmp:
+            out_html = Path(tmp) / "empty_report.html"
+            net = SimpleNamespace(projects={}, accounts={}, prs=[])
+            render(net, decisions=[], campaigns=[], lab_results={}, out_path=out_html)
+            assert out_html.exists()
+            content = out_html.read_text(encoding="utf-8")
+            assert "TrustNet Report" in content
+

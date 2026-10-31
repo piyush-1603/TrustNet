@@ -197,6 +197,9 @@ def generate(n_projects: int = 30, seed: int = 42):
         brigaded_handle, legit_bump_pr_ids, sybil_spammer_handle.
         The trust engine never reads labels; only tests and the CLI use them.
     """
+    if n_projects < 1:
+        raise ValueError(f"n_projects must be at least 1, got {n_projects}")
+
     rng = random.Random(seed)  # single seeded RNG; NEVER call random.seed()
     now = _NOW
 

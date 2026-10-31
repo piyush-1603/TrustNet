@@ -73,7 +73,9 @@ def render(net, decisions, campaigns, lab_results, out_path) -> None:
 </body>
 </html>"""
 
-    Path(out_path).write_text(html, encoding="utf-8")
+    out = Path(out_path)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(html, encoding="utf-8")
 
 
 # ---------------------------------------------------------------------------

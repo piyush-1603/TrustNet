@@ -217,3 +217,29 @@ def test_labels_json_schema():
         "brigaded_handle", "legit_bump_pr_ids", "sybil_spammer_handle",
     ):
         assert key in labels, f"Missing key in labels.json: {key}"
+
+
+# ---------------------------------------------------------------------------
+# Edge Cases
+# ---------------------------------------------------------------------------
+
+def test_simulate_zero_projects_raises():
+    """Passing n_projects < 1 must raise ValueError."""
+    import pytest
+    with pytest.raises(ValueError, match="at least 1"):
+        generate(n_projects=0)
+    with pytest.raises(ValueError, match="at least 1"):
+        generate(n_projects=-5)
+
+
+def test_simulate_minimal_single_project():
+    """Boundary test: n_projects=1 must not crash and produce valid network."""
+    net, labels = generate(n_projects=1, seed=42)
+    assert len(labels["newcomer_handles"]) == 15
+    assert len(labels["campaign_pr_ids"]) == 38
+    # 1 honest + 5 brigade + 4 sybil = 10 projects
+    assert len(net.projects) == 10
+    with tempfile.TemporaryDirectory() as tmp:
+        write_network(net, labels, Path(tmp) / "nested" / "dir")
+        assert (Path(tmp) / "nested" / "dir" / "accounts.json").exists()
+
