@@ -118,6 +118,10 @@ A contributor with **no vouches and no denounces** yields `b = 0`, `d = 0`, `u =
 
 For all PRs in the network, compute a pairwise similarity matrix.
 
+**What is compared.** Not the whole PR. `campaigns.pr_text()` builds a short text of at most 1,500
+characters: the title, the description, the changed file names, and the first 20 changed lines. A
+1,000-line change therefore cannot drown the description, and the model's work does not grow with PR size.
+
 **TF-IDF cosine** (always available, scikit-learn):
 ```
 texts → TfidfVectorizer → L2-normalised matrix M
@@ -131,12 +135,34 @@ body: {"model": "nomic-embed-text", "input": [text1, text2, ...]}
 → embedding vectors → L2-normalise → cosine similarity matrix E
 ```
 
-Combine: `S(i,j) = max(TF-IDF(i,j), Ollama(i,j))`
+The two scores run on different scales, so they are **not** merged into one number. Two PRs are linked if
 
-If Ollama is unreachable → use TF-IDF only, set `embedding_used = False`.
+```
+TF-IDF(i,j) ≥ 0.85   (campaigns.similarity_threshold)     or     Ollama(i,j) ≥ 0.80   (campaigns.embedding_threshold)
+```
 
-Cluster PRs using union-find (connected components) where `S(i,j) ≥ 0.85`
-(`policy.json: campaigns.similarity_threshold`).
+Requests go to Ollama 32 texts at a time (30 s timeout each). If Ollama is unreachable → TF-IDF only,
+`embedding_used = False`. Linked PRs are grouped with union-find (connected components).
+
+**Why 0.80 for the model (measured, small and synthetic).** We wrote 30 ordinary PR descriptions (including
+look-alike typo fixes and dependency bumps) and 12 heavily reworded spam PRs with one intent, and measured:
+
+| Threshold | Spam PRs in one group (model) | Ordinary PR pairs linked (model) | Spam grouped by TF-IDF |
+|---|---|---|---|
+| 0.70 | 12 of 12 | 2 to 8 of 435 | none (every PR alone) |
+| 0.75 | 12 of 12 | 1 of 435 | none |
+| **0.80** | **11 to 12 of 12** | **0 to 1 of 435** | none |
+| 0.85 | 7 to 10 of 12 | 0 to 1 of 435 | none |
+
+At 0.85 the model starts to break the group apart; below 0.75 it links more ordinary PRs. 0.80 is the
+compromise. This is 42 hand-written descriptions, not a population estimate: tune it on your own data.
+The closest ordinary pairs are generic look-alikes (for example "Fix typos in docs" and "docs: correct
+spelling in CHANGELOG", 0.84). That is why similar text is only step 1: the cluster filters below, not the
+model, decide whether it is a campaign.
+
+**Established accounts are never swept in.** A cluster's members are only its new accounts (under 14 days
+at their first PR). An old maintainer whose PR happens to resemble the spam is not held for it, and neither
+are accounts of unknown age.
 
 ### Step 2 — Cluster filters
 
@@ -240,7 +266,8 @@ an honest project that vouched for one bot loses half the weight of its other vo
 | `trust.flagged_endorser_factor` | 0.5 | Vouch weight multiplier for a project that also vouched for a flagged account |
 | `decision.hold_threshold` | 0.5 | d must reach this to trigger HOLD |
 | `decision.accept_threshold` | 0.5 | b must reach this to trigger ACCEPT |
-| `campaigns.similarity_threshold` | 0.85 | Minimum cosine similarity to cluster |
+| `campaigns.similarity_threshold` | 0.85 | Minimum TF-IDF (keyword) similarity to link two PRs |
+| `campaigns.embedding_threshold` | 0.80 | Minimum `nomic-embed-text` similarity to link two PRs |
 | `campaigns.min_prs` | 8 | Minimum PRs in a campaign cluster |
 | `campaigns.min_projects` | 5 | Minimum distinct projects |
 | `campaigns.window_hours` | 6 | Maximum time window in hours |

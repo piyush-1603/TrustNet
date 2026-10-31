@@ -15,6 +15,7 @@
   },
   "campaigns": {
     "similarity_threshold": 0.85,
+    "embedding_threshold": 0.8,
     "min_prs": 8,
     "min_projects": 5,
     "window_hours": 6,

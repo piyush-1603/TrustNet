@@ -1,6 +1,6 @@
 {
   "seed": 42,
-  "policy_hash": "d4a3f19cf397",
+  "policy_hash": "a362187ee098",
   "scenarios": {
     "brigade-denounce": {
       "naive_before": "ACCEPT",

@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 import requests
 
-from trustnet.similarity import similarity_matrix
+from trustnet.similarity import similarity_matrices, similarity_matrix
 
 
 @pytest.fixture(autouse=True)
@@ -30,7 +30,7 @@ def test_real_api_contract_and_elementwise_max(monkeypatch):
     assert matrix[0, 1] == pytest.approx(1)
     post.assert_called_once_with('http://localhost:11434/api/embed',
         json={'model': 'nomic-embed-text', 'input': ['repair login validation', 'secure user authentication']},
-        timeout=(2, 10))
+        timeout=(2, 30))
 
 
 @pytest.mark.parametrize('payload', [{}, {'embeddings': [[1, 2]]},
@@ -74,3 +74,23 @@ def test_opt_out_never_calls_http():
 def test_non_strings_are_rejected():
     with pytest.raises(TypeError):
         similarity_matrix([None])
+
+
+def test_embeddings_are_requested_in_batches(monkeypatch):
+    sizes = []
+
+    def post(url, json, timeout):
+        sizes.append(len(json['input']))
+        return Mock(json=lambda: {'embeddings': [[1., 0.]] * len(json['input'])})
+
+    monkeypatch.setattr('trustnet.similarity.requests.post', post)
+    keyword, embedding = similarity_matrices([f'text {i}' for i in range(70)])
+    assert sizes == [32, 32, 6] and embedding.shape == (70, 70) and keyword.shape == (70, 70)
+
+
+def test_the_two_scores_are_returned_separately(monkeypatch):
+    monkeypatch.setattr('trustnet.similarity.requests.post',
+                        Mock(return_value=Mock(json=lambda: {'embeddings': [[1., 0.], [.8, .6]]})))
+    keyword, embedding = similarity_matrices(['alpha beta', 'gamma delta'])
+    assert keyword[0, 1] == 0 and embedding[0, 1] == pytest.approx(.8)
+    assert similarity_matrices(['alpha beta', 'gamma delta'], False)[1] is None
