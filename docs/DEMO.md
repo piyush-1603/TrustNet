@@ -63,7 +63,7 @@ python -m trustnet simulate --projects 30 --seed 42
 ### 3b. Evaluate a newcomer (2:00 – 2:45)
 
 ```bash
-python -m trustnet evaluate --as proj-01 --pr pr-newcomer-01
+python -m trustnet evaluate --as proj-01 --pr pr-203
 ```
 
 **Say:**
@@ -73,26 +73,25 @@ python -m trustnet evaluate --as proj-01 --pr pr-newcomer-01
 
 **Point to output lines:**
 ```
-decision     : PROVISIONAL
-belief       : 0.000
-disbelief    : 0.000
-uncertainty  : 1.000
-reasons      : (none — no trust history)
+PR pr-203  |  Author: newcomer-00  |  Viewer: proj-01
+Decision     : PROVISIONAL
+Belief       : 0.00   Disbelief: 0.00   Uncertainty: 1.00
+Reasons      : unknown to the projects this viewer trusts: provisional review, not a rejection
 ```
 
-🔴 **Fallback:** Show `examples/newcomer_decision.json` in the terminal with `cat`.
+🔴 **Fallback:** run the same command with `--network examples/network` (the pre-generated data).
 
 ---
 
 ### 3c. Same author, two projects (2:45 – 3:15)
 
 ```bash
-python -m trustnet evaluate --as proj-01 --pr pr-alice-07
-python -m trustnet evaluate --as proj-14 --pr pr-alice-07
+python -m trustnet evaluate --as proj-01 --pr pr-001
+python -m trustnet evaluate --as proj-05 --pr pr-001
 ```
 
 **Say:**
-> "Same PR, same author, two different answers — because proj-01 and proj-14
+> "Same PR, same author, two different answers — because proj-01 and proj-05
 > have different trust graphs. This is the decentralization. There is no
 > central authority. Each project decides for itself."
 
@@ -103,7 +102,7 @@ python -m trustnet evaluate --as proj-14 --pr pr-alice-07
 ### 3d. Brigade ignored (3:15 – 3:45)
 
 ```bash
-python -m trustnet evaluate --as proj-01 --pr pr-alice-07 --verbose
+python -m trustnet evaluate --as proj-01 --pr pr-002
 ```
 
 **Say:**
@@ -113,13 +112,11 @@ python -m trustnet evaluate --as proj-01 --pr pr-alice-07 --verbose
 
 **Point to output lines:**
 ```
-ignored:
-  - fake-01: ignored: source not trusted
-  - fake-02: ignored: source not trusted
-  ...
+Decision     : ACCEPT
+Ignored      : ignored: source not trusted: fake-brigade-00 (denounce); ... fake-brigade-04 (denounce); ...
 ```
 
-🔴 **Fallback:** Show the brigade fixture: `cat tests/fixtures/brigade/labels.json`
+🔴 **Fallback:** same command with `--network examples/network`, or `cat tests/fixtures/brigade/labels.json`.
 
 ---
 
@@ -131,15 +128,16 @@ python -m trustnet campaigns
 
 **Say:**
 > "The campaign detector found one flagged cluster: 38 PRs, 25 projects,
-> 2 hours, 84% of authors with accounts younger than 14 days.
-> Score 0.78 — above the 0.6 threshold. Every author in that cluster
+> under 2 hours, every author with an account younger than 14 days.
+> Score 1.00 — above the 0.6 threshold. Every author in that cluster
 > gets HOLD, even if their individual PR looks fine.
 > The legitimate dependency bump is not flagged — old account, vouched maintainer."
 
 **Point to:**
 ```
-FLAGGED  score=0.78  38 PRs · 25 projects · 2h03m · 84% young accounts
-         embedding_used: true
+campaign-...  [FLAGGED]  score=1.00
+  * 38 PRs, 25 projects, 1h57m window, 100% accounts under 14 days
+  * Connected text similarity >= 0.85; embedding_used=true
 ```
 
 🔴 **Fallback:** `cat examples/campaigns.json` — show the pre-run output.
@@ -168,15 +166,15 @@ python -m trustnet lab
 > evidence or denounces emerge. These are synthetic regression fixtures,
 > not general attack-resistance guarantees, and knowing the system's boundary is essential."
 
-**Point to the decision table printed to stdout:**
+**Point to the BEFORE → AFTER columns and "Defense goal met" in the table `lab` prints:**
 
 ```
-Scenario                    | Naive Baseline | Defended Outcome          | Status
-brigade-denounce            | HOLD           | ACCEPT → ACCEPT           | Defended
-sybil-clique                | ACCEPT         | PROVISIONAL → PROVISIONAL | Defended
-trust-laundering            | ACCEPT         | PROVISIONAL → PROVISIONAL | Defended
-collusive-cluster           | PROVISIONAL    | PROVISIONAL → HOLD        | Defended
-compromised-trusted-source  | ACCEPT         | PROVISIONAL → ACCEPT      | Defense fails (explicit limitation)
+| Attack                    | Naive BEFORE → AFTER | Defended BEFORE → AFTER   | Defense goal met |
+| brigade-denounce          | ACCEPT → HOLD        | ACCEPT → ACCEPT           | True             |
+| sybil-clique              | PROVISIONAL → ACCEPT | PROVISIONAL → PROVISIONAL | True             |
+| trust-laundering          | PROVISIONAL → ACCEPT | PROVISIONAL → PROVISIONAL | True             |
+| collusive-cluster         | PROVISIONAL → ACCEPT | PROVISIONAL → HOLD        | True             |
+| trusted-source-compromise | PROVISIONAL → ACCEPT | PROVISIONAL → ACCEPT      | False (explicit limitation) |
 ```
 
 🔴 **Fallback:** Show the lab table in the HTML report (open in browser, scroll to Lab section).
@@ -188,8 +186,8 @@ compromised-trusted-source  | ACCEPT         | PROVISIONAL → ACCEPT      | Def
 ### Open the HTML report
 
 ```bash
-python -m trustnet report
-# opens report.html in the browser
+python -m trustnet report --out report.html
+open report.html        # macOS; use xdg-open on Linux
 ```
 
 **Say:**

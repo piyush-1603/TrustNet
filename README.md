@@ -58,11 +58,11 @@ python -m trustnet campaigns
 # 4. Run the adversarial lab (naive vs defended comparison)
 python -m trustnet lab
 
-# 5. Render an HTML report (opens in browser)
+# 5. Write a self-contained HTML report (report.html)
 python -m trustnet report
 ```
 
-All five commands also accept `--json` for machine-readable output.
+`simulate`, `evaluate`, `campaigns` and `lab` also accept `--json` for machine-readable output.
 
 ---
 

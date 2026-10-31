@@ -430,6 +430,27 @@ def generate(n_projects: int = 30, seed: int = 42):
     ))
 
     # ------------------------------------------------------------------ #
+    # 9b. Newcomers each open one ordinary PR, so the demo can evaluate   #
+    #     a real incoming PR from someone nobody has vouched for.         #
+    #     Own RNG, so the data generated above does not change.           #
+    # ------------------------------------------------------------------ #
+    nrng = random.Random(f"newcomer-prs-{seed}")
+    newcomer_pr_ids = []
+    for handle in newcomer_handles:
+        pid = nrng.choice(proj_ids)
+        verb = nrng.choice(_PR_VERBS)
+        obj = nrng.choice(_PR_OBJS)
+        newcomer_pr_ids.append(f"pr-{pr_counter:03d}")
+        prs.append(PR(
+            id=newcomer_pr_ids[-1], project=pid, author=handle,
+            created_at=now - timedelta(hours=nrng.randint(1, 720)),
+            title=f"{verb}: {obj} in {pid}",
+            body=f"First contribution: this PR {verb}s {obj} for {pid} and includes a unit test.",
+            diff_text=f"--- a/src/{obj.replace('-', '_')}.py\n+++ b/src/{obj.replace('-', '_')}.py\n+    # {verb} {obj}\n",
+        ))
+        pr_counter += 1
+
+    # ------------------------------------------------------------------ #
     # 10. Assemble                                                        #
     # ------------------------------------------------------------------ #
     attack_handles = spam_handles + [sybil_spammer, denounced_handle]
@@ -437,6 +458,7 @@ def generate(n_projects: int = 30, seed: int = 42):
     labels = {
         "campaign_pr_ids": campaign_pr_ids,
         "newcomer_handles": newcomer_handles,
+        "newcomer_pr_ids": newcomer_pr_ids,
         "attack_handles": attack_handles,
         "brigaded_handle": brigaded_handle,
         "legit_bump_pr_ids": legit_bump_pr_ids,

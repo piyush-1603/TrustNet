@@ -269,3 +269,15 @@ def test_brigaded_author_vouched_by_trusted_project():
         dec = evaluate_pr(net, "proj-01", pr, campaigns=[])
         assert dec.decision == "ACCEPT"
 
+
+
+def test_each_newcomer_opens_one_pr_and_is_provisional_not_held():
+    from trustnet.trust import evaluate_pr
+
+    net, labels, _ = _write_tmp()
+    by_id = {pr.id: pr for pr in net.prs}
+    assert len(labels["newcomer_pr_ids"]) == 15
+    for pr_id in labels["newcomer_pr_ids"]:
+        pr = by_id[pr_id]
+        assert pr.author in labels["newcomer_handles"]
+        assert evaluate_pr(net, "proj-01", pr, []).decision == "PROVISIONAL"

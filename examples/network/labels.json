@@ -56,6 +56,23 @@
     "newcomer-13",
     "newcomer-14"
   ],
+  "newcomer_pr_ids": [
+    "pr-203",
+    "pr-204",
+    "pr-205",
+    "pr-206",
+    "pr-207",
+    "pr-208",
+    "pr-209",
+    "pr-210",
+    "pr-211",
+    "pr-212",
+    "pr-213",
+    "pr-214",
+    "pr-215",
+    "pr-216",
+    "pr-217"
+  ],
   "attack_handles": [
     "bot-00",
     "bot-01",
