@@ -14,3 +14,5 @@ Owner of this file: Arnav only. Add one log entry per PR, newest at the bottom.
 ## Log
 Format: `date time | PR title | what changed | what is next | gotchas`
 
+2026-10-31 22:42 | fixtures: add newcomer, brigade, bulk_bump, campaign test networks | Created tests/fixtures/ with 4 hand-made JSON networks matching the data contract; added tests/test_fixtures.py with 20 structural + scenario tests; all 22 tests pass. Added docs/MENTOR_NOTES.md with 3 mentor questions drafted (answers pending). | Next: README.md full version, docs/DESIGN.md, docs/DEMO.md | Fixtures use stdlib-only tests so they pass before models.py / loaders.py merge.
+
