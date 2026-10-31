@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.env
+*.egg-info/
+.DS_Store
+# generated demo networks; examples/ holds the committed copy
+/network/
+/out/
