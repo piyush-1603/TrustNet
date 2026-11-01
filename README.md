@@ -1,5 +1,7 @@
 # TrustNet
 
+[![CI](https://github.com/piyush-1603/TrustNet/actions/workflows/ci.yml/badge.svg)](https://github.com/piyush-1603/TrustNet/actions/workflows/ci.yml)
+
 > **Decentralized Trust Network for Open-Source Contributions**
 > Team Sophons · Hacktoberfest 2026 Hack Day, Sonipat · Problem 7
 
@@ -7,6 +9,19 @@ TrustNet lets open-source projects share vouch and denounce records, decide — 
 their **own point of view** — what to do with a contributor, and detect coordinated spam
 campaigns across projects. A contributor with no history is treated as **unknown**, never
 as distrusted.
+
+**Results at a glance** (simulated network, seed 42, reproducible with the commands below)
+
+| | |
+|---|---|
+| Simulated network | 39 projects, 238 accounts, 217 PRs, with planted attacks and 15 newcomers |
+| Planted spam campaign | 38 PRs from 20 new accounts across 25 projects found, with the open model on (36 found with keyword matching only) |
+| Reworded spam (`ablation`) | 12 of 12 found with the model on, 0 found with it off; 0 of 30 ordinary PRs flagged |
+| Attack lab (`lab`) | 4 of 5 attacks defended; the 5th (a compromised trusted project) is a failing control, reported as such |
+| Newcomers | No history means PROVISIONAL (human review), never HOLD |
+| Tests | 213 pass in CI (1 more needs Ollama); every command in this README is exercised |
+
+All figures come from synthetic data. They are regression results, not evidence of general attack resistance.
 
 ---
 
@@ -39,14 +54,18 @@ as distrusted.
 ## Table of contents
 
 - [What makes TrustNet different](#what-makes-trustnet-different)
-- [Problem statement coverage](#problem-statement-coverage)
 - [Install](#install)
 - [Quick start](#quick-start)
 - [Commands](#commands)
+- [Input data format](#input-data-format)
 - [Design decisions](#design-decisions)
+- [Problem statement coverage](#problem-statement-coverage)
+- [Testing](#testing)
 - [What is not built](#what-is-not-built)
+- [Responsible use and AI disclosure](#responsible-use-and-ai-disclosure)
 - [Project layout](#project-layout)
 - [Team](#team)
+- [License](#license)
 
 ---
 
@@ -90,6 +109,12 @@ python -m trustnet campaigns
 python -m trustnet advisory --as proj-01 --out advisory.json
 python -m trustnet evaluate --as proj-02 --pr pr-151 --no-local-detection --advisory advisory.json
 
+# 3c. What does the open model add? Same reworded campaign, model off vs on
+python -m trustnet ablation
+
+# 3d. A spammer who never repeats a word: text-independent behavior flag
+python -m trustnet fanout
+
 # 4. Run the adversarial lab (naive vs defended comparison)
 python -m trustnet lab
 
@@ -97,7 +122,8 @@ python -m trustnet lab
 python -m trustnet report
 ```
 
-`simulate`, `evaluate`, `campaigns` and `lab` also accept `--json` for machine-readable output.
+`simulate`, `evaluate`, `campaigns`, `lab`, `ablation` and `fanout` also accept `--json` for machine-readable output.
+Committed outputs of a real run (with the model) are in [`examples/`](examples/); regenerate them with `bash examples/make_examples.sh`.
 
 ---
 
@@ -115,6 +141,23 @@ python -m trustnet report
 | `ablation` | Same reworded campaign with the model off and on: shows what the model adds |
 | `lab` | Runs five synthetic attack scenarios (four defended, one failing control); prints naive vs defended decisions |
 | `report` | Writes one offline HTML file: a searchable explorer of projects, PR decisions with trust paths, campaigns and the lab fixtures |
+
+---
+
+## Input data format
+
+TrustNet reads a folder of plain JSON files (a full description is in [`docs/PLAN.md`](docs/PLAN.md)):
+
+```
+network/
+  projects/<id>.json   id, name, trusts [{project, weight}], vouches [{handle, date, evidence_url}],
+                       denounces [{handle, reason_code, evidence_url, date, expires}]
+  accounts.json        [{handle, created_at}]
+  prs.json             [{id, project, author, created_at, title, body, diff_text}]
+```
+
+`loaders.py` validates every file and rejects bad input with an error that names the file and field. Only handles,
+reason codes, evidence links and dates are stored for a denounce, which keeps personal data to a minimum.
 
 ---
 
@@ -150,7 +193,8 @@ Decision rule:
 - `d ≥ 0.5` and `d > b` → **HOLD**
 - `b ≥ 0.5` → **ACCEPT**
 - otherwise → **PROVISIONAL** (review queue)
-- member of a flagged campaign → **HOLD** (overrides everything)
+- member of a flagged text campaign, or listed in an advisory from a trusted project → **HOLD**
+- flagged by the behavior alarm (see 8) → **HOLD**, unless trusted projects already vouch strongly enough to ACCEPT
 
 All thresholds live in `policy.json` and are our own defaults, tuned on our simulation.
 
@@ -238,7 +282,22 @@ defeats the defense: a project the viewer trusts directly that turns malicious.
 | Malicious denounces | Untrusted sources ignored; evidence and expiry matter |
 | Transitive trust (A trusts B trusts C) | Best path, 0.6 decay per hop, 3 hops, never summed |
 | Why AI-text detection alone is not enough | Behavior signals (similarity, account age, spread, timing) |
-| Simulated network of 20-50 projects | `simulate` makes 39 projects; the organizers' own format is not known (see below) |
+| Simulated network of 20-50 projects | `simulate` makes 39 projects. The organizers provide no data, so the demo runs on our simulation. |
+
+---
+
+## Testing
+
+```bash
+pytest -q          # 213 tests, no Ollama or internet needed
+```
+
+CI runs the same command on every pull request (Python 3.11). Tests cover the trust formulas and every decision
+rule (including the newcomer, brigade and expiry cases), the loaders' validation, the campaign detector and its
+thresholds, advisories, the behavior alarm, the lab, the report, and the command-line interface. The model call is
+mocked in tests so CI never depends on Ollama; one extra test (`tests/test_ablation.py`) calls the real model and is
+skipped when Ollama is not running. The proof that the real model was used is in `examples/`
+(`campaigns.json` and `ablation.json` show `embedding_used: true`), and `make_examples.sh` refuses to finish otherwise.
 
 ---
 
@@ -249,8 +308,9 @@ defeats the defense: a project the viewer trusts directly that turns malicious.
 - **A drawn trust graph and dark mode:** The HTML report is a searchable explorer (projects, PRs,
   decisions with trust paths, campaigns, lab fixtures). It does not draw a node-link graph and has one
   light theme.
-- **Real open-source data:** All networks are simulated or hand-crafted. The loader is
-  designed to read real data once the organizers share their format.
+- **Real open-source data:** All networks are simulated or hand-crafted, because no public source
+  publishes trust links between projects. The loader reads plain files, so real data could be converted
+  to them, but we have not done so.
 - **Collusion cap:** The design notes a stretch goal to cap how much two mutually-trusting
   projects can inflate each other's score. Not implemented.
 - **Cohort bursts:** many new accounts that each send a single, different PR to a different project are not
@@ -259,46 +319,51 @@ defeats the defense: a project the viewer trusts directly that turns malicious.
   scenarios (e.g. gradual reputation laundering) are not included.
 - **Live GitHub integration:** TrustNet reads files, not GitHub. A GitHub Action or webhook that
   produces the input files is the natural next step; it was not built.
-- **Organizers' input format:** If it differs from ours, a small adapter in `loaders.py` is needed.
 - **Calibrated thresholds:** All numbers in `policy.json` are our own defaults, tuned on our own
   simulation.
+
+---
+
+## Responsible use and AI disclosure
+
+- **Data:** only simulated and hand-made data. TrustNet reads files and never posts comments, issues or labels on real
+  projects. No secrets are stored in the repository.
+- **Decisions are triage, not verdicts:** nothing is auto-rejected. HOLD sends a PR to a human; a denounce needs
+  evidence to count fully and can expire.
+- **Runtime model:** `nomic-embed-text` (open-weight), run locally through Ollama. It only supplies a similarity score.
+- **AI coding assistants used during development** (declared in each pull request): Claude Code, OpenAI Codex and
+  Antigravity. Every team member is expected to explain the code.
 
 ---
 
 ## Project layout
 
 ```
-trustnet/           Python package
-  models.py         dataclasses: Project, Account, PR, Network, Decision, Campaign
-  loaders.py        load_network(path) -> Network, load_policy() -> (policy, hash)
-  advisory.py       build_advisory / load_advisory (campaign advisories)
-  trust.py          project_trust, evaluate_author, evaluate_pr, naive_score
-  similarity.py     TF-IDF + nomic-embed-text cosine similarity
-  campaigns.py      coordinated campaign detector
-  lab.py            adversarial lab (naive vs defended)
-  simulate.py       seeded network generator
-  report.py         static HTML report renderer
-  cli.py            command-line interface
-policy.json         all numeric thresholds (decay, hops, weights, campaign cutoffs)
-tests/
-  fixtures/         four hand-made networks (newcomer, brigade, bulk_bump, campaign)
-  test_smoke.py     package import + PR template checks
-  test_fixtures.py  fixture structure and scenario validation
-  test_trust.py     trust engine unit tests
-  test_advisory.py  advisory file and trusted-issuer tests
-  test_loaders.py   loader tests
-  test_similarity.py  TF-IDF + mocked Ollama tests
-  test_campaigns.py   campaign detector tests
-  test_lab.py       lab output validation
+trustnet/             Python package
+  models.py           dataclasses: Project, Account, PR, Network, Decision, Campaign
+  loaders.py          load_network(path) -> Network, load_policy() -> (policy, hash)
+  trust.py            project_trust, evaluate_author, evaluate_pr, naive_score
+  advisory.py         build_advisory / load_advisory (campaign advisories)
+  similarity.py       TF-IDF + nomic-embed-text cosine similarity (batched, with fallback)
+  campaigns.py        text-campaign detector and the text-independent behavior (fan-out) alarm
+  ablation.py         same reworded campaign with the model off and on
+  fanout_demo.py      demo of the behavior alarm and the vouch override
+  lab.py              adversarial lab (naive vs defended, five scenarios)
+  simulate.py         seeded network generator
+  report.py           offline HTML report (searchable explorer)
+  cli.py, __main__.py command-line interface (python -m trustnet)
+policy.json           every numeric threshold, with a hash printed in outputs
+tests/                213 tests: trust, loaders, models, campaigns, similarity, advisory, ablation,
+                      fanout, lab, simulate, report, CLI, and four hand-made fixture networks
 docs/
-  PLAN.md           single source of truth for the build plan
-  DESIGN.md         all formulas written out
-  DEMO.md           8-minute demo script
-  MENTOR_NOTES.md   mentor Q&A (format, models, nomic-embed-text)
-examples/           real pipeline input + output committed from make_examples.sh
-.github/
-  workflows/ci.yml  Python 3.11, pip install, pytest -q
-  pull_request_template.md
+  PLAN.md             build plan, data contract, decision log
+  DESIGN.md           every formula and threshold, with the measured calibration table
+  DEMO.md             8-minute demo script with fallbacks
+  SLIDES.md           presentation outline
+  MENTOR_NOTES.md     organizer Q&A (what was and was not answered)
+  progress/           one log per team member
+examples/             real pipeline input and output, committed from make_examples.sh
+.github/              CI workflow (Python 3.11, pip install, pytest -q) and the pull request template
 ```
 
 ---
@@ -314,3 +379,9 @@ examples/           real pipeline input + output committed from make_examples.sh
 
 **Model used:** `nomic-embed-text` (open-weight) via [Ollama](https://ollama.com).
 All trust decisions are deterministic rules; the model only provides a similarity score.
+
+---
+
+## License
+
+MIT. See [LICENSE](LICENSE).
