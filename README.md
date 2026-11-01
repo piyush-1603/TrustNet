@@ -73,6 +73,9 @@ If Ollama is not running, TrustNet falls back to TF-IDF automatically and says s
 
 ## Quick start
 
+Run these from the repository folder, **inside the virtual environment** from the Install step (your prompt starts with `(.venv)`). On macOS plain `python` only exists inside it; outside, use `python3.11`.
+For the model path, `ollama serve` must be running in another terminal tab. Without it everything still works with keyword matching and says `embedding_used: false`.
+
 ```bash
 # 1. Generate a simulated network (30 projects, planted attacks, deterministic)
 python -m trustnet simulate --projects 30 --seed 42
