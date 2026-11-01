@@ -54,12 +54,12 @@ All figures come from synthetic data. They are regression results, not evidence 
 ## Table of contents
 
 - [What makes TrustNet different](#what-makes-trustnet-different)
-- [Problem statement coverage](#problem-statement-coverage)
 - [Install](#install)
 - [Quick start](#quick-start)
 - [Commands](#commands)
 - [Input data format](#input-data-format)
 - [Design decisions](#design-decisions)
+- [Problem statement coverage](#problem-statement-coverage)
 - [Testing](#testing)
 - [What is not built](#what-is-not-built)
 - [Responsible use and AI disclosure](#responsible-use-and-ai-disclosure)
